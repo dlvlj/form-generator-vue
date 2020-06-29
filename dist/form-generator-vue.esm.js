@@ -55,7 +55,7 @@ var script = {
       required: false,
       default: function () {
         console.log(this.fields);
-        alert('submit handler not present');
+        alert("submit handler not present");
       }
     },
     formRules: {
@@ -95,14 +95,14 @@ var script = {
 
     function addFieldsAndErrors(field) {
       fields = { ...fields,
-        [field.name]: 'value' in field ? field.value : ''
+        [field.name]: "value" in field ? field.value : ""
       };
       errors = { ...errors,
-        [field.name]: ''
+        [field.name]: ""
       };
     }
 
-    'fields' in this.formConfig && this.formConfig.fields.forEach(field => {
+    "fields" in this.formConfig && this.formConfig.fields.forEach(field => {
       if (Array.isArray(field)) {
         field.forEach(subField => {
           addFieldsAndErrors(subField);
@@ -120,14 +120,14 @@ var script = {
   },
 
   computed: {
-    formHelper: () => '_formHelper',
+    formHelper: () => "_formHelper",
 
     hasCustomComponentsMap() {
       return Boolean(this.customComponentsMap.length);
     },
 
     activeValidation() {
-      return 'activeValidation' in this.formConfig ? this.formConfig.activeValidation : false;
+      return "activeValidation" in this.formConfig ? this.formConfig.activeValidation : false;
     },
 
     fieldsConfig() {
@@ -161,7 +161,7 @@ var script = {
   },
 
   created() {
-    this.$emit('setFormContext', this);
+    this.$emit("setFormContext", this);
   },
 
   mounted() {
@@ -191,7 +191,7 @@ var script = {
 
     removeAllErrors() {
       Object.keys(this.errors).forEach(msg => {
-        this.errors[msg] = '';
+        this.errors[msg] = "";
       });
     },
 
@@ -221,11 +221,11 @@ var script = {
       //   name => name === fieldConfig.name
       // );
       // this.fields[fieldConfig.name] = fieldConfig.value || '';
-      this.fields[fieldConfig.name] = 'value' in fieldConfig ? fieldConfig.value : '';
+      this.fields[fieldConfig.name] = "value" in fieldConfig ? fieldConfig.value : "";
     },
 
     fieldVisible(fieldConfig) {
-      const SHOW = 'show' in fieldConfig ? fieldConfig.show(this) : true;
+      const SHOW = "show" in fieldConfig ? fieldConfig.show(this) : true;
       !SHOW && this.setDefaultFieldValue(fieldConfig);
       return SHOW;
     },
@@ -246,13 +246,13 @@ var script = {
 
     convertToNumber(fieldName) {
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
-      FIELD_CONFIG && FIELD_CONFIG.type === 'number' && this.fields[fieldName] && (this.fields[fieldName] = Number(this.fields[fieldName]));
+      FIELD_CONFIG && FIELD_CONFIG.type === "number" && this.fields[fieldName] && (this.fields[fieldName] = Number(this.fields[fieldName]));
     },
 
     bindEvents(fieldConfig) {
       let events = {};
 
-      if ('triggers' in fieldConfig) {
+      if ("triggers" in fieldConfig) {
         events = fieldConfig.triggers(this);
         return events;
       }
@@ -262,8 +262,8 @@ var script = {
 
     // custom component ---------------------------------------------
     hasCustomComponent(fieldConfig) {
-      const FIELD_TYPE = fieldConfig.type || 'text';
-      return 'component' in fieldConfig || this.findCustomComponentByType(FIELD_TYPE);
+      const FIELD_TYPE = fieldConfig.type || "text";
+      return "component" in fieldConfig || this.findCustomComponentByType(FIELD_TYPE);
     },
 
     findCustomComponentByType(fieldType) {
@@ -272,10 +272,10 @@ var script = {
 
     // ---------------------------------------------------------------
     computedComponent(fieldConfig) {
-      const FIELD_TYPE = fieldConfig.type || 'text';
+      const FIELD_TYPE = fieldConfig.type || "text";
       const DEFAULT_COMPONENT = this.findDefaultComponent(FIELD_TYPE);
 
-      if ('component' in fieldConfig) {
+      if ("component" in fieldConfig) {
         return fieldConfig.component;
       }
 
@@ -284,12 +284,12 @@ var script = {
     },
 
     findDefaultComponent() {
-      return 'default component';
+      return "default component";
     },
 
     fieldDisabled(fieldConfig) {
       const DISABLED = true;
-      const FIELD_IS_DISABLED_IN_PROPS = fieldConfig.props && 'disabled' in fieldConfig.props ? fieldConfig.props.disabled : false;
+      const FIELD_IS_DISABLED_IN_PROPS = fieldConfig.props && "disabled" in fieldConfig.props ? fieldConfig.props.disabled : false;
       return !this.formEditable || FIELD_IS_DISABLED_IN_PROPS ? DISABLED : !DISABLED;
     },
 
@@ -297,14 +297,14 @@ var script = {
       const REQUIRED = true;
       const NOT_REQUIRED = false;
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
-      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldName) ? 'required' in FIELD_CONFIG ? FIELD_CONFIG.required : REQUIRED : 'required' in FIELD_CONFIG ? FIELD_CONFIG.required : NOT_REQUIRED : NOT_REQUIRED;
+      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldName) ? "required" in FIELD_CONFIG ? FIELD_CONFIG.required : REQUIRED : "required" in FIELD_CONFIG ? FIELD_CONFIG.required : NOT_REQUIRED : NOT_REQUIRED;
     },
 
     validateField(fieldName) {
       const REQUIRED = this.fieldRequired(fieldName); // const HAS_CONFIG = Object.keys(this.validationConfig).length;
 
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
-      const FIELD_IS_VALID = [true, ''];
+      const FIELD_IS_VALID = [true, ""];
       const fieldRules = FIELD_CONFIG.rules || {}; // console.log('validate field', fieldName, REQUIRED);
 
       const [fieldValid, fieldErrorMsg] = // REQUIRED && HAS_CONFIG
@@ -325,12 +325,12 @@ var script = {
       });
 
       if (inputs.includes(NOT_VALID)) {
-        console.log('Form not valid');
+        console.log("Form not valid");
         this.resetForm();
         return;
       }
 
-      console.log('Form valid, calling submit handler');
+      console.log("Form valid, calling submit handler");
       await this.submitHandler(this.fields);
       this.resetForm();
     }
@@ -502,7 +502,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-2a6e4118";
+const __vue_scope_id__ = "data-v-a1d31312";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

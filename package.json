@@ -2,11 +2,6 @@
   "name": "form-generator-vue",
   "version": "1.0.0",
   "description": "",
-  "license": "MIT",
-  "author": {
-    "name": "Divij Bhardwaj",
-    "email": "divij.827@gmail.com"
-  },
   "main": "dist/form-generator-vue.ssr.js",
   "browser": "dist/form-generator-vue.esm.js",
   "module": "dist/form-generator-vue.esm.js",
@@ -22,6 +17,14 @@
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
+  "keywords": [
+    "vue",
+    "nuxt",
+    "form",
+    "custom-form",
+    "form-generator",
+    "custom-component-form"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.9.0",
