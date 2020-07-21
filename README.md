@@ -305,12 +305,14 @@ Lets say you name your function **'regex'** for validating multiple regex type f
 ```
 
 In validation functions that you are using, you can use the following parameters for more control.
-param 1: `value` of the field for which you are writing validation function
-param 2: `rules` of the field. ('rules' inside field-config as shown here **Min Required Props => form-config => field-config => options**  ). **you can pass validation constants here**(values with which you want to compare or whatever you want to do to validate the value) and catch them inside your validation function.
-param 3: `fields` of the form. you can use this in case you want to validate the value of a field using value of some other field. `fields` is an object containing values of all the components used in the form.
+**param 1:** `value` of the field for which you are writing validation function
+**param 2:** `rules` of the field. ('rules' inside field-config as shown here **Min Required Props => form-config => field-config => options**  ). **you can pass validation constants here**(values with which you want to compare or whatever you want to do to validate the value) and catch them inside your validation function.
+**param 3:** `fields` of the form. you can use this in case you want to validate the value of a field using value of some other field. `fields` is an object containing values of all the components used in the form.
 
 #### Common validators (`COMMON_VALIDATORS`)
 You can write your input sanitization functions here. **Example** For input type **number** you may not want nuser to enter some negative value. This validation will be applied to all 'number' type fields. Similarly you might want to exclude some values in 'text' type field. This might help you in avoiding code repetition. So keeping these things in mind `COMMON_VALIDATORS` was designed. see usage in **form-rules.js**(given above).
+
+only one param is passed to this which is 'value', it does not need 'rules' and 'fields' params.
 
 # Slots
 
