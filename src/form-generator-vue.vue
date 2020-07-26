@@ -87,40 +87,40 @@ export default {
     submitHandler: {
       type: Function,
       required: false,
-      default: function() {
+      default: function () {
         console.log(this.fields);
         alert("submit handler not present");
-      }
+      },
     },
     formRules: {
       type: Object,
       required: false,
-      default: () => ({})
+      default: () => ({}),
     },
     customComponentsMap: {
       type: Array,
       required: false,
-      default: () => []
+      default: () => [],
     },
     formEditable: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     validationConfig: {
       type: Object,
       required: false,
-      default: () => ({})
+      default: () => ({}),
     },
     formConfig: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     classes: {
       type: Object,
       required: false,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   data() {
     let fields = {};
@@ -128,17 +128,17 @@ export default {
     function addFieldsAndErrors(field) {
       fields = {
         ...fields,
-        [field.name]: "value" in field ? field.value : ""
+        [field.name]: "value" in field ? field.value : "",
       };
       errors = {
         ...errors,
-        [field.name]: ""
+        [field.name]: "",
       };
     }
     "fields" in this.formConfig &&
-      this.formConfig.fields.forEach(field => {
+      this.formConfig.fields.forEach((field) => {
         if (Array.isArray(field)) {
-          field.forEach(subField => {
+          field.forEach((subField) => {
             addFieldsAndErrors(subField);
           });
         } else {
@@ -149,7 +149,7 @@ export default {
       fields,
       errors,
       loading: false,
-      submit: false
+      submit: false,
     };
   },
 
@@ -168,7 +168,7 @@ export default {
     },
     fieldsConfig_FLAT() {
       let flatConfig = [];
-      this.fieldsConfig.forEach(conf => {
+      this.fieldsConfig.forEach((conf) => {
         if (Array.isArray(conf)) {
           flatConfig = [...flatConfig, ...conf];
         } else {
@@ -180,23 +180,23 @@ export default {
     hasFieldsConfig() {
       return this.fieldsConfig && Boolean(this.fieldsConfig.length);
     },
-    defaultFieldComponents: () => []
+    defaultFieldComponents: () => [],
   },
   watch: {
     formEditable: {
-      handler: function(newVal) {
+      handler: function (newVal) {
         !newVal && this.removeAllErrors();
-      }
-    }
+      },
+    },
   },
   created() {
     this.$emit("setFormContext", this);
   },
   mounted() {
-    Object.keys(this.fields).forEach(fieldName => {
+    Object.keys(this.fields).forEach((fieldName) => {
       this.$watch(
         `fields.${fieldName}`,
-        function(newVal, oldVal) {
+        function (newVal, oldVal) {
           //  fields value type to number (for fields with type number)
           this.convertToNumber(fieldName);
           // to prevent any unnecessary function call when only type of field property is changed.
@@ -218,7 +218,7 @@ export default {
       this.loading = false;
     },
     removeAllErrors() {
-      Object.keys(this.errors).forEach(msg => {
+      Object.keys(this.errors).forEach((msg) => {
         this.errors[msg] = "";
       });
     },
@@ -261,11 +261,11 @@ export default {
         ...fieldConfig.props,
         errorMsg: this.errors[fieldConfig.name],
         error: this.errors[fieldConfig.name],
-        disabled: this.fieldDisabled(fieldConfig)
+        disabled: this.fieldDisabled(fieldConfig),
       };
     },
     findFieldConfig(fieldName) {
-      return this.fieldsConfig_FLAT.find(conf => conf.name === fieldName);
+      return this.fieldsConfig_FLAT.find((conf) => conf.name === fieldName);
     },
     convertToNumber(fieldName) {
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
@@ -294,7 +294,7 @@ export default {
     findCustomComponentByType(fieldType) {
       return !this.hasCustomComponentsMap
         ? undefined
-        : this.customComponentsMap.find(component =>
+        : this.customComponentsMap.find((component) =>
             component.type.includes(fieldType)
           );
     },
@@ -372,7 +372,7 @@ export default {
       this.loading = true;
       this.submit = true;
 
-      Object.keys(this.fields).forEach(field => {
+      Object.keys(this.fields).forEach((field) => {
         inputs.push(this.validateField(field));
       });
 
@@ -386,8 +386,8 @@ export default {
       await this.submitHandler(this.fields);
 
       this.resetForm();
-    }
-  }
+    },
+  },
 };
 </script>
 
