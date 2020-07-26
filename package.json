@@ -1,7 +1,8 @@
 {
   "name": "form-generator-vue",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
+  "license": "MIT",
   "main": "dist/form-generator-vue.ssr.js",
   "browser": "dist/form-generator-vue.esm.js",
   "module": "dist/form-generator-vue.esm.js",

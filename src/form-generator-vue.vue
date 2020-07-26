@@ -199,12 +199,12 @@ export default {
         function (newVal, oldVal) {
           //  fields value type to number (for fields with type number)
           this.convertToNumber(fieldName);
+          // for helpers ---------------------------
+          this.fieldHelpers(fieldName, newVal);
           // to prevent any unnecessary function call when only type of field property is changed.
           if (newVal == oldVal && typeof newVal !== typeof oldVal) {
             return;
           }
-          // for helpers ---------------------------
-          this.fieldHelpers(fieldName, newVal);
           // validations ------------------------
           this.validateField(fieldName);
         }
