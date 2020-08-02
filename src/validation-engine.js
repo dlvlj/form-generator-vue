@@ -3,7 +3,9 @@ const FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
 const FIELD_IS_VALID = '';
 
 function fieldIsEmpty(value) {
-  return String(value).trim() === '' ? FIELD_IS_EMPTY : FIELD_IS_VALID;
+  return String(value).trim() === '' || (value !== false && !value)
+    ? FIELD_IS_EMPTY
+    : FIELD_IS_VALID;
 }
 function throwError(msg) {
   throw new Error(msg);

@@ -8,7 +8,7 @@
         <slot name="sectionLabel" :fieldConfig="fieldConfig" :fieldsConfigFlat="fieldsConfig_FLAT" />
         <!-- ROW  ------------------------------------------------------->
         <div
-          :key="fieldConfig.name"
+          :key="fieldConfig.model"
           class="generated-form__body__row"
           v-bind="{class: classes.row}"
         >
@@ -17,25 +17,25 @@
             <template v-for="subFieldConfig in fieldConfig">
               <div
                 v-if="fieldVisible(subFieldConfig)"
-                :key="subFieldConfig.name"
+                :key="subFieldConfig.model"
                 class="generated-form__body__row__col"
-                :class="`col-${subFieldConfig.name}`"
+                :class="`col-${subFieldConfig.model}`"
                 v-bind="{class: classes.col}"
               >
                 <template>
-                  <slot :name="`${subFieldConfig.name}_before`" />
+                  <slot :name="`${subFieldConfig.model}_before`" />
                   <!-- FIELD-COMPONENT ---------------------------------------------->
                   <component
                     :is="computedComponent(subFieldConfig)"
                     v-if="hasCustomComponent(subFieldConfig)"
-                    :ref="subFieldConfig.name"
-                    :key="subFieldConfig.name"
-                    v-model.trim="fields[subFieldConfig.name]"
+                    :ref="subFieldConfig.model"
+                    :key="subFieldConfig.model"
+                    v-model.trim="fields[subFieldConfig.model]"
                     :type="subFieldConfig.type ||'text'"
                     v-bind="bindProps(subFieldConfig)"
                     v-on="bindEvents(subFieldConfig)"
                   />
-                  <slot :name="`${subFieldConfig.name}_after`" />
+                  <slot :name="`${subFieldConfig.model}_after`" />
                 </template>
               </div>
             </template>
@@ -45,23 +45,23 @@
             <div
               v-if="fieldVisible(fieldConfig)"
               class="generated-form__body__row__col"
-              :class="`col-${fieldConfig.name}`"
+              :class="`col-${fieldConfig.model}`"
               v-bind="{class: classes.col}"
             >
               <template>
-                <slot :name="`${fieldConfig.name}_before`" />
+                <slot :name="`${fieldConfig.model}_before`" />
                 <!-- FIELD-COMPONENT ---------------------------------------------->
                 <component
                   :is="computedComponent(fieldConfig)"
                   v-if="hasCustomComponent(fieldConfig)"
-                  :ref="fieldConfig.name"
-                  :key="fieldConfig.name"
-                  v-model.trim="fields[fieldConfig.name]"
+                  :ref="fieldConfig.model"
+                  :key="fieldConfig.model"
+                  v-model.trim="fields[fieldConfig.model]"
                   :type="fieldConfig.type || 'text'"
                   v-bind="bindProps(fieldConfig)"
                   v-on="bindEvents(fieldConfig)"
                 />
-                <slot :name="`${fieldConfig.name}_after`" />
+                <slot :name="`${fieldConfig.model}_after`" />
               </template>
             </div>
           </template>
@@ -88,7 +88,6 @@ export default {
       type: Function,
       required: false,
       default: function () {
-        console.log(this.fields);
         alert("submit handler not present");
       },
     },
@@ -128,11 +127,11 @@ export default {
     function addFieldsAndErrors(field) {
       fields = {
         ...fields,
-        [field.name]: "value" in field ? field.value : "",
+        [field.model]: "value" in field ? field.value : "",
       };
       errors = {
         ...errors,
-        [field.name]: "",
+        [field.model]: "",
       };
     }
     "fields" in this.formConfig &&
@@ -159,9 +158,10 @@ export default {
       return Boolean(this.customComponentsMap.length);
     },
     activeValidation() {
-      return "activeValidation" in this.formConfig
-        ? this.formConfig.activeValidation
-        : false;
+      return "activeValidation" in this.formConfig ? true : false;
+    },
+    logs() {
+      return "logs" in this.formConfig ? true : false;
     },
     fieldsConfig() {
       return this.formConfig.fields;
@@ -193,20 +193,20 @@ export default {
     this.$emit("setFormContext", this);
   },
   mounted() {
-    Object.keys(this.fields).forEach((fieldName) => {
+    Object.keys(this.fields).forEach((fieldModel) => {
       this.$watch(
-        `fields.${fieldName}`,
+        `fields.${fieldModel}`,
         function (newVal, oldVal) {
           //  fields value type to number (for fields with type number)
-          this.convertToNumber(fieldName);
+          this.convertToNumber(fieldModel);
           // for helpers ---------------------------
-          this.fieldHelpers(fieldName, newVal);
+          this.fieldHelpers(fieldModel, newVal);
           // to prevent any unnecessary function call when only type of field property is changed.
           if (newVal == oldVal && typeof newVal !== typeof oldVal) {
             return;
           }
           // validations ------------------------
-          this.validateField(fieldName);
+          this.validateField(fieldModel);
         }
         // { deep: true }
       );
@@ -225,20 +225,20 @@ export default {
     showErrors(field, msg) {
       this.errors[field] = msg;
     },
-    fieldIsHelper(fieldName) {
-      return fieldName.includes(this.formHelper);
+    fieldIsHelper(fieldModel) {
+      return fieldModel.includes(this.formHelper);
     },
-    fieldHelpers(fieldName, newVal) {
+    fieldHelpers(fieldModel, newVal) {
       const VAL = newVal;
       // helping field ------------------
-      if (this.fieldIsHelper(fieldName)) {
-        const fieldBeingHelped = fieldName.split(this.formHelper)[0];
+      if (this.fieldIsHelper(fieldModel)) {
+        const fieldBeingHelped = fieldModel.split(this.formHelper)[0];
         fieldBeingHelped in this.fields &&
           (this.fields[fieldBeingHelped] = VAL);
       }
       // field being helped
-      else if (`${fieldName}${this.formHelper}` in this.fields) {
-        const helperField = `${fieldName}${this.formHelper}`;
+      else if (`${fieldModel}${this.formHelper}` in this.fields) {
+        const helperField = `${fieldModel}${this.formHelper}`;
         this.fields[helperField] = VAL;
       }
     },
@@ -247,7 +247,7 @@ export default {
       //   name => name === fieldConfig.name
       // );
       // this.fields[fieldConfig.name] = fieldConfig.value || '';
-      this.fields[fieldConfig.name] =
+      this.fields[fieldConfig.model] =
         "value" in fieldConfig ? fieldConfig.value : "";
     },
     fieldVisible(fieldConfig) {
@@ -256,23 +256,41 @@ export default {
       return SHOW;
     },
     bindProps(fieldConfig) {
+      const componentName = this.computedComponent(fieldConfig);
+      const componentData = this.customComponentsMap.find(
+        ({ component }) => component.name === componentName
+      );
+
+      const {
+        component: { errorProp },
+      } =
+        componentData ||
+        (fieldConfig.errorProp
+          ? {
+              component: { errorProp: fieldConfig.errorProp },
+            }
+          : { component: { errorProp: "errorMessage" } });
+
       return {
-        name: fieldConfig.name,
         ...fieldConfig.props,
-        errorMsg: this.errors[fieldConfig.name],
-        error: this.errors[fieldConfig.name],
+        // ...ERROR_PROPS,
+        // name: fieldConfig.name,
+        // errorMsg: this.errors[fieldConfig.name],
+        // error: this.errors[fieldConfig.name],
+        // [component.errorProp] : this.errors[fieldConfig.name],
+        [errorProp]: this.errors[fieldConfig.model],
         disabled: this.fieldDisabled(fieldConfig),
       };
     },
-    findFieldConfig(fieldName) {
-      return this.fieldsConfig_FLAT.find((conf) => conf.name === fieldName);
+    findFieldConfig(fieldModel) {
+      return this.fieldsConfig_FLAT.find((conf) => conf.model === fieldModel);
     },
-    convertToNumber(fieldName) {
-      const FIELD_CONFIG = this.findFieldConfig(fieldName);
+    convertToNumber(fieldModel) {
+      const FIELD_CONFIG = this.findFieldConfig(fieldModel);
       FIELD_CONFIG &&
         FIELD_CONFIG.type === "number" &&
-        this.fields[fieldName] &&
-        (this.fields[fieldName] = Number(this.fields[fieldName]));
+        this.fields[fieldModel] &&
+        (this.fields[fieldModel] = Number(this.fields[fieldModel]));
     },
     bindEvents(fieldConfig) {
       let events = {};
@@ -307,7 +325,9 @@ export default {
         return fieldConfig.component;
       }
       const CUSTOM_COMPONENT = this.findCustomComponentByType(FIELD_TYPE);
-      return CUSTOM_COMPONENT ? CUSTOM_COMPONENT.name : DEFAULT_COMPONENT;
+      return CUSTOM_COMPONENT
+        ? CUSTOM_COMPONENT.component.name
+        : DEFAULT_COMPONENT;
     },
     findDefaultComponent() {
       return "default component";
@@ -322,14 +342,14 @@ export default {
         ? DISABLED
         : !DISABLED;
     },
-    fieldRequired(fieldName) {
+    fieldRequired(fieldModel) {
       const REQUIRED = true;
       const NOT_REQUIRED = false;
-      const FIELD_CONFIG = this.findFieldConfig(fieldName);
+      const FIELD_CONFIG = this.findFieldConfig(fieldModel);
       return FIELD_CONFIG &&
         !this.fieldDisabled(FIELD_CONFIG) &&
         this.fieldVisible(FIELD_CONFIG)
-        ? !this.fieldIsHelper(fieldName)
+        ? !this.fieldIsHelper(fieldModel)
           ? "required" in FIELD_CONFIG
             ? FIELD_CONFIG.required
             : REQUIRED
@@ -339,10 +359,10 @@ export default {
         : NOT_REQUIRED;
     },
 
-    validateField(fieldName) {
-      const REQUIRED = this.fieldRequired(fieldName);
+    validateField(fieldModel) {
+      const REQUIRED = this.fieldRequired(fieldModel);
       // const HAS_CONFIG = Object.keys(this.validationConfig).length;
-      const FIELD_CONFIG = this.findFieldConfig(fieldName);
+      const FIELD_CONFIG = this.findFieldConfig(fieldModel);
       const FIELD_IS_VALID = [true, ""];
       const fieldRules = FIELD_CONFIG.rules || {};
 
@@ -353,8 +373,8 @@ export default {
         REQUIRED
           ? this.submit || this.activeValidation
             ? VALIDATION_ENGINE(
-                fieldName,
-                this.fields[fieldName],
+                fieldModel,
+                this.fields[fieldModel],
                 fieldRules,
                 this.formRules,
                 { ...this.fields }, //sending immutable copy of fields
@@ -363,7 +383,11 @@ export default {
             : FIELD_IS_VALID
           : FIELD_IS_VALID;
 
-      this.showErrors(fieldName, fieldErrorMsg);
+      this.showErrors(fieldModel, fieldErrorMsg);
+      this.logs &&
+        console.log(
+          `field: ${fieldModel}, value: ${this.fields[fieldModel]}, isValid: ${fieldValid}, errorMessage: ${fieldErrorMsg} `
+        );
       return fieldValid;
     },
     async submitForm() {
@@ -377,12 +401,12 @@ export default {
       });
 
       if (inputs.includes(NOT_VALID)) {
-        console.log("Form not valid");
+        this.logs && console.log("Form is not valid");
         this.resetForm();
         return;
       }
 
-      console.log("Form valid, calling submit handler");
+      this.logs && console.log("calling submit handler");
       await this.submitHandler(this.fields);
 
       this.resetForm();
