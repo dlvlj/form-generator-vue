@@ -3,7 +3,7 @@ const FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
 const FIELD_IS_VALID = '';
 
 function fieldIsEmpty(value) {
-  return String(value).trim() === '' ? FIELD_IS_EMPTY : FIELD_IS_VALID;
+  return String(value).trim() === '' || value !== false && !value ? FIELD_IS_EMPTY : FIELD_IS_VALID;
 }
 
 function throwError(msg) {
@@ -54,7 +54,6 @@ var script = {
       type: Function,
       required: false,
       default: function () {
-        console.log(this.fields);
         alert("submit handler not present");
       }
     },
@@ -95,10 +94,10 @@ var script = {
 
     function addFieldsAndErrors(field) {
       fields = { ...fields,
-        [field.name]: "value" in field ? field.value : ""
+        [field.model]: "value" in field ? field.value : ""
       };
       errors = { ...errors,
-        [field.name]: ""
+        [field.model]: ""
       };
     }
 
@@ -127,7 +126,11 @@ var script = {
     },
 
     activeValidation() {
-      return "activeValidation" in this.formConfig ? this.formConfig.activeValidation : false;
+      return "activeValidation" in this.formConfig ? true : false;
+    },
+
+    logs() {
+      return "logs" in this.formConfig ? true : false;
     },
 
     fieldsConfig() {
@@ -165,19 +168,19 @@ var script = {
   },
 
   mounted() {
-    Object.keys(this.fields).forEach(fieldName => {
-      this.$watch(`fields.${fieldName}`, function (newVal, oldVal) {
+    Object.keys(this.fields).forEach(fieldModel => {
+      this.$watch(`fields.${fieldModel}`, function (newVal, oldVal) {
         //  fields value type to number (for fields with type number)
-        this.convertToNumber(fieldName); // to prevent any unnecessary function call when only type of field property is changed.
+        this.convertToNumber(fieldModel); // for helpers ---------------------------
+
+        this.fieldHelpers(fieldModel, newVal); // to prevent any unnecessary function call when only type of field property is changed.
 
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
-        } // for helpers ---------------------------
+        } // validations ------------------------
 
 
-        this.fieldHelpers(fieldName, newVal); // validations ------------------------
-
-        this.validateField(fieldName);
+        this.validateField(fieldModel);
       } // { deep: true }
       );
     });
@@ -199,19 +202,19 @@ var script = {
       this.errors[field] = msg;
     },
 
-    fieldIsHelper(fieldName) {
-      return fieldName.includes(this.formHelper);
+    fieldIsHelper(fieldModel) {
+      return fieldModel.includes(this.formHelper);
     },
 
-    fieldHelpers(fieldName, newVal) {
+    fieldHelpers(fieldModel, newVal) {
       const VAL = newVal; // helping field ------------------
 
-      if (this.fieldIsHelper(fieldName)) {
-        const fieldBeingHelped = fieldName.split(this.formHelper)[0];
+      if (this.fieldIsHelper(fieldModel)) {
+        const fieldBeingHelped = fieldModel.split(this.formHelper)[0];
         fieldBeingHelped in this.fields && (this.fields[fieldBeingHelped] = VAL);
       } // field being helped
-      else if (`${fieldName}${this.formHelper}` in this.fields) {
-          const helperField = `${fieldName}${this.formHelper}`;
+      else if (`${fieldModel}${this.formHelper}` in this.fields) {
+          const helperField = `${fieldModel}${this.formHelper}`;
           this.fields[helperField] = VAL;
         }
     },
@@ -221,7 +224,7 @@ var script = {
       //   name => name === fieldConfig.name
       // );
       // this.fields[fieldConfig.name] = fieldConfig.value || '';
-      this.fields[fieldConfig.name] = "value" in fieldConfig ? fieldConfig.value : "";
+      this.fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
     },
 
     fieldVisible(fieldConfig) {
@@ -231,22 +234,41 @@ var script = {
     },
 
     bindProps(fieldConfig) {
-      return {
-        name: fieldConfig.name,
-        ...fieldConfig.props,
-        errorMsg: this.errors[fieldConfig.name],
-        error: this.errors[fieldConfig.name],
+      const componentName = this.computedComponent(fieldConfig);
+      const componentData = this.customComponentsMap.find(({
+        component
+      }) => component.name === componentName);
+      const {
+        component: {
+          errorProp
+        }
+      } = componentData || (fieldConfig.errorProp ? {
+        component: {
+          errorProp: fieldConfig.errorProp
+        }
+      } : {
+        component: {
+          errorProp: "errorMessage"
+        }
+      });
+      return { ...fieldConfig.props,
+        // ...ERROR_PROPS,
+        // name: fieldConfig.name,
+        // errorMsg: this.errors[fieldConfig.name],
+        // error: this.errors[fieldConfig.name],
+        // [component.errorProp] : this.errors[fieldConfig.name],
+        [errorProp]: this.errors[fieldConfig.model],
         disabled: this.fieldDisabled(fieldConfig)
       };
     },
 
-    findFieldConfig(fieldName) {
-      return this.fieldsConfig_FLAT.find(conf => conf.name === fieldName);
+    findFieldConfig(fieldModel) {
+      return this.fieldsConfig_FLAT.find(conf => conf.model === fieldModel);
     },
 
-    convertToNumber(fieldName) {
-      const FIELD_CONFIG = this.findFieldConfig(fieldName);
-      FIELD_CONFIG && FIELD_CONFIG.type === "number" && this.fields[fieldName] && (this.fields[fieldName] = Number(this.fields[fieldName]));
+    convertToNumber(fieldModel) {
+      const FIELD_CONFIG = this.findFieldConfig(fieldModel);
+      FIELD_CONFIG && FIELD_CONFIG.type === "number" && this.fields[fieldModel] && (this.fields[fieldModel] = Number(this.fields[fieldModel]));
     },
 
     bindEvents(fieldConfig) {
@@ -280,7 +302,7 @@ var script = {
       }
 
       const CUSTOM_COMPONENT = this.findCustomComponentByType(FIELD_TYPE);
-      return CUSTOM_COMPONENT ? CUSTOM_COMPONENT.name : DEFAULT_COMPONENT;
+      return CUSTOM_COMPONENT ? CUSTOM_COMPONENT.component.name : DEFAULT_COMPONENT;
     },
 
     findDefaultComponent() {
@@ -293,25 +315,26 @@ var script = {
       return !this.formEditable || FIELD_IS_DISABLED_IN_PROPS ? DISABLED : !DISABLED;
     },
 
-    fieldRequired(fieldName) {
+    fieldRequired(fieldModel) {
       const REQUIRED = true;
       const NOT_REQUIRED = false;
-      const FIELD_CONFIG = this.findFieldConfig(fieldName);
-      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldName) ? "required" in FIELD_CONFIG ? FIELD_CONFIG.required : REQUIRED : "required" in FIELD_CONFIG ? FIELD_CONFIG.required : NOT_REQUIRED : NOT_REQUIRED;
+      const FIELD_CONFIG = this.findFieldConfig(fieldModel);
+      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldModel) ? "required" in FIELD_CONFIG ? FIELD_CONFIG.required : REQUIRED : "required" in FIELD_CONFIG ? FIELD_CONFIG.required : NOT_REQUIRED : NOT_REQUIRED;
     },
 
-    validateField(fieldName) {
-      const REQUIRED = this.fieldRequired(fieldName); // const HAS_CONFIG = Object.keys(this.validationConfig).length;
+    validateField(fieldModel) {
+      const REQUIRED = this.fieldRequired(fieldModel); // const HAS_CONFIG = Object.keys(this.validationConfig).length;
 
-      const FIELD_CONFIG = this.findFieldConfig(fieldName);
+      const FIELD_CONFIG = this.findFieldConfig(fieldModel);
       const FIELD_IS_VALID = [true, ""];
       const fieldRules = FIELD_CONFIG.rules || {}; // console.log('validate field', fieldName, REQUIRED);
 
       const [fieldValid, fieldErrorMsg] = // REQUIRED && HAS_CONFIG
-      REQUIRED ? this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], fieldRules, this.formRules, { ...this.fields
+      REQUIRED ? this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldModel, this.fields[fieldModel], fieldRules, this.formRules, { ...this.fields
       }, //sending immutable copy of fields
       this.submit) : FIELD_IS_VALID : FIELD_IS_VALID;
-      this.showErrors(fieldName, fieldErrorMsg);
+      this.showErrors(fieldModel, fieldErrorMsg);
+      this.logs && console.log(`field: ${fieldModel}, value: ${this.fields[fieldModel]}, isValid: ${fieldValid}, errorMessage: ${fieldErrorMsg} `);
       return fieldValid;
     },
 
@@ -325,12 +348,12 @@ var script = {
       });
 
       if (inputs.includes(NOT_VALID)) {
-        console.log("Form not valid");
+        this.logs && console.log("Form is not valid");
         this.resetForm();
         return;
       }
 
-      console.log("Form valid, calling submit handler");
+      this.logs && console.log("calling submit handler");
       await this.submitHandler(this.fields);
       this.resetForm();
     }
@@ -441,54 +464,54 @@ var __vue_render__ = function () {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._v(" "), _c('div', _vm._b({
-      key: fieldConfig.name,
+      key: fieldConfig.model,
       staticClass: "generated-form__body__row"
     }, 'div', {
       class: _vm.classes.row
     }, false), [Array.isArray(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm.fieldVisible(subFieldConfig) ? _c('div', _vm._b({
-        key: subFieldConfig.name,
+        key: subFieldConfig.model,
         staticClass: "generated-form__body__row__col",
-        class: "col-" + subFieldConfig.name
+        class: "col-" + subFieldConfig.model
       }, 'div', {
         class: _vm.classes.col
-      }, false), [[_vm._t(subFieldConfig.name + "_before"), _vm._v(" "), _vm.hasCustomComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
-        key: subFieldConfig.name,
-        ref: subFieldConfig.name,
+      }, false), [[_vm._t(subFieldConfig.model + "_before"), _vm._v(" "), _vm.hasCustomComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+        key: subFieldConfig.model,
+        ref: subFieldConfig.model,
         refInFor: true,
         tag: "component",
         attrs: {
           "type": subFieldConfig.type || 'text'
         },
         model: {
-          value: _vm.fields[subFieldConfig.name],
+          value: _vm.fields[subFieldConfig.model],
           callback: function ($$v) {
-            _vm.$set(_vm.fields, subFieldConfig.name, typeof $$v === 'string' ? $$v.trim() : $$v);
+            _vm.$set(_vm.fields, subFieldConfig.model, typeof $$v === 'string' ? $$v.trim() : $$v);
           },
-          expression: "fields[subFieldConfig.name]"
+          expression: "fields[subFieldConfig.model]"
         }
-      }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))) : _vm._e(), _vm._v(" "), _vm._t(subFieldConfig.name + "_after")]], 2) : _vm._e()];
+      }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))) : _vm._e(), _vm._v(" "), _vm._t(subFieldConfig.model + "_after")]], 2) : _vm._e()];
     })] : [_vm.fieldVisible(fieldConfig) ? _c('div', _vm._b({
       staticClass: "generated-form__body__row__col",
-      class: "col-" + fieldConfig.name
+      class: "col-" + fieldConfig.model
     }, 'div', {
       class: _vm.classes.col
-    }, false), [[_vm._t(fieldConfig.name + "_before"), _vm._v(" "), _vm.hasCustomComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
-      key: fieldConfig.name,
-      ref: fieldConfig.name,
+    }, false), [[_vm._t(fieldConfig.model + "_before"), _vm._v(" "), _vm.hasCustomComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+      key: fieldConfig.model,
+      ref: fieldConfig.model,
       refInFor: true,
       tag: "component",
       attrs: {
         "type": fieldConfig.type || 'text'
       },
       model: {
-        value: _vm.fields[fieldConfig.name],
+        value: _vm.fields[fieldConfig.model],
         callback: function ($$v) {
-          _vm.$set(_vm.fields, fieldConfig.name, typeof $$v === 'string' ? $$v.trim() : $$v);
+          _vm.$set(_vm.fields, fieldConfig.model, typeof $$v === 'string' ? $$v.trim() : $$v);
         },
-        expression: "fields[fieldConfig.name]"
+        expression: "fields[fieldConfig.model]"
       }
-    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))) : _vm._e(), _vm._v(" "), _vm._t(fieldConfig.name + "_after")]], 2) : _vm._e()]], 2)];
+    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))) : _vm._e(), _vm._v(" "), _vm._t(fieldConfig.model + "_after")]], 2) : _vm._e()]], 2)];
   })], 2) : _vm._e(), _vm._v(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
   }) : _vm._e(), _vm._v(" "), _vm._t("agreement"), _vm._v(" "), _vm._t("actions"), _vm._v(" "), _c('div', {
@@ -502,7 +525,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-a1d31312";
+const __vue_scope_id__ = "data-v-85030a08";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
