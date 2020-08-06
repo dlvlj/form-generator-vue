@@ -13,7 +13,7 @@ npm i form-generator-vue
 ##### 1.0.3
 ****
 * The property **name** is converted to **model** in `field-config`.
-* In `custom-components-map` users can now add error prop that a component consumes to show error message.
+* In `form-components` users can now add error prop that a component consumes to show error message.
 
 ##### 1.0.1
 ****
@@ -41,7 +41,7 @@ export default {
 |prop|how to use|
 |----|----|
 |form-config| this prop is used to pass the config file used for rendering the form. Breifly explained in the section below(Min Required Props)|
-|custom-components-map| this prop is used for passing the map of custom components that you want to use with the form generator. Breifly explained in the section below(Min Required Props)|
+|form-components| this prop is used for passing the map of the components that you want to use with the form generator. Breifly explained in the section below(Min Required Props)|
 |submit-handler| pass the `referrence` of the `function` that you want to use as submit handler for the generated form. `values` will be passed to the function as a parameter, so you can use the values of all the fields/component used int the generated form|
 |form-rules| this prop is used for validating form using user/dev defined validation constants, validation function and validation types. breifly explained in section(Form Validation)|
 |form-editable|this prop of type `Boolean` is used to set the editable state of the form. `Default is true`, if set to `false` then all the fields/components(those which are created with form-config) will be removed from view and you can use `v-slot:disabled` to show the disabled state however you want(you have access to the context of the form-generator-vue). `fieldsConfig_FLAT`(its `fields` of form-config prop, a non nested version. learn more about it in form-config under Section( Min Required Props ) ) is also available as slot prop `|
@@ -71,18 +71,18 @@ using form context you can get access to the `fields`, `errors` object. Every ke
 you can also access the computed properties of the form-generator-vue using the context. eg `fieldsConfig_FLAT`, its a flat version of the `fields` inside `form-config` that you will learn about in the section below(Min Required Props -> form-config).
 
 ## Min Required Props:
-For making this form generator work we need to pass it **two essential props** `custom-components-map` and `form-config`.
+For making this form generator work we need to pass it **two essential props** `form-components` and `form-config`.
 
 ```
     <form-generator-vue
-        :custom-components-map="COMPONENTS_MAP"
+        :form-components="COMPONENTS_MAP"
         :form-config="FORM_CONFIG"
     >
     </form-generator-vue>
 ```
 
-##### **custom-components-map:**
-This prop requires a map of custom components to know which custom component will be used for which input type or types.
+##### **form-components:**
+This prop requires a map of components to know which component will be used for which input type or types.
 **IMPORTANT - The components that you want to use must be globally registered. Follow [Official Doc](https://vuejs.org/v2/guide/components-registration.html) to learn how to register component**
 
 **example**:
@@ -193,25 +193,25 @@ errors: {
     mobile
 }
 ```
-Every key in `fields` has its own component **(component is loaded from custom-component-map automatically if present, if not then text type component is loaded by default)** with which it is `v-model`ed with,
+Every key in `fields` has its own component **(component is loaded from `form-components` automatically if present, if not then text type component is loaded by default)** with which it is `v-model`ed with,
 
-properties of `errors` are passed to their respective components as prop **errorMessage** by default unless error prop is explicitly specified in `custom-components-map` or `field-config`.
+properties of `errors` are passed to their respective components as prop **errorMessage** by default unless error prop is explicitly specified in `form-components` or `field-config`.
 
 For each `field config` you can use the following **options**:
 
 | options | type | required | purpose |
 | ------ | ------ | ------ | ----- |
-| model | String | true | it `v-model`'s with your custom component.|
-| type | String | optional | Its input type and tells form generator to find custom component for specified input type from `custom-component-map`. If left undefined then default will be 'text' and the custom component for 'text' will be picked from `custom-component-map` |
+| model | String | true | it `v-model`'s with the component.|
+| type | String | optional | Its the **input type** and tells form generator to find a component for the specified input type from `form-components`. If left undefined then default will be 'text' and the component for 'text' will be picked from `form-components` |
 |value| any |optional| assigns default value to that component|
-|props| Object | optional | provide props to the custom components that you use |
+|props| Object | optional | provide props to the component |
 | show | Boolean/Function returning Boolean(form context available as param) |optional| to dynamically hide or show the field based on anything you want, form context is available. it the field has show false then its not validated and its value is set to default(value property from its `field config`, If value was not provided in `field config` then empty string('') is assigned to it)|
 |triggers|Function that returns object (form context available as parameter)| optional | adding custom events **example** `triggers: ctx => ({onSelect: function({ value }) {ctx.fields.gender = val;}})` the object returned by triggers is simply assigned to `v-on` |
 |required|Boolean/Function returning Boolean(form context available as param)|optional|if value is false then component's value is not validated and validated if its true|
 |props.disabled|Boolean/Function returning Boolean(form context available as param)|optional| to diable your field you can use this |
 |rules|Object|optional|is used for applying custom validation types(regex, minmax value .. etc) and constants to evaluate with. goto **Validation section** to learn more|
-|component|String|optional|If you want to use a component that is not present in `custom-component-map` then you can use this option. The component that you want to use must be globally registered and v-model'able|
-|errorProp|String|optional|use this option to enter the name of the error prop that your component will use to show error message. `field-config` **errorProp** will be picked as error prop for the component even if that component already has **errorProp** in `custom-components-map`. By default 'errorMessage' prop is passed to the component|
+|component|String|optional|If you want to use a component that is not present in `form-components` then you can use this option. The component that you want to use must be globally registered and v-model'able|
+|errorProp|String|optional|use this option to enter the name of the error prop that your component will use to show error message. `field-config` **errorProp** will be picked as error prop for the component even if that component already has **errorProp** in `form-components`. By default 'errorMessage' prop is passed to the component|
 
 # Helper Component/field
 ***
@@ -257,7 +257,7 @@ By default `form-generator-vue` will check for non empty fields when validating.
 
 check **field-config** for options like `required`(if you dont want validations on a specific field).
 
-### For custom validation and error messages
+### For validation and error messages
 `form-rules` prop must be passed to the form-generator-vue component.
 
 example:
