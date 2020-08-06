@@ -344,13 +344,13 @@ export default {
     },
     fieldDisabled(fieldConfig) {
       const DISABLED = true;
-      const FIELD_IS_DISABLED_IN_PROPS =
+      const DISABLED_PROP =
         fieldConfig.props && "disabled" in fieldConfig.props
-          ? fieldConfig.props.disabled
+          ? typeof fieldConfig.props.disabled === "function"
+            ? fieldConfig.props.disabled()
+            : Boolean(fieldConfig.props.disabled)
           : false;
-      return !this.formEditable || FIELD_IS_DISABLED_IN_PROPS
-        ? DISABLED
-        : !DISABLED;
+      return !this.formEditable || DISABLED_PROP ? DISABLED : !DISABLED;
     },
     fieldRequired(fieldModel) {
       const REQUIRED = true;
