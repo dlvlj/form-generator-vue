@@ -251,7 +251,12 @@ export default {
         "value" in fieldConfig ? fieldConfig.value : "";
     },
     fieldVisible(fieldConfig) {
-      const SHOW = "show" in fieldConfig ? fieldConfig.show(this) : true;
+      const SHOW =
+        "show" in fieldConfig
+          ? typeof fieldConfig.show === "function"
+            ? fieldConfig.show(this)
+            : Boolean(fieldConfig.show)
+          : true;
       !SHOW && this.setDefaultFieldValue(fieldConfig);
       return SHOW;
     },
@@ -351,15 +356,20 @@ export default {
       const REQUIRED = true;
       const NOT_REQUIRED = false;
       const FIELD_CONFIG = this.findFieldConfig(fieldModel);
+      const fieldRequired =
+        typeof FIELD_CONFIG.required === "function"
+          ? FIELD_CONFIG.required()
+          : Boolean(FIELD_CONFIG.required);
+
       return FIELD_CONFIG &&
         !this.fieldDisabled(FIELD_CONFIG) &&
         this.fieldVisible(FIELD_CONFIG)
         ? !this.fieldIsHelper(fieldModel)
           ? "required" in FIELD_CONFIG
-            ? FIELD_CONFIG.required
+            ? fieldRequired
             : REQUIRED
           : "required" in FIELD_CONFIG
-          ? FIELD_CONFIG.required
+          ? fieldRequired
           : NOT_REQUIRED
         : NOT_REQUIRED;
     },
