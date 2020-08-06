@@ -1,4 +1,6 @@
-form-generator-vue is a vue component which can be used to **generate forms using custom ```v-model```'able components(any type of component you want to use) only, default components are not included in form-generator-vue**. It comes with a validation engine.
+#### create form using the component library of your choice. Get full control over the generated from wether its css styles or js.
+
+form-generator-vue is a vue component which can be used to **generate forms using ```v-model```'able components(any type of component / library you want to use) only, default components are not included in form-generator-vue**. It also comes with a easy to use and highly flexible validation engine.
 
 ### github: [https://github.com/divijhardwaj/form-generator-vue](https://github.com/divijhardwaj/form-generator-vue)
 
@@ -6,6 +8,16 @@ form-generator-vue is a vue component which can be used to **generate forms usin
 ```sh
 npm i form-generator-vue
 ```
+
+# Versions
+##### 1.0.2
+****
+* The property **name** is converted to **model** in `field-config`.
+* In `custom-components-map` users can now add error prop that a component consumes to show error message. **goto Usage => Min Required Props => custom-components-map** to know more.
+
+##### 1.0.1
+****
+refactoring.
 # Usage:
 This step(**for beginners**) shows you how to import and use form-generator-vue component after installation. **Follow Min Config step to get it working.**
 
@@ -74,19 +86,19 @@ This prop requires a map of custom components to know which custom component wil
 **IMPORTANT - The components that you want to use must be globally registered. Follow [Official Doc](https://vuejs.org/v2/guide/components-registration.html) to learn how to register component**
 
 **example**:
-```
+```js
 const COMPONENTS_MAP = [
   {
     type: ['number', 'password', 'text', 'email'],
-    name: 'custom-input-component'   //component name
+    component: { name: 'v-text-field', errorProp: 'errorMessages' }
   },
   {
     type: 'select',
-    name: 'custom-select-component'
+    component: { name: 'v-select', errorProp: 'errorMessages' }
   },
   {
     type: 'checkbox',
-    name: 'custom-checkbox-component'
+    component: { name: 'v-checkbox', errorProp: 'errorMessages' }
   },
 ];
 ```
@@ -100,21 +112,21 @@ this prop requires an object containing the following options:
 | activeValidation | Boolean | Optional |
 
 **example**:
-```
+```js
 computed: {
     function FORM_CONFIG  {
         return {
             activeValidation: false,
             fields: [
               {
-                name: 'firstName',
+                model: 'firstName',
                 type: 'number',
                 props: {
                     // component props here
                 }
               },
               {
-                name: 'gender',
+                model: 'gender',
                 type: 'select',
                 props: {
             
@@ -128,21 +140,21 @@ computed: {
 In above example the `fields` property of `FORM_CONFIG` is an array of objects where each object is a `field config`. In the above example each object is rendered in a single column row. `fields` also supports multiple columns(components/fields) in same row.see the example below
 
 eg: 
-```
+```js
 computed: {
     function FORM_CONFIG  {
         return {
             activeValidation: false,
             fields: [
               {
-                name: 'firstName',
+                model: 'firstName',
                 type: 'number',
                 props: {
                     // component props here
                 }
               },
               {
-                name: 'gender',
+                model: 'gender',
                 type: 'select',
                 props: {
             
@@ -150,11 +162,11 @@ computed: {
               },
               [
                 {
-                    name:'countryCode',
+                    model:'countryCode',
                     type:'select'
                 },
                 {
-                    name: 'mobile',
+                    model: 'mobile',
                     type: 'number'
                 }
               ]
@@ -166,7 +178,7 @@ computed: {
 
 when the above `form-config` is passed to the `form-generator-vue` as a prop then the following data properties are created: 
 
-```
+```js
 fields: {
     firstName,
     gender,
@@ -182,13 +194,13 @@ errors: {
 ```
 Every key in `fields` has its own component **(component is loaded from custom-component-map automatically if present, if not then text type component is loaded by default)** with which it is `v-model`ed with,
 
-key in `errors` are passed to their respective components as prop `error` and `errorMsg`
+properties of `errors` are passed to their respective components as prop **errorMessage** by default unless error prop is explicitly specified in `custom-components-map` or `field-config`.
 
-For each `field config` you can use the following options:
+For each `field config` you can use the following **options**:
 
-| property | type | required | purpose |
+| options | type | required | purpose |
 | ------ | ------ | ------ | ----- |
-| name | String | true | it `v-model`'s with your custom component.|
+| model | String | true | it `v-model`'s with your custom component.|
 | type | String | optional | Its input type and tells form generator to find custom component for specified input type from `custom-component-map`. If left undefined then default will be 'text' and the custom component for 'text' will be picked from `custom-component-map` |
 |value|any value that your component supports|optional| assigns default value to that component|
 |props| Object | optional | provide props to the custom components that you use |
@@ -198,23 +210,25 @@ For each `field config` you can use the following options:
 |disabled|Boolean (inside props)|optional| to diable your field you can use this |
 |rules|Object|optional|is used for applying custom validation types(regex, minmax value .. etc) and constants to evaluate with. goto **Validation section** to learn more|
 |component|String|optional|If you want to use a component that is not present in `custom-component-map` then you can use this option. The component that you want to use must be globally registered and v-model'able|
+|errorProp|String|optional|use this option to enter the name of the error prop that your component will use to show error message. `field-config` **errorProp** will be picked as error prop for the component even if that component already has **errorProp** in `custom-components-map`. By default 'errorMessage' prop is passed to the component|
 
 # Helper Component/field
+***
 There can be a case where you might want a component whose sole purpose would be to assign value to another component. the feeder component in this case is the helper.
 
 Imagine there is a amount field, where you can enter the amount on which you want to calculate interest. you might want to provide some amount option in form of chips, so if you click on a chip that is holding some amount then that amount gets filled into amount field on selection of that chip. And if  the amount field hold some value which reflects the same value held by one of the chips then that chip is selected by default. see this example:
 
-```
+```js
 computed: {
     function FORM_CONFIG  {
         return {
             fields: [
               {
-                name: 'amount',
+                model: 'amount',
                 type: 'number',
               },
               {
-                name: 'amount_formHelper',
+                model: 'amount_formHelper',
                 type: 'select',
                 required: false
               }
@@ -224,18 +238,21 @@ computed: {
 }
 ```
 
-In the above example you can see the the field name `amount` and for adding helper field for this field you need to use its name and append `_formHelper` to it, like in the above example. Now the value of amount will be assigned to the amount_helper and vice versa. **Dont worry this wont go inside infinite loop of assignmet as** `watcher` **is being used**. which triggers on value change only. Read officail docs of vue watchers to know more .
+In the above example you can see the the `field-config` with **model**:`amount` and for adding helper field for this field you need to use its **model** value and append `_formHelper` to it, like in the above example. Now the value of amount will be assigned to the amount_helper and vice versa. **Dont worry this wont go inside infinite loop of assignmet as** `watcher` **is being used**. which triggers on value change only. Read official docs of vue watchers to know more .
 
 setting `required` option to false is recommended for helper fields/component as form will not submit if its value is empty. Its also not an essential field/component.
 
+**slots like `before` & `after`** can also be used for adding helper components in case you dont want to add helpers to `form-config`. **goto Slots => Slots `before` and `after` a component** section
+
 # Validation
+***
 form-generator-vue comes with a flexible validation engine.
 
 In `form-config` you can set `activevalidations` property to true if you want validations and see error message while user inputs. Set it to false to perform validations on submit click only. Default is false.
 
-`error`, `errMsg` are two props that are passed to your component, these props contains error message string that can be shown to user incase that component isnt validated in form.
+The error prop(**errorMessage** is passed as default) which is passsed the component, it contains the error data that can be shown to user incase that component isnt validated in form.
 
-By default `form-generator-vue` will check for non empty fields when validating. If encounter any empty field then it will set `error`, `errMsg` props with String 'Required'.
+By default `form-generator-vue` will check for non empty fields when validating. If encounter any empty field then it will set the error prop with String 'Required'.
 
 check **field-config** for options like `required`(if you dont want validations on a specific field).
 
@@ -257,9 +274,10 @@ example:
 ```
 
 **form-rules.js**
-```
+```js
     export default {
-          // will be applied to all fields --------------------------------------------------
+    
+          // will be applied to all fields ------------
           COMMON_VALIDATORS: {
             numberNotNegative: value => {
               if (typeof value === 'number') {
@@ -275,29 +293,29 @@ example:
             }
           },
           
-        // VALIDATION TYPES (common logic for multiple amount type validations)-----------------------------------
+        // VALIDATION TYPES (common logic for multiple regex type validations)---------
         regex: function(value, rules, fields) {
             return regex.test(value)? '' : 'error message';
         },
         
-        // VALIDATION FOR SPECIFIC FIELD --------------------------------------
+        // VALIDATION FOR SPECIFIC FIELD -------------
         fullName: function(value) {
             return !!value ? '' : 'Please enter full name'
         }
     }
 ```
 
-in **form-rules.js**, export an object in which all the properties are your validation functions that return String, return empty string on validation success, return error message(non-empty string) in case validation fails. 
+in **form-rules.js**, export an object in which all the properties are your validation functions, they return empty string(can say null) on validation success. when validation fails it returns error data(can be of any data type that your comonent can support).
 
-If your `field-config` contains `name:'fullName'` and you want to write a validation function specifically for that field then your validation function name should be `fullName`.
+If your `field-config` contains `model:'fullName'` and you want to write a validation function specifically for that field then your validation function name should be `fullName`, like in above example.
 
 #### Validation types
 You can also create **validation types** for using a common validation function for multiple fields. For that you can create a common validation function for lets say regex testing or for min-max limit. You can name your function whatever you want.
 Lets say you name your function **'regex'** for validating multiple regex type fields then you need to add `type` property to your `field-config`, this property will contain the validation type that you want to use, 'regex' in this case. `field-config` will look like this.
 
-```
+```js
     {
-        name: 'amount',
+        model: 'amount',
         rules: {
             type: 'regex'
         }
@@ -305,9 +323,10 @@ Lets say you name your function **'regex'** for validating multiple regex type f
 ```
 
 In validation functions that you are using, you can use the following parameters for more control.
-**param 1:** `value` of the field for which you are writing validation function
-**param 2:** `rules` of the field. ('rules' inside field-config as shown here **Min Required Props => form-config => field-config => options**  ). **you can pass validation constants here**(values with which you want to compare or whatever you want to do to validate the value) and catch them inside your validation function.
-**param 3:** `fields` of the form. you can use this in case you want to validate the value of a field using value of some other field. `fields` is an object containing values of all the components used in the form.
+* **param 1:** `value` of the field you are writing validation function for.
+* **param 2:** `rules` of the field. ('rules' inside field-config as shown here **Min Required Props => form-config => field-config => options**  ).
+    * You can also pass validation constants here(values with which you want to compare or whatever you want to do to validate the value) and catch them inside your validation function.
+* **param 3:** `fields` of the form. you can use this in case you want to validate the value of a field using value of some other field. `fields` is an object containing values of all the components used in the form.
 
 #### Common validators (`COMMON_VALIDATORS`)
 You can write your input sanitization functions here. **Example** For input type **number** you may not want nuser to enter some negative value. This validation will be applied to all 'number' type fields. Similarly you might want to exclude some values in 'text' type field. This might help you in avoiding code repetition. So keeping these things in mind `COMMON_VALIDATORS` was designed. see usage in **form-rules.js**(given above).
@@ -315,8 +334,8 @@ You can write your input sanitization functions here. **Example** For input type
 only one param is passed to this which is 'value', it does not need 'rules' and 'fields' params.
 
 # Slots
-
-#### [Click here](https://drive.google.com/file/d/1vq3KcNKR0CAHy8BYKi0FsNeieAwoSGpl/view?usp=sharing) to see generated form structure.
+***
+#### [Click here](https://drive.google.com/file/d/1vq3KcNKR0CAHy8BYKi0FsNeieAwoSGpl/view?usp=sharing) to see generated form structure to know where the slots are located.
 ### v-slot:`header`
 ### v-slot:`sectionLabel`
 This slot can be used to show one label for a row containing multiple columns. Example 'Enter full name' label for two fields side by side.
@@ -326,19 +345,19 @@ This slot can be used to show one label for a row containing multiple columns. E
 In form config if you need two or more columns in single row then you need to enclose them in array.
 The `form-config` will look like this.
 
-```
+```js
 {
     fields: [
         [
             {
-                name: 'fName'
+                model: 'fName'
             },
             {
-                name: 'lName'
+                model: 'lName'
             }
         ],
         {
-            name: 'age'
+            model: 'age'
         }
     ]
 }
@@ -349,10 +368,10 @@ In above example the fields **fName, lName** are two columns in a single row and
 ## Slots `before` and `after` a component
 you might want to add a 'copy text' button right next to your component/field but adding that to `form-config` would be unnecessary overhead. keeping that in mind a slot is added just before the coomponent/field and just after it.
 
-#### v-slot:`<field-config.name>_before`
-#### v-slot:`<field-config.name>_after`
+#### v-slot:`<field-config.model>_before`
+#### v-slot:`<field-config.model>_after`
 
-replace `<field-config.name>` with the name of field that you gave in your `field-config`.
+replace `<field-config.model>` with the model property of `field-config`.
 
 ### v-slot:`disabled`
 
@@ -370,3 +389,16 @@ You can use this slot to show **submit button** and **cancel button**
 
 ### v-slot:`footer`
 For footer notes, etc.
+
+## Styling:
+***
+**No default styling** or css is provided in form-generator-vue, you can write your own styles for the generated form.
+The component library or custom created component you decide to use with this package might contain some css that can cause class conflict but dont worry about that the classes of form-generator-vue follow **BEM** methodology to ensure no class conflict happens.
+#### classes
+* form - **"generated-form"**
+    * header - **"generated-form__header"**
+    * body - **"generated-form__body"**
+        * row - **"generated-form__body__row"**
+            * col - **"generated-form__body__row__col**
+            * col - **"col-`<field-config.model>`"** (dynamic class, to precisely identify col in wich component is rendered).
+    * footer - **"generated-form__footer"**
