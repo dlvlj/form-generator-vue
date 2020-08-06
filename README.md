@@ -17,7 +17,7 @@ npm i form-generator-vue
 
 ##### 1.0.1
 ****
-refactoring.
+refactoring, readme update
 # Usage:
 This step(**for beginners**) shows you how to import and use form-generator-vue component after installation. **Follow Min Config step to get it working.**
 
@@ -106,10 +106,11 @@ const COMPONENTS_MAP = [
 ##### **form-config:**
 this prop requires an object containing the following options:
 
-| property | type | required |
-| ------ | ------ | ------ | 
-| fields | Array | true |
-| activeValidation | Boolean | Optional |
+| options | type | required | purpose |
+| ------ | ------ | ------ | ---- |
+| fields | Array | true | contains information of each field |
+| activeValidation | Boolean | Optional | enable/disable validations when user inputs. **false** by default |
+| logs | Boolean | Optional | shows validation logs for easy debugging |
 
 **example**:
 ```js
