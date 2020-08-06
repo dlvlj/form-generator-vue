@@ -1,11 +1,13 @@
-#### create form using the component library of your choice. Get full control over the generated from wether its css styles or js.
+With **form-generator-vue** you can create forms using the component library of your choice or the components that you have created. You get full control over the generated from wether its css styles or js.
 
 form-generator-vue is a vue component which can be used to **generate forms using ```v-model```'able components(any type of component / library you want to use) only, default components are not included in form-generator-vue**. It also comes with a easy to use and highly flexible validation engine.
 
 ### github: [https://github.com/divijhardwaj/form-generator-vue](https://github.com/divijhardwaj/form-generator-vue)
 
+### [Demo (WIP)](https://github.com/divijhardwaj/form-generator-vue-demo)
+
 ### Installation
-```sh
+```
 npm i form-generator-vue
 ```
 
@@ -13,7 +15,7 @@ npm i form-generator-vue
 ##### 1.0.2
 ****
 * The property **name** is converted to **model** in `field-config`.
-* In `custom-components-map` users can now add error prop that a component consumes to show error message. **goto Usage => Min Required Props => custom-components-map** to know more.
+* In `custom-components-map` users can now add error prop that a component consumes to show error message.
 
 ##### 1.0.1
 ****
