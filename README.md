@@ -12,7 +12,7 @@ npm i form-generator-vue
 ```
 
 # Versions
-##### 1.0.2
+##### 1.0.3
 ****
 * The property **name** is converted to **model** in `field-config`.
 * In `custom-components-map` users can now add error prop that a component consumes to show error message.

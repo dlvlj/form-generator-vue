@@ -242,15 +242,21 @@ var script = {
         component: {
           errorProp
         }
-      } = componentData || (fieldConfig.errorProp ? {
+      } = fieldConfig.errorProp ? {
         component: {
           errorProp: fieldConfig.errorProp
         }
-      } : {
+      } : componentData || {
         component: {
           errorProp: "errorMessage"
         }
-      });
+      }; // componentData ||
+      // (fieldConfig.errorProp
+      //   ? {
+      //       component: { errorProp: fieldConfig.errorProp }
+      //     }
+      //   : { component: { errorProp: 'errorMessage' } });
+
       return { ...fieldConfig.props,
         // ...ERROR_PROPS,
         // name: fieldConfig.name,
@@ -525,7 +531,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-85030a08";
+const __vue_scope_id__ = "data-v-68c2e2d8";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

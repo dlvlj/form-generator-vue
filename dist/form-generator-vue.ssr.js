@@ -405,16 +405,22 @@ function validationResult(msg) {
         return component.name === componentName;
       });
 
-      var _ref2 = componentData || (fieldConfig.errorProp ? {
+      var _ref2 = fieldConfig.errorProp ? {
         component: {
           errorProp: fieldConfig.errorProp
         }
-      } : {
+      } : componentData || {
         component: {
           errorProp: "errorMessage"
         }
-      }),
-          errorProp = _ref2.component.errorProp;
+      },
+          errorProp = _ref2.component.errorProp; // componentData ||
+      // (fieldConfig.errorProp
+      //   ? {
+      //       component: { errorProp: fieldConfig.errorProp }
+      //     }
+      //   : { component: { errorProp: 'errorMessage' } });
+
 
       return _objectSpread2(_objectSpread2({}, fieldConfig.props), {}, (_objectSpread4 = {}, _defineProperty(_objectSpread4, errorProp, this.errors[fieldConfig.model]), _defineProperty(_objectSpread4, "disabled", this.fieldDisabled(fieldConfig)), _objectSpread4));
     },
@@ -628,16 +634,16 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-85030a08>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-85030a08>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-68c2e2d8>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-68c2e2d8>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.row
-    }) + " class=\"generated-form__body__row\" data-v-85030a08>", "</div>", [Array.isArray(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }) + " class=\"generated-form__body__row\" data-v-68c2e2d8>", "</div>", [Array.isArray(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm.fieldVisible(subFieldConfig) ? _vm._ssrNode("<div" + _vm._ssrAttrs({
         class: _vm.classes.col
-      }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + " data-v-85030a08>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasCustomComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + " data-v-68c2e2d8>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasCustomComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -655,7 +661,7 @@ var __vue_render__ = function __vue_render__() {
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))) : _vm._e(), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2) : _vm._e()];
     })] : [_vm.fieldVisible(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.col
-    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-85030a08>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasCustomComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-68c2e2d8>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasCustomComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -673,7 +679,7 @@ var __vue_render__ = function __vue_render__() {
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))) : _vm._e(), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2) : _vm._e()]], 2)];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-85030a08>", "</div>", [_vm._t("footer")], 2)], 2) : _vm._e();
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-68c2e2d8>", "</div>", [_vm._t("footer")], 2)], 2) : _vm._e();
 };
 
 var __vue_staticRenderFns__ = [];
@@ -682,10 +688,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-85030a08";
+var __vue_scope_id__ = "data-v-68c2e2d8";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-85030a08";
+var __vue_module_identifier__ = "data-v-68c2e2d8";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
