@@ -27,7 +27,7 @@
                   <!-- FIELD-COMPONENT ---------------------------------------------->
                   <component
                     :is="computedComponent(subFieldConfig)"
-                    v-if="hasCustomComponent(subFieldConfig)"
+                    v-if="hasComponent(subFieldConfig)"
                     :ref="subFieldConfig.model"
                     :key="subFieldConfig.model"
                     v-model.trim="fields[subFieldConfig.model]"
@@ -53,7 +53,7 @@
                 <!-- FIELD-COMPONENT ---------------------------------------------->
                 <component
                   :is="computedComponent(fieldConfig)"
-                  v-if="hasCustomComponent(fieldConfig)"
+                  v-if="hasComponent(fieldConfig)"
                   :ref="fieldConfig.model"
                   :key="fieldConfig.model"
                   v-model.trim="fields[fieldConfig.model]"
@@ -96,7 +96,7 @@ export default {
       required: false,
       default: () => ({}),
     },
-    customComponentsMap: {
+    formComponents: {
       type: Array,
       required: false,
       default: () => [],
@@ -154,8 +154,8 @@ export default {
 
   computed: {
     formHelper: () => "_formHelper",
-    hasCustomComponentsMap() {
-      return Boolean(this.customComponentsMap.length);
+    hasformComponents() {
+      return Boolean(this.formComponents.length);
     },
     activeValidation() {
       return "activeValidation" in this.formConfig ? true : false;
@@ -262,7 +262,7 @@ export default {
     },
     bindProps(fieldConfig) {
       const componentName = this.computedComponent(fieldConfig);
-      const componentData = this.customComponentsMap.find(
+      const componentData = this.formComponents.find(
         ({ component }) => component.name === componentName
       );
 
@@ -312,17 +312,15 @@ export default {
 
       return events;
     },
-    // custom component ---------------------------------------------
-    hasCustomComponent(fieldConfig) {
+    // component ---------------------------------------------
+    hasComponent(fieldConfig) {
       const FIELD_TYPE = fieldConfig.type || "text";
-      return (
-        "component" in fieldConfig || this.findCustomComponentByType(FIELD_TYPE)
-      );
+      return "component" in fieldConfig || this.findComponentByType(FIELD_TYPE);
     },
-    findCustomComponentByType(fieldType) {
-      return !this.hasCustomComponentsMap
+    findComponentByType(fieldType) {
+      return !this.hasformComponents
         ? undefined
-        : this.customComponentsMap.find((component) =>
+        : this.formComponents.find((component) =>
             component.type.includes(fieldType)
           );
     },
@@ -334,10 +332,8 @@ export default {
       if ("component" in fieldConfig) {
         return fieldConfig.component;
       }
-      const CUSTOM_COMPONENT = this.findCustomComponentByType(FIELD_TYPE);
-      return CUSTOM_COMPONENT
-        ? CUSTOM_COMPONENT.component.name
-        : DEFAULT_COMPONENT;
+      const COMPONENT = this.findComponentByType(FIELD_TYPE);
+      return COMPONENT ? COMPONENT.component.name : DEFAULT_COMPONENT;
     },
     findDefaultComponent() {
       return "default component";
