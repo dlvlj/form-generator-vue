@@ -62,7 +62,7 @@ var script = {
       required: false,
       default: () => ({})
     },
-    customComponentsMap: {
+    formComponents: {
       type: Array,
       required: false,
       default: () => []
@@ -121,8 +121,8 @@ var script = {
   computed: {
     formHelper: () => "_formHelper",
 
-    hasCustomComponentsMap() {
-      return Boolean(this.customComponentsMap.length);
+    hasformComponents() {
+      return Boolean(this.formComponents.length);
     },
 
     activeValidation() {
@@ -228,14 +228,14 @@ var script = {
     },
 
     fieldVisible(fieldConfig) {
-      const SHOW = "show" in fieldConfig ? fieldConfig.show(this) : true;
+      const SHOW = "show" in fieldConfig ? typeof fieldConfig.show === "function" ? fieldConfig.show(this) : Boolean(fieldConfig.show) : true;
       !SHOW && this.setDefaultFieldValue(fieldConfig);
       return SHOW;
     },
 
     bindProps(fieldConfig) {
       const componentName = this.computedComponent(fieldConfig);
-      const componentData = this.customComponentsMap.find(({
+      const componentData = this.formComponents.find(({
         component
       }) => component.name === componentName);
       const {
@@ -288,14 +288,14 @@ var script = {
       return events;
     },
 
-    // custom component ---------------------------------------------
-    hasCustomComponent(fieldConfig) {
+    // component ---------------------------------------------
+    hasComponent(fieldConfig) {
       const FIELD_TYPE = fieldConfig.type || "text";
-      return "component" in fieldConfig || this.findCustomComponentByType(FIELD_TYPE);
+      return "component" in fieldConfig || this.findComponentByType(FIELD_TYPE);
     },
 
-    findCustomComponentByType(fieldType) {
-      return !this.hasCustomComponentsMap ? undefined : this.customComponentsMap.find(component => component.type.includes(fieldType));
+    findComponentByType(fieldType) {
+      return !this.hasformComponents ? undefined : this.formComponents.find(component => component.type.includes(fieldType));
     },
 
     // ---------------------------------------------------------------
@@ -307,8 +307,8 @@ var script = {
         return fieldConfig.component;
       }
 
-      const CUSTOM_COMPONENT = this.findCustomComponentByType(FIELD_TYPE);
-      return CUSTOM_COMPONENT ? CUSTOM_COMPONENT.component.name : DEFAULT_COMPONENT;
+      const COMPONENT = this.findComponentByType(FIELD_TYPE);
+      return COMPONENT ? COMPONENT.component.name : DEFAULT_COMPONENT;
     },
 
     findDefaultComponent() {
@@ -317,15 +317,16 @@ var script = {
 
     fieldDisabled(fieldConfig) {
       const DISABLED = true;
-      const FIELD_IS_DISABLED_IN_PROPS = fieldConfig.props && "disabled" in fieldConfig.props ? fieldConfig.props.disabled : false;
-      return !this.formEditable || FIELD_IS_DISABLED_IN_PROPS ? DISABLED : !DISABLED;
+      const DISABLED_PROP = fieldConfig.props && "disabled" in fieldConfig.props ? typeof fieldConfig.props.disabled === "function" ? fieldConfig.props.disabled(this) : Boolean(fieldConfig.props.disabled) : false;
+      return !this.formEditable || DISABLED_PROP ? DISABLED : !DISABLED;
     },
 
     fieldRequired(fieldModel) {
       const REQUIRED = true;
       const NOT_REQUIRED = false;
       const FIELD_CONFIG = this.findFieldConfig(fieldModel);
-      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldModel) ? "required" in FIELD_CONFIG ? FIELD_CONFIG.required : REQUIRED : "required" in FIELD_CONFIG ? FIELD_CONFIG.required : NOT_REQUIRED : NOT_REQUIRED;
+      const fieldRequired = typeof FIELD_CONFIG.required === "function" ? FIELD_CONFIG.required(this) : Boolean(FIELD_CONFIG.required);
+      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldModel) ? "required" in FIELD_CONFIG ? fieldRequired : REQUIRED : "required" in FIELD_CONFIG ? fieldRequired : NOT_REQUIRED : NOT_REQUIRED;
     },
 
     validateField(fieldModel) {
@@ -481,7 +482,7 @@ var __vue_render__ = function () {
         class: "col-" + subFieldConfig.model
       }, 'div', {
         class: _vm.classes.col
-      }, false), [[_vm._t(subFieldConfig.model + "_before"), _vm._v(" "), _vm.hasCustomComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }, false), [[_vm._t(subFieldConfig.model + "_before"), _vm._v(" "), _vm.hasComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -502,7 +503,7 @@ var __vue_render__ = function () {
       class: "col-" + fieldConfig.model
     }, 'div', {
       class: _vm.classes.col
-    }, false), [[_vm._t(fieldConfig.model + "_before"), _vm._v(" "), _vm.hasCustomComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }, false), [[_vm._t(fieldConfig.model + "_before"), _vm._v(" "), _vm.hasComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -531,7 +532,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-68c2e2d8";
+const __vue_scope_id__ = "data-v-0dd828f2";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

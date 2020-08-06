@@ -232,7 +232,7 @@ function validationResult(msg) {
         return {};
       }
     },
-    customComponentsMap: {
+    formComponents: {
       type: Array,
       required: false,
       default: function _default() {
@@ -294,8 +294,8 @@ function validationResult(msg) {
     formHelper: function formHelper() {
       return "_formHelper";
     },
-    hasCustomComponentsMap: function hasCustomComponentsMap() {
-      return Boolean(this.customComponentsMap.length);
+    hasformComponents: function hasformComponents() {
+      return Boolean(this.formComponents.length);
     },
     activeValidation: function activeValidation() {
       return "activeValidation" in this.formConfig ? true : false;
@@ -392,7 +392,7 @@ function validationResult(msg) {
       this.fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
     },
     fieldVisible: function fieldVisible(fieldConfig) {
-      var SHOW = "show" in fieldConfig ? fieldConfig.show(this) : true;
+      var SHOW = "show" in fieldConfig ? typeof fieldConfig.show === "function" ? fieldConfig.show(this) : Boolean(fieldConfig.show) : true;
       !SHOW && this.setDefaultFieldValue(fieldConfig);
       return SHOW;
     },
@@ -400,7 +400,7 @@ function validationResult(msg) {
       var _objectSpread4;
 
       var componentName = this.computedComponent(fieldConfig);
-      var componentData = this.customComponentsMap.find(function (_ref) {
+      var componentData = this.formComponents.find(function (_ref) {
         var component = _ref.component;
         return component.name === componentName;
       });
@@ -443,13 +443,13 @@ function validationResult(msg) {
 
       return events;
     },
-    // custom component ---------------------------------------------
-    hasCustomComponent: function hasCustomComponent(fieldConfig) {
+    // component ---------------------------------------------
+    hasComponent: function hasComponent(fieldConfig) {
       var FIELD_TYPE = fieldConfig.type || "text";
-      return "component" in fieldConfig || this.findCustomComponentByType(FIELD_TYPE);
+      return "component" in fieldConfig || this.findComponentByType(FIELD_TYPE);
     },
-    findCustomComponentByType: function findCustomComponentByType(fieldType) {
-      return !this.hasCustomComponentsMap ? undefined : this.customComponentsMap.find(function (component) {
+    findComponentByType: function findComponentByType(fieldType) {
+      return !this.hasformComponents ? undefined : this.formComponents.find(function (component) {
         return component.type.includes(fieldType);
       });
     },
@@ -462,22 +462,23 @@ function validationResult(msg) {
         return fieldConfig.component;
       }
 
-      var CUSTOM_COMPONENT = this.findCustomComponentByType(FIELD_TYPE);
-      return CUSTOM_COMPONENT ? CUSTOM_COMPONENT.component.name : DEFAULT_COMPONENT;
+      var COMPONENT = this.findComponentByType(FIELD_TYPE);
+      return COMPONENT ? COMPONENT.component.name : DEFAULT_COMPONENT;
     },
     findDefaultComponent: function findDefaultComponent() {
       return "default component";
     },
     fieldDisabled: function fieldDisabled(fieldConfig) {
       var DISABLED = true;
-      var FIELD_IS_DISABLED_IN_PROPS = fieldConfig.props && "disabled" in fieldConfig.props ? fieldConfig.props.disabled : false;
-      return !this.formEditable || FIELD_IS_DISABLED_IN_PROPS ? DISABLED : !DISABLED;
+      var DISABLED_PROP = fieldConfig.props && "disabled" in fieldConfig.props ? typeof fieldConfig.props.disabled === "function" ? fieldConfig.props.disabled(this) : Boolean(fieldConfig.props.disabled) : false;
+      return !this.formEditable || DISABLED_PROP ? DISABLED : !DISABLED;
     },
     fieldRequired: function fieldRequired(fieldModel) {
       var REQUIRED = true;
       var NOT_REQUIRED = false;
       var FIELD_CONFIG = this.findFieldConfig(fieldModel);
-      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldModel) ? "required" in FIELD_CONFIG ? FIELD_CONFIG.required : REQUIRED : "required" in FIELD_CONFIG ? FIELD_CONFIG.required : NOT_REQUIRED : NOT_REQUIRED;
+      var fieldRequired = typeof FIELD_CONFIG.required === "function" ? FIELD_CONFIG.required(this) : Boolean(FIELD_CONFIG.required);
+      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldModel) ? "required" in FIELD_CONFIG ? fieldRequired : REQUIRED : "required" in FIELD_CONFIG ? fieldRequired : NOT_REQUIRED : NOT_REQUIRED;
     },
     validateField: function validateField(fieldModel) {
       var REQUIRED = this.fieldRequired(fieldModel); // const HAS_CONFIG = Object.keys(this.validationConfig).length;
@@ -634,16 +635,16 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-68c2e2d8>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-68c2e2d8>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-0dd828f2>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-0dd828f2>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.row
-    }) + " class=\"generated-form__body__row\" data-v-68c2e2d8>", "</div>", [Array.isArray(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }) + " class=\"generated-form__body__row\" data-v-0dd828f2>", "</div>", [Array.isArray(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm.fieldVisible(subFieldConfig) ? _vm._ssrNode("<div" + _vm._ssrAttrs({
         class: _vm.classes.col
-      }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + " data-v-68c2e2d8>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasCustomComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + " data-v-0dd828f2>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -661,7 +662,7 @@ var __vue_render__ = function __vue_render__() {
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))) : _vm._e(), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2) : _vm._e()];
     })] : [_vm.fieldVisible(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.col
-    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-68c2e2d8>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasCustomComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-0dd828f2>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -679,7 +680,7 @@ var __vue_render__ = function __vue_render__() {
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))) : _vm._e(), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2) : _vm._e()]], 2)];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-68c2e2d8>", "</div>", [_vm._t("footer")], 2)], 2) : _vm._e();
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-0dd828f2>", "</div>", [_vm._t("footer")], 2)], 2) : _vm._e();
 };
 
 var __vue_staticRenderFns__ = [];
@@ -688,10 +689,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-68c2e2d8";
+var __vue_scope_id__ = "data-v-0dd828f2";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-68c2e2d8";
+var __vue_module_identifier__ = "data-v-0dd828f2";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
