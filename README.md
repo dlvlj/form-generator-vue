@@ -205,7 +205,7 @@ For each `field config` you can use the following **options**:
 | ------ | ------ | ------ | ----- |
 | model | String | true | it `v-model`'s with your custom component.|
 | type | String | optional | Its input type and tells form generator to find custom component for specified input type from `custom-component-map`. If left undefined then default will be 'text' and the custom component for 'text' will be picked from `custom-component-map` |
-|value|any value that your component supports|optional| assigns default value to that component|
+|value| any |optional| assigns default value to that component|
 |props| Object | optional | provide props to the custom components that you use |
 | show | Function that returns Boolean (form context is available as func parameter here) |optional| to dynamically hide or show the field based on anything you want, form context is available. it the field has show false then its not validated and its value is set to default(value property from its `field config`, If value was not provided in `field config` then empty string('') is assigned to it)|
 |triggers|Function that returns object (form context available as parameter)| optional | adding custom events **example** `triggers: ctx => ({onSelect: function({ value }) {ctx.fields.gender = val;}})` the object returned by triggers is simply assigned to `v-on` |
