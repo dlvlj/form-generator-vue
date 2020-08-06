@@ -1,6 +1,4 @@
-With **form-generator-vue** you can create forms using the component library of your choice or the components that you have created. You get full control over the generated from wether its css styles or js.
-
-form-generator-vue is a vue component which can be used to **generate forms using ```v-model```'able components(any type of component / library you want to use) only, default components are not included in form-generator-vue**. It also comes with a easy to use and highly flexible validation engine.
+With **form-generator-vue** you can create forms using the component library of your choice or the components that you have created. You get full control over the generated from wether its css styles or js. It comes with a easy to use and highly flexible validation engine.
 
 ### github: [https://github.com/divijhardwaj/form-generator-vue](https://github.com/divijhardwaj/form-generator-vue)
 
