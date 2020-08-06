@@ -347,7 +347,7 @@ export default {
       const DISABLED_PROP =
         fieldConfig.props && "disabled" in fieldConfig.props
           ? typeof fieldConfig.props.disabled === "function"
-            ? fieldConfig.props.disabled()
+            ? fieldConfig.props.disabled(this)
             : Boolean(fieldConfig.props.disabled)
           : false;
       return !this.formEditable || DISABLED_PROP ? DISABLED : !DISABLED;
@@ -358,7 +358,7 @@ export default {
       const FIELD_CONFIG = this.findFieldConfig(fieldModel);
       const fieldRequired =
         typeof FIELD_CONFIG.required === "function"
-          ? FIELD_CONFIG.required()
+          ? FIELD_CONFIG.required(this)
           : Boolean(FIELD_CONFIG.required);
 
       return FIELD_CONFIG &&
