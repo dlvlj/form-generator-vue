@@ -263,13 +263,18 @@ export default {
 
       const {
         component: { errorProp },
-      } =
-        componentData ||
-        (fieldConfig.errorProp
-          ? {
-              component: { errorProp: fieldConfig.errorProp },
-            }
-          : { component: { errorProp: "errorMessage" } });
+      } = fieldConfig.errorProp
+        ? {
+            component: { errorProp: fieldConfig.errorProp },
+          }
+        : componentData || { component: { errorProp: "errorMessage" } };
+
+      // componentData ||
+      // (fieldConfig.errorProp
+      //   ? {
+      //       component: { errorProp: fieldConfig.errorProp }
+      //     }
+      //   : { component: { errorProp: 'errorMessage' } });
 
       return {
         ...fieldConfig.props,
