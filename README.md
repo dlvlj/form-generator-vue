@@ -10,6 +10,9 @@ npm i form-generator-vue
 ```
 
 # Versions
+##### 1.0.5
+****
+* Code optimization, **scroll** to first invalid field on submit and **focus** on it.
 ##### 1.0.4
 ****
 * The prop name **custom-componenets-map** changed to **form-components**.
@@ -18,7 +21,7 @@ npm i form-generator-vue
 
 ##### 1.0.1
 ****
-refactoring, readme update
+* Refactoring, readme changes.
 # Usage:
 This step(**for beginners**) shows you how to import and use form-generator-vue component after installation. **Follow Min Config step to get it working.**
 
@@ -46,6 +49,7 @@ export default {
 |submit-handler| pass the `referrence` of the `function` that you want to use as submit handler for the generated form. `values` will be passed to the function as a parameter, so you can use the values of all the fields/component used int the generated form|
 |form-rules| this prop is used for validating form using user/dev defined validation constants, validation function and validation types. breifly explained in section(Form Validation)|
 |form-editable|this prop of type `Boolean` is used to set the editable state of the form. `Default is true`, if set to `false` then all the fields/components(those which are created with form-config) will be removed from view and you can use `v-slot:disabled` to show the disabled state however you want(you have access to the context of the form-generator-vue). `fieldsConfig_FLAT`(its `fields` of form-config prop, a non nested version. learn more about it in form-config under Section( Min Required Props ) ) is also available as slot prop `|
+|classes| This prop can use used to add classes to all the rows and columns inside form body.You can use this prop inn case you want more control over styles. Example -  **{row: 'className', col: 'className'}**  |
 
 ## Get form context:
 When the form-generator-vue component is loaded then an event is emited to the parent at `created` lifecycle hook. To get the form context you can use the event handler `setFormContext`
@@ -404,3 +408,9 @@ The component library or custom created component you decide to use with this pa
             * col - **"generated-form__body__row__col**
             * col - **"col-`<field-config.model>`"** (dynamic class, to precisely identify col in wich component is rendered).
     * footer - **"generated-form__footer"**
+
+#### Scroll to invalid field
+***
+form-generator-vue automatically scrolls to view the first invalid field it encounters and focus on it.
+A scenario might happen where error is assigned to the field through network response, in that case explicit call can be made to the scroll function inside the form-generator-vue context. **scrollToComponent** function can be trigerred using the form context exposed to the parent component. pass **ref** of the component you want to scroll to view. **ref = <field-config.model>**
+    
