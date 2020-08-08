@@ -169,6 +169,63 @@ function _nonIterableSpread() {
 
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _createForOfIteratorHelper(o, allowArrayLike) {
+  var it;
+
+  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
+      var i = 0;
+
+      var F = function () {};
+
+      return {
+        s: F,
+        n: function () {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        },
+        e: function (e) {
+          throw e;
+        },
+        f: F
+      };
+    }
+
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var normalCompletion = true,
+      didErr = false,
+      err;
+  return {
+    s: function () {
+      it = o[Symbol.iterator]();
+    },
+    n: function () {
+      var step = it.next();
+      normalCompletion = step.done;
+      return step;
+    },
+    e: function (e) {
+      didErr = true;
+      err = e;
+    },
+    f: function () {
+      try {
+        if (!normalCompletion && it.return != null) it.return();
+      } finally {
+        if (didErr) throw err;
+      }
+    }
+  };
 }// helpers -------------------------------------------
 var FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
 var FIELD_IS_VALID = '';
@@ -222,7 +279,7 @@ function validationResult(msg) {
       type: Function,
       required: false,
       default: function _default() {
-        alert("submit handler not present");
+        alert('submit handler not present');
       }
     },
     formRules: {
@@ -269,20 +326,44 @@ function validationResult(msg) {
     var fields = {};
     var errors = {};
 
-    function addFieldsAndErrors(field) {
-      fields = _objectSpread2(_objectSpread2({}, fields), {}, _defineProperty({}, field.model, "value" in field ? field.value : ""));
-      errors = _objectSpread2(_objectSpread2({}, errors), {}, _defineProperty({}, field.model, ""));
+    function addFieldsAndErrors(fieldConfig) {
+      fields = _objectSpread2(_objectSpread2({}, fields), {}, _defineProperty({}, fieldConfig.model, 'value' in fieldConfig ? fieldConfig.value : ''));
+      errors = _objectSpread2(_objectSpread2({}, errors), {}, _defineProperty({}, fieldConfig.model, ''));
     }
 
-    "fields" in this.formConfig && this.formConfig.fields.forEach(function (field) {
-      if (Array.isArray(field)) {
-        field.forEach(function (subField) {
-          addFieldsAndErrors(subField);
-        });
-      } else {
-        addFieldsAndErrors(field);
+    if ('fields' in this.formConfig) {
+      var _iterator = _createForOfIteratorHelper(this.formConfig.fields),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var config = _step.value;
+
+          if (this.isArr(config)) {
+            var _iterator2 = _createForOfIteratorHelper(config),
+                _step2;
+
+            try {
+              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+                var subConfig = _step2.value;
+                addFieldsAndErrors(subConfig);
+              }
+            } catch (err) {
+              _iterator2.e(err);
+            } finally {
+              _iterator2.f();
+            }
+          } else {
+            addFieldsAndErrors(config);
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
       }
-    });
+    }
+
     return {
       fields: fields,
       errors: errors,
@@ -291,37 +372,41 @@ function validationResult(msg) {
     };
   },
   computed: {
-    formHelper: function formHelper() {
-      return "_formHelper";
-    },
-    hasformComponents: function hasformComponents() {
-      return Boolean(this.formComponents.length);
+    helperComponent: function helperComponent() {
+      return '_formHelper';
     },
     activeValidation: function activeValidation() {
-      return "activeValidation" in this.formConfig ? true : false;
+      return 'activeValidation' in this.formConfig ? true : false;
     },
     logs: function logs() {
-      return "logs" in this.formConfig ? true : false;
+      return 'logs' in this.formConfig ? true : false;
     },
     fieldsConfig: function fieldsConfig() {
-      return this.formConfig.fields;
+      return 'fields' in this.formConfig && this.formConfig.fields.length ? this.formConfig.fields : [];
     },
     fieldsConfig_FLAT: function fieldsConfig_FLAT() {
       var flatConfig = [];
-      this.fieldsConfig.forEach(function (conf) {
-        if (Array.isArray(conf)) {
-          flatConfig = [].concat(_toConsumableArray(flatConfig), _toConsumableArray(conf));
-        } else {
-          flatConfig = [].concat(_toConsumableArray(flatConfig), [conf]);
+
+      var _iterator3 = _createForOfIteratorHelper(this.fieldsConfig),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var config = _step3.value;
+
+          if (this.isArr(config)) {
+            flatConfig = [].concat(_toConsumableArray(flatConfig), _toConsumableArray(config));
+          } else {
+            flatConfig = [].concat(_toConsumableArray(flatConfig), [config]);
+          }
         }
-      });
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+
       return flatConfig;
-    },
-    hasFieldsConfig: function hasFieldsConfig() {
-      return this.fieldsConfig && Boolean(this.fieldsConfig.length);
-    },
-    defaultFieldComponents: function defaultFieldComponents() {
-      return [];
     }
   },
   watch: {
@@ -332,67 +417,65 @@ function validationResult(msg) {
     }
   },
   created: function created() {
-    this.$emit("setFormContext", this);
-  },
-  mounted: function mounted() {
     var _this = this;
 
-    Object.keys(this.fields).forEach(function (fieldModel) {
-      _this.$watch("fields.".concat(fieldModel), function (newVal, oldVal) {
-        //  fields value type to number (for fields with type number)
-        this.convertToNumber(fieldModel); // for helpers ---------------------------
+    this.$emit('setFormContext', this);
 
-        this.fieldHelpers(fieldModel, newVal); // to prevent any unnecessary function call when only type of field property is changed.
+    var _loop = function _loop(fieldName) {
+      _this.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
+        // for number type field. cannot add multiple directives dynamically
+        this.convertToNumber(fieldName); // for helper components
+
+        this.updateHelpers(fieldName, newVal); // prevent below function calls when only type is changed.
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
           return;
-        } // validations ------------------------
+        }
 
+        this.validateField(fieldName);
+      });
+    };
 
-        this.validateField(fieldModel);
-      } // { deep: true }
-      );
-    });
+    for (var fieldName in this.fields) {
+      _loop(fieldName);
+    }
   },
   methods: {
-    resetForm: function resetForm() {
+    resetFormState: function resetFormState() {
       this.submit = false;
       this.loading = false;
     },
     removeAllErrors: function removeAllErrors() {
-      var _this2 = this;
-
-      Object.keys(this.errors).forEach(function (msg) {
-        _this2.errors[msg] = "";
-      });
+      for (var msg in this.errors) {
+        this.errors[msg] = '';
+      }
     },
     showErrors: function showErrors(field, msg) {
       this.errors[field] = msg;
     },
-    fieldIsHelper: function fieldIsHelper(fieldModel) {
-      return fieldModel.includes(this.formHelper);
+    isHelperComponent: function isHelperComponent(fieldName) {
+      return fieldName.includes(this.helperComponent);
     },
-    fieldHelpers: function fieldHelpers(fieldModel, newVal) {
-      var VAL = newVal; // helping field ------------------
+    updateHelpers: function updateHelpers(fieldName, newVal) {
+      var VAL = newVal; // helper
 
-      if (this.fieldIsHelper(fieldModel)) {
-        var fieldBeingHelped = fieldModel.split(this.formHelper)[0];
+      if (this.isHelperComponent(fieldName)) {
+        var fieldBeingHelped = fieldName.split(this.helperComponent)[0];
         fieldBeingHelped in this.fields && (this.fields[fieldBeingHelped] = VAL);
-      } // field being helped
-      else if ("".concat(fieldModel).concat(this.formHelper) in this.fields) {
-          var helperField = "".concat(fieldModel).concat(this.formHelper);
-          this.fields[helperField] = VAL;
-        }
+        return;
+      } // being helped
+
+
+      if ("".concat(fieldName).concat(this.helperComponent) in this.fields) {
+        var helperField = "".concat(fieldName).concat(this.helperComponent);
+        this.fields[helperField] = VAL;
+      }
     },
     setDefaultFieldValue: function setDefaultFieldValue(fieldConfig) {
-      // const FIELD_NAME = Object.keys(this.fields).find(
-      //   name => name === fieldConfig.name
-      // );
-      // this.fields[fieldConfig.name] = fieldConfig.value || '';
-      this.fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
+      this.fields[fieldConfig.model] = 'value' in fieldConfig ? fieldConfig.value : '';
     },
     fieldVisible: function fieldVisible(fieldConfig) {
-      var SHOW = "show" in fieldConfig ? typeof fieldConfig.show === "function" ? fieldConfig.show(this) : Boolean(fieldConfig.show) : true;
+      var SHOW = 'show' in fieldConfig ? typeof fieldConfig.show === 'function' ? fieldConfig.show(this) : Boolean(fieldConfig.show) : true;
       !SHOW && this.setDefaultFieldValue(fieldConfig);
       return SHOW;
     },
@@ -411,136 +494,131 @@ function validationResult(msg) {
         }
       } : componentData || {
         component: {
-          errorProp: "errorMessage"
+          errorProp: 'errorMessage'
         }
       },
-          errorProp = _ref2.component.errorProp; // componentData ||
-      // (fieldConfig.errorProp
-      //   ? {
-      //       component: { errorProp: fieldConfig.errorProp }
-      //     }
-      //   : { component: { errorProp: 'errorMessage' } });
-
+          errorProp = _ref2.component.errorProp;
 
       return _objectSpread2(_objectSpread2({}, fieldConfig.props), {}, (_objectSpread4 = {}, _defineProperty(_objectSpread4, errorProp, this.errors[fieldConfig.model]), _defineProperty(_objectSpread4, "disabled", this.fieldDisabled(fieldConfig)), _objectSpread4));
     },
-    findFieldConfig: function findFieldConfig(fieldModel) {
+    findFieldConfig: function findFieldConfig(fieldName) {
       return this.fieldsConfig_FLAT.find(function (conf) {
-        return conf.model === fieldModel;
+        return conf.model === fieldName;
       });
     },
-    convertToNumber: function convertToNumber(fieldModel) {
-      var FIELD_CONFIG = this.findFieldConfig(fieldModel);
-      FIELD_CONFIG && FIELD_CONFIG.type === "number" && this.fields[fieldModel] && (this.fields[fieldModel] = Number(this.fields[fieldModel]));
+    convertToNumber: function convertToNumber(fieldName) {
+      var FIELD_CONFIG = this.findFieldConfig(fieldName);
+      FIELD_CONFIG && FIELD_CONFIG.type === 'number' && this.fields[fieldName] && (this.fields[fieldName] = Number(this.fields[fieldName]));
     },
     bindEvents: function bindEvents(fieldConfig) {
-      var events = {};
-
-      if ("triggers" in fieldConfig) {
-        events = fieldConfig.triggers(this);
-        return events;
-      }
-
-      return events;
+      return 'triggers' in fieldConfig && this.isFunc(fieldConfig.triggers) ? fieldConfig.triggers(this) : {};
     },
-    // component ---------------------------------------------
-    hasComponent: function hasComponent(fieldConfig) {
-      var FIELD_TYPE = fieldConfig.type || "text";
-      return "component" in fieldConfig || this.findComponentByType(FIELD_TYPE);
-    },
-    findComponentByType: function findComponentByType(fieldType) {
-      return !this.hasformComponents ? undefined : this.formComponents.find(function (component) {
-        return component.type.includes(fieldType);
-      });
-    },
-    // ---------------------------------------------------------------
     computedComponent: function computedComponent(fieldConfig) {
-      var FIELD_TYPE = fieldConfig.type || "text";
-      var DEFAULT_COMPONENT = this.findDefaultComponent(FIELD_TYPE);
+      var FIELD_TYPE = fieldConfig.type || 'text';
 
-      if ("component" in fieldConfig) {
+      if ('component' in fieldConfig) {
         return fieldConfig.component;
       }
 
-      var COMPONENT = this.findComponentByType(FIELD_TYPE);
-      return COMPONENT ? COMPONENT.component.name : DEFAULT_COMPONENT;
-    },
-    findDefaultComponent: function findDefaultComponent() {
-      return "default component";
+      var COMPONENT = this.formComponents.find(function (component) {
+        return component.type.includes(FIELD_TYPE);
+      });
+      return COMPONENT ? COMPONENT.component.name : '';
     },
     fieldDisabled: function fieldDisabled(fieldConfig) {
       var DISABLED = true;
-      var DISABLED_PROP = fieldConfig.props && "disabled" in fieldConfig.props ? typeof fieldConfig.props.disabled === "function" ? fieldConfig.props.disabled(this) : Boolean(fieldConfig.props.disabled) : false;
+      var DISABLED_PROP = fieldConfig.props && 'disabled' in fieldConfig.props ? this.isFunc(fieldConfig.props.disabled) ? fieldConfig.props.disabled(this) : Boolean(fieldConfig.props.disabled) : false;
       return !this.formEditable || DISABLED_PROP ? DISABLED : !DISABLED;
     },
-    fieldRequired: function fieldRequired(fieldModel) {
+    fieldRequired: function fieldRequired(fieldName) {
       var REQUIRED = true;
       var NOT_REQUIRED = false;
-      var FIELD_CONFIG = this.findFieldConfig(fieldModel);
-      var fieldRequired = typeof FIELD_CONFIG.required === "function" ? FIELD_CONFIG.required(this) : Boolean(FIELD_CONFIG.required);
-      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.fieldIsHelper(fieldModel) ? "required" in FIELD_CONFIG ? fieldRequired : REQUIRED : "required" in FIELD_CONFIG ? fieldRequired : NOT_REQUIRED : NOT_REQUIRED;
+      var FIELD_CONFIG = this.findFieldConfig(fieldName);
+      var fieldRequired = this.isFunc(FIELD_CONFIG.required) ? FIELD_CONFIG.required(this) : Boolean(FIELD_CONFIG.required);
+      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.isHelperComponent(fieldName) ? 'required' in FIELD_CONFIG ? fieldRequired : REQUIRED : 'required' in FIELD_CONFIG ? fieldRequired : NOT_REQUIRED : NOT_REQUIRED;
     },
-    validateField: function validateField(fieldModel) {
-      var REQUIRED = this.fieldRequired(fieldModel); // const HAS_CONFIG = Object.keys(this.validationConfig).length;
+    validateField: function validateField(fieldName) {
+      var REQUIRED = this.fieldRequired(fieldName);
+      var FIELD_CONFIG = this.findFieldConfig(fieldName);
+      var FIELD_IS_VALID = [true, ''];
+      var fieldRules = FIELD_CONFIG.rules || {};
 
-      var FIELD_CONFIG = this.findFieldConfig(fieldModel);
-      var FIELD_IS_VALID = [true, ""];
-      var fieldRules = FIELD_CONFIG.rules || {}; // console.log('validate field', fieldName, REQUIRED);
-
-      var _ref3 = // REQUIRED && HAS_CONFIG
-      REQUIRED ? this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldModel, this.fields[fieldModel], fieldRules, this.formRules, _objectSpread2({}, this.fields), //sending immutable copy of fields
+      var _ref3 = REQUIRED ? this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], fieldRules, this.formRules, _objectSpread2({}, this.fields), //sending immutable copy of fields
       this.submit) : FIELD_IS_VALID : FIELD_IS_VALID,
           _ref4 = _slicedToArray(_ref3, 2),
           fieldValid = _ref4[0],
           fieldErrorMsg = _ref4[1];
 
-      this.showErrors(fieldModel, fieldErrorMsg);
-      this.logs && console.log("field: ".concat(fieldModel, ", value: ").concat(this.fields[fieldModel], ", isValid: ").concat(fieldValid, ", errorMessage: ").concat(fieldErrorMsg, " "));
+      this.showErrors(fieldName, fieldErrorMsg);
+      this.logs && console.log("model:".concat(fieldName, "\n"), "value:".concat(this.fields[fieldName], "\n"), "type:".concat(_typeof(this.fields[fieldName]), "\n"), "isValid:".concat(fieldValid, "\n"), "errorMessage:".concat(fieldErrorMsg));
       return fieldValid;
     },
     submitForm: function submitForm() {
-      var _this3 = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var inputs, NOT_VALID;
+        var fieldsValidationStatus, NOT_VALID, fieldName, FIRST_INVALID_FIELD;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                inputs = [];
+                fieldsValidationStatus = {};
                 NOT_VALID = false;
-                _this3.loading = true;
-                _this3.submit = true;
-                Object.keys(_this3.fields).forEach(function (field) {
-                  inputs.push(_this3.validateField(field));
+                _this2.loading = true;
+                _this2.submit = true;
+
+                for (fieldName in _this2.fields) {
+                  fieldsValidationStatus = _objectSpread2(_objectSpread2({}, fieldsValidationStatus), {}, _defineProperty({}, fieldName, _this2.validateField(fieldName)));
+                }
+
+                FIRST_INVALID_FIELD = Object.keys(fieldsValidationStatus).find(function (fieldName) {
+                  return fieldsValidationStatus[fieldName] === NOT_VALID;
                 });
 
-                if (!inputs.includes(NOT_VALID)) {
-                  _context.next = 9;
+                if (!FIRST_INVALID_FIELD) {
+                  _context.next = 11;
                   break;
                 }
 
-                _this3.logs && console.log("Form is not valid");
+                // scroll to the component
+                _this2.scrollToComponent(FIRST_INVALID_FIELD);
 
-                _this3.resetForm();
+                _this2.logs && console.log('Form is not valid.\n', 'validation status:', fieldsValidationStatus);
+
+                _this2.resetFormState();
 
                 return _context.abrupt("return");
 
-              case 9:
-                _this3.logs && console.log("calling submit handler");
-                _context.next = 12;
-                return _this3.submitHandler(_this3.fields);
+              case 11:
+                _this2.logs && console.log('calling submit handler');
+                _context.next = 14;
+                return _this2.submitHandler(_this2.fields);
 
-              case 12:
-                _this3.resetForm();
+              case 14:
+                _this2.resetFormState();
 
-              case 13:
+              case 15:
               case "end":
                 return _context.stop();
             }
           }
         }, _callee);
       }))();
+    },
+    scrollToComponent: function scrollToComponent(ref) {
+      var el = this.$refs[ref][0].$el;
+      el && el.scrollIntoView({
+        behavior: 'smooth'
+      }) && el.focus();
+    },
+    isUndef: function isUndef(val) {
+      return typeof val === 'undefined';
+    },
+    isArr: function isArr(val) {
+      return Array.isArray(val);
+    },
+    isFunc: function isFunc(val) {
+      return typeof val === 'function';
     }
   }
 };function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
@@ -627,7 +705,7 @@ var __vue_render__ = function __vue_render__() {
 
   var _c = _vm._self._c || _h;
 
-  return _vm.hasFieldsConfig ? _c('form', {
+  return _c('form', {
     staticClass: "generated-form",
     on: {
       "submit": function submit($event) {
@@ -635,16 +713,18 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-0dd828f2>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-0dd828f2>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-7025a97f>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-7025a97f>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.row
-    }) + " class=\"generated-form__body__row\" data-v-0dd828f2>", "</div>", [Array.isArray(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
-      return [_vm.fieldVisible(subFieldConfig) ? _vm._ssrNode("<div" + _vm._ssrAttrs({
+    }) + " class=\"generated-form__body__row\" data-v-7025a97f>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+      return [_vm._ssrNode("<div" + _vm._ssrAttrs({
         class: _vm.classes.col
-      }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + " data-v-0dd828f2>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasComponent(subFieldConfig) ? _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + _vm._ssrStyle(null, null, {
+        display: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig) ? '' : 'none'
+      }) + " data-v-7025a97f>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -659,10 +739,12 @@ var __vue_render__ = function __vue_render__() {
           },
           expression: "fields[subFieldConfig.model]"
         }
-      }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))) : _vm._e(), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2) : _vm._e()];
-    })] : [_vm.fieldVisible(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrAttrs({
+      }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
+    })] : [_vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.col
-    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-0dd828f2>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _vm.hasComponent(fieldConfig) ? _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + _vm._ssrStyle(null, null, {
+      display: _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? '' : 'none'
+    }) + " data-v-7025a97f>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -677,10 +759,10 @@ var __vue_render__ = function __vue_render__() {
         },
         expression: "fields[fieldConfig.model]"
       }
-    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))) : _vm._e(), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2) : _vm._e()]], 2)];
+    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2)];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-0dd828f2>", "</div>", [_vm._t("footer")], 2)], 2) : _vm._e();
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-7025a97f>", "</div>", [_vm._t("footer")], 2)], 2);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -689,10 +771,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-0dd828f2";
+var __vue_scope_id__ = "data-v-7025a97f";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-0dd828f2";
+var __vue_module_identifier__ = "data-v-7025a97f";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
