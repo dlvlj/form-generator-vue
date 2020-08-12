@@ -6,13 +6,13 @@
     <div v-if="formEditable" class="generated-form__body">
       <template v-for="fieldConfig in fieldsConfig">
         <slot name="sectionLabel" :fieldConfig="fieldConfig" :fieldsConfigFlat="fieldsConfig_FLAT" />
-        <!-- ROW  ------------------->
+        <!-- ROW -->
         <div
           :key="fieldConfig.model"
           class="generated-form__body__row"
           v-bind="{class: classes.row}"
         >
-          <!-- IF ARRAY THEN LOAD MULTIPLE COLUMNS  ------------------------>
+          <!-- IF ARRAY THEN LOAD MULTIPLE COLUMNS -->
           <template v-if="isArr(fieldConfig)">
             <template v-for="subFieldConfig in fieldConfig">
               <div
@@ -24,7 +24,7 @@
               >
                 <template>
                   <slot :name="`${subFieldConfig.model}_before`" />
-                  <!-- COMPONENT ------------------------>
+                  <!-- COMPONENT -->
                   <component
                     :is="computedComponent(subFieldConfig)"
                     :ref="subFieldConfig.model"
@@ -39,7 +39,7 @@
               </div>
             </template>
           </template>
-          <!-- IF NOT AN ARRAY THEN ITS A FIELD, (CREATES ONE COLUMN PER ROW) ---------------------->
+          <!-- IF NOT AN ARRAY THEN ITS A FIELD, (CREATES ONE COLUMN PER ROW) -->
           <template v-else>
             <div
               v-show="fieldVisible(fieldConfig) && computedComponent(fieldConfig)"
@@ -49,7 +49,7 @@
             >
               <template>
                 <slot :name="`${fieldConfig.model}_before`" />
-                <!-- COMPONENT ----------------->
+                <!-- COMPONENT -->
                 <component
                   :is="computedComponent(fieldConfig)"
                   :ref="fieldConfig.model"
@@ -66,7 +66,7 @@
         </div>
       </template>
     </div>
-    <!-- SHOW DISABLED FIELDS THE WAY YOU WANT USING THIS SLOT ------------------------------------>
+    <!-- SHOW DISABLED FIELDS THE WAY YOU WANT USING THIS SLOT -->
     <slot v-if="!formEditable" name="disabled" :fieldsConfigFlat="fieldsConfig_FLAT" />
     <!-- FOR TEXTUAL AGREEMENTS ABOVE FORM ACTIONS -->
     <slot name="agreement" />
@@ -292,10 +292,16 @@ export default {
       if ("component" in fieldConfig) {
         return fieldConfig.component;
       }
-      const COMPONENT = this.formComponents.find((component) =>
-        component.type.includes(FIELD_TYPE)
-      );
-      return COMPONENT ? COMPONENT.component.name : "";
+      const {
+        component: { name },
+      } = this.formComponents.find(({ type }) => type.includes(FIELD_TYPE)) || {
+        component: { name: "" },
+      };
+      !name &&
+        this.throwError(
+          `Component cannot be rendered. Component for type "${FIELD_TYPE}" is not found in form-components.`
+        );
+      return name;
     },
     fieldDisabled(fieldConfig) {
       const DISABLED = true;
@@ -311,7 +317,7 @@ export default {
       const REQUIRED = true;
       const NOT_REQUIRED = false;
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
-      const fieldRequired = this.isFunc(FIELD_CONFIG.required)
+      const config_required = this.isFunc(FIELD_CONFIG.required)
         ? FIELD_CONFIG.required(this)
         : Boolean(FIELD_CONFIG.required);
 
@@ -320,10 +326,10 @@ export default {
         this.fieldVisible(FIELD_CONFIG)
         ? !this.isHelperComponent(fieldName)
           ? "required" in FIELD_CONFIG
-            ? fieldRequired
+            ? config_required
             : REQUIRED
           : "required" in FIELD_CONFIG
-          ? fieldRequired
+          ? config_required
           : NOT_REQUIRED
         : NOT_REQUIRED;
     },
@@ -332,14 +338,14 @@ export default {
       const REQUIRED = this.fieldRequired(fieldName);
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
       const FIELD_IS_VALID = [true, ""];
-      const fieldRules = FIELD_CONFIG.rules || {};
+      const config_rules = FIELD_CONFIG.rules || {};
 
       const [fieldValid, fieldErrorMsg] = REQUIRED
         ? this.submit || this.activeValidation
           ? VALIDATION_ENGINE(
               fieldName,
               this.fields[fieldName],
-              fieldRules,
+              config_rules,
               this.formRules,
               { ...this.fields }, //sending immutable copy of fields
               this.submit
@@ -355,6 +361,7 @@ export default {
           `value:${this.fields[fieldName]}\n`,
           `type:${typeof this.fields[fieldName]}\n`,
           `isValid:${fieldValid}\n`,
+          `required:${REQUIRED}\n`,
           `errorMessage:${fieldErrorMsg}`
         );
 
@@ -376,7 +383,7 @@ export default {
           console.log(
             "Form is not valid.\n",
             "validation status:",
-            fieldsValidationStatus
+            this.validationStatus
           );
         this.resetFormState();
         return;
@@ -387,7 +394,18 @@ export default {
 
       this.resetFormState();
     },
-    scrollToComponent(ref) {
+    scrollToComponent(fieldName) {
+      const fieldConfig = this.findFieldConfig(fieldName);
+      const componentName = this.computedComponent(fieldConfig);
+      this.logs &&
+        console.log(
+          "scroll to:",
+          `${componentName ? fieldName : `${fieldName}(component not found)`}`
+        );
+      if (!componentName) {
+        return;
+      }
+      const ref = fieldName;
       const el = this.$refs[ref][0].$el;
       el &&
         el.scrollIntoView({
@@ -403,6 +421,12 @@ export default {
     },
     isFunc(val) {
       return typeof val === "function";
+    },
+    throwError(msg) {
+      throw new Error(msg);
+    },
+    warn(msg) {
+      console.warn(msg);
     },
   },
 };
