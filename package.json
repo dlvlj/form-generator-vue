@@ -1,6 +1,6 @@
 {
   "name": "form-generator-vue",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "license": "BSD-3-Clause",
   "main": "dist/form-generator-vue.ssr.js",
