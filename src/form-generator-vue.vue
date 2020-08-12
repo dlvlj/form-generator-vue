@@ -155,10 +155,12 @@ export default {
   computed: {
     helperComponent: () => "_formHelper",
     activeValidation() {
-      return "activeValidation" in this.formConfig ? true : false;
+      return "activeValidation" in this.formConfig
+        ? this.formConfig.activeValidation
+        : false;
     },
     logs() {
-      return "logs" in this.formConfig ? true : false;
+      return "logs" in this.formConfig ? this.formConfig.logs : false;
     },
     fieldsConfig() {
       return "fields" in this.formConfig && this.formConfig.fields.length

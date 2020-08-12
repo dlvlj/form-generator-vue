@@ -126,11 +126,11 @@ var script = {
     helperComponent: () => "_formHelper",
 
     activeValidation() {
-      return "activeValidation" in this.formConfig ? true : false;
+      return "activeValidation" in this.formConfig ? this.formConfig.activeValidation : false;
     },
 
     logs() {
-      return "logs" in this.formConfig ? true : false;
+      return "logs" in this.formConfig ? this.formConfig.logs : false;
     },
 
     fieldsConfig() {
@@ -553,7 +553,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-a9816288";
+const __vue_scope_id__ = "data-v-f3417328";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
