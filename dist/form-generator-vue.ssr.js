@@ -367,7 +367,6 @@ function validationResult(msg) {
     return {
       fields: fields,
       errors: errors,
-      validationStatus: {},
       loading: false,
       submit: false
     };
@@ -408,14 +407,6 @@ function validationResult(msg) {
       }
 
       return flatConfig;
-    },
-    firstInvalidField: function firstInvalidField() {
-      var _this = this;
-
-      var NOT_VALID = false;
-      return Object.keys(this.validationStatus).find(function (fieldName) {
-        return _this.validationStatus[fieldName] === NOT_VALID;
-      });
     }
   },
   watch: {
@@ -426,12 +417,12 @@ function validationResult(msg) {
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this = this;
 
     this.$emit("setFormContext", this);
 
     var _loop = function _loop(fieldName) {
-      _this2.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
+      _this.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
         // for number type field. cannot add multiple directives dynamically
         this.convertToNumber(fieldName); // for helper components
 
@@ -568,48 +559,57 @@ function validationResult(msg) {
 
       this.showErrors(fieldName, fieldErrorMsg);
       this.logs && console.log("model:".concat(fieldName, "\n"), "value:".concat(this.fields[fieldName], "\n"), "type:".concat(_typeof(this.fields[fieldName]), "\n"), "isValid:".concat(fieldValid, "\n"), "required:".concat(REQUIRED, "\n"), "errorMessage:".concat(fieldErrorMsg));
-      this.validationStatus[fieldName] = fieldValid;
       return fieldValid;
     },
     submitForm: function submitForm() {
-      var _this3 = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var fieldName;
+        var INVALID, fieldsStatus, _ref7, _ref8, firstInvalidField;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this3.loading = true;
-                _this3.submit = true;
+                _this2.loading = true;
+                _this2.submit = true;
+                INVALID = false;
+                fieldsStatus = []; // let firstInvalidField = undefined;
 
-                for (fieldName in _this3.fields) {
-                  _this3.validateField(fieldName);
-                }
+                Object.keys(_this2.fields).forEach(function (fieldName) {
+                  fieldsStatus = [].concat(_toConsumableArray(fieldsStatus), [[fieldName, _this2.validateField(fieldName)]]);
+                });
+                _ref7 = fieldsStatus.find(function (_ref9) {
+                  var _ref10 = _slicedToArray(_ref9, 2),
+                      fieldName = _ref10[0],
+                      status = _ref10[1];
 
-                if (!_this3.firstInvalidField) {
-                  _context.next = 8;
+                  return status === INVALID;
+                }) || [""], _ref8 = _slicedToArray(_ref7, 1), firstInvalidField = _ref8[0];
+
+                if (!firstInvalidField) {
+                  _context.next = 11;
                   break;
                 }
 
                 // scroll to the component
-                _this3.scrollToComponent(_this3.firstInvalidField);
+                _this2.scrollToComponent(firstInvalidField);
 
-                _this3.logs && console.log("Form is not valid.\n", "validation status:", _this3.validationStatus);
+                _this2.logs && console.log("Form is not valid.\n", fieldsStatus);
 
-                _this3.resetFormState();
+                _this2.resetFormState();
 
                 return _context.abrupt("return");
 
-              case 8:
-                _this3.logs && console.log("calling submit handler");
-                _context.next = 11;
-                return _this3.submitHandler(_this3.fields);
-
               case 11:
-                _this3.resetFormState();
+                _this2.logs && console.log("calling submit handler");
+                _context.next = 14;
+                return _this2.submitHandler(_this2.fields);
 
-              case 12:
+              case 14:
+                _this2.resetFormState();
+
+              case 15:
               case "end":
                 return _context.stop();
             }
@@ -640,6 +640,9 @@ function validationResult(msg) {
     },
     isFunc: function isFunc(val) {
       return typeof val === "function";
+    },
+    isBool: function isBool(val) {
+      return typeof val === "boolean";
     },
     throwError: function throwError(msg) {
       throw new Error(msg);
@@ -740,18 +743,18 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-f3417328>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-f3417328>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-41803f0a>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-41803f0a>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.row
-    }) + " class=\"generated-form__body__row\" data-v-f3417328>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }) + " class=\"generated-form__body__row\" data-v-41803f0a>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm._ssrNode("<div" + _vm._ssrAttrs({
         class: _vm.classes.col
       }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + _vm._ssrStyle(null, null, {
         display: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig) ? '' : 'none'
-      }) + " data-v-f3417328>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + " data-v-41803f0a>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -771,7 +774,7 @@ var __vue_render__ = function __vue_render__() {
       class: _vm.classes.col
     }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + _vm._ssrStyle(null, null, {
       display: _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? '' : 'none'
-    }) + " data-v-f3417328>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }) + " data-v-41803f0a>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -789,7 +792,7 @@ var __vue_render__ = function __vue_render__() {
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2)];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-f3417328>", "</div>", [_vm._t("footer")], 2)], 2);
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-41803f0a>", "</div>", [_vm._t("footer")], 2)], 2);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -798,10 +801,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-f3417328";
+var __vue_scope_id__ = "data-v-41803f0a";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-f3417328";
+var __vue_module_identifier__ = "data-v-41803f0a";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

@@ -116,7 +116,6 @@ var script = {
     return {
       fields,
       errors,
-      validationStatus: {},
       loading: false,
       submit: false
     };
@@ -149,11 +148,6 @@ var script = {
       }
 
       return flatConfig;
-    },
-
-    firstInvalidField() {
-      const NOT_VALID = false;
-      return Object.keys(this.validationStatus).find(fieldName => this.validationStatus[fieldName] === NOT_VALID);
     }
 
   },
@@ -313,22 +307,24 @@ var script = {
       this.submit) : FIELD_IS_VALID : FIELD_IS_VALID;
       this.showErrors(fieldName, fieldErrorMsg);
       this.logs && console.log(`model:${fieldName}\n`, `value:${this.fields[fieldName]}\n`, `type:${typeof this.fields[fieldName]}\n`, `isValid:${fieldValid}\n`, `required:${REQUIRED}\n`, `errorMessage:${fieldErrorMsg}`);
-      this.validationStatus[fieldName] = fieldValid;
       return fieldValid;
     },
 
     async submitForm() {
       this.loading = true;
       this.submit = true;
+      const INVALID = false;
+      let fieldsStatus = []; // let firstInvalidField = undefined;
 
-      for (const fieldName in this.fields) {
-        this.validateField(fieldName);
-      }
+      Object.keys(this.fields).forEach(fieldName => {
+        fieldsStatus = [...fieldsStatus, [fieldName, this.validateField(fieldName)]];
+      });
+      const [firstInvalidField] = fieldsStatus.find(([fieldName, status]) => status === INVALID) || [""];
 
-      if (this.firstInvalidField) {
+      if (firstInvalidField) {
         // scroll to the component
-        this.scrollToComponent(this.firstInvalidField);
-        this.logs && console.log("Form is not valid.\n", "validation status:", this.validationStatus);
+        this.scrollToComponent(firstInvalidField);
+        this.logs && console.log("Form is not valid.\n", fieldsStatus);
         this.resetFormState();
         return;
       }
@@ -364,6 +360,10 @@ var script = {
 
     isFunc(val) {
       return typeof val === "function";
+    },
+
+    isBool(val) {
+      return typeof val === "boolean";
     },
 
     throwError(msg) {
@@ -553,7 +553,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-f3417328";
+const __vue_scope_id__ = "data-v-41803f0a";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

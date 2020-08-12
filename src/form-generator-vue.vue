@@ -146,7 +146,6 @@ export default {
     return {
       fields,
       errors,
-      validationStatus: {},
       loading: false,
       submit: false,
     };
@@ -177,12 +176,6 @@ export default {
         }
       }
       return flatConfig;
-    },
-    firstInvalidField() {
-      const NOT_VALID = false;
-      return Object.keys(this.validationStatus).find(
-        (fieldName) => this.validationStatus[fieldName] === NOT_VALID
-      );
     },
   },
   watch: {
@@ -366,27 +359,29 @@ export default {
           `required:${REQUIRED}\n`,
           `errorMessage:${fieldErrorMsg}`
         );
-
-      this.validationStatus[fieldName] = fieldValid;
       return fieldValid;
     },
     async submitForm() {
       this.loading = true;
       this.submit = true;
+      const INVALID = false;
+      let fieldsStatus = [];
+      // let firstInvalidField = undefined;
 
-      for (const fieldName in this.fields) {
-        this.validateField(fieldName);
-      }
+      Object.keys(this.fields).forEach((fieldName) => {
+        fieldsStatus = [
+          ...fieldsStatus,
+          [fieldName, this.validateField(fieldName)],
+        ];
+      });
+      const [firstInvalidField] = fieldsStatus.find(
+        ([fieldName, status]) => status === INVALID
+      ) || [""];
 
-      if (this.firstInvalidField) {
+      if (firstInvalidField) {
         // scroll to the component
-        this.scrollToComponent(this.firstInvalidField);
-        this.logs &&
-          console.log(
-            "Form is not valid.\n",
-            "validation status:",
-            this.validationStatus
-          );
+        this.scrollToComponent(firstInvalidField);
+        this.logs && console.log("Form is not valid.\n", fieldsStatus);
         this.resetFormState();
         return;
       }
@@ -423,6 +418,9 @@ export default {
     },
     isFunc(val) {
       return typeof val === "function";
+    },
+    isBool(val) {
+      return typeof val === "boolean";
     },
     throwError(msg) {
       throw new Error(msg);
