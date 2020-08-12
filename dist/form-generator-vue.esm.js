@@ -314,22 +314,22 @@ var script = {
       this.loading = true;
       this.submit = true;
       const INVALID = false;
-      let fieldsStatus = []; // let firstInvalidField = undefined;
-
+      let fieldsStatus = [];
       Object.keys(this.fields).forEach(fieldName => {
         fieldsStatus = [...fieldsStatus, [fieldName, this.validateField(fieldName)]];
       });
       const [firstInvalidField] = fieldsStatus.find(([fieldName, status]) => status === INVALID) || [""];
+      this.logs && console.log("fields data", this.fields, "validations status:", fieldsStatus);
 
       if (firstInvalidField) {
         // scroll to the component
         this.scrollToComponent(firstInvalidField);
-        this.logs && console.log("Form is not valid.\n", fieldsStatus);
+        console.log("Form is not valid.\n");
         this.resetFormState();
         return;
       }
 
-      this.logs && console.log("calling submit handler");
+      console.log("calling submit handler.\n");
       await this.submitHandler(this.fields);
       this.resetFormState();
     },
@@ -553,7 +553,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-41803f0a";
+const __vue_scope_id__ = "data-v-1840fa96";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

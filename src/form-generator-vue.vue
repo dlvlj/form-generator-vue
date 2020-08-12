@@ -366,8 +366,6 @@ export default {
       this.submit = true;
       const INVALID = false;
       let fieldsStatus = [];
-      // let firstInvalidField = undefined;
-
       Object.keys(this.fields).forEach((fieldName) => {
         fieldsStatus = [
           ...fieldsStatus,
@@ -378,15 +376,23 @@ export default {
         ([fieldName, status]) => status === INVALID
       ) || [""];
 
+      this.logs &&
+        console.log(
+          "fields data",
+          this.fields,
+          "validations status:",
+          fieldsStatus
+        );
+
       if (firstInvalidField) {
         // scroll to the component
         this.scrollToComponent(firstInvalidField);
-        this.logs && console.log("Form is not valid.\n", fieldsStatus);
+        console.log("Form is not valid.\n");
         this.resetFormState();
         return;
       }
 
-      this.logs && console.log("calling submit handler");
+      console.log("calling submit handler.\n");
       await this.submitHandler(this.fields);
 
       this.resetFormState();
