@@ -33,7 +33,7 @@ const VALIDATION_ENGINE = (
       for (const validator in COMMON_VALIDATORS) {
         typeof COMMON_VALIDATORS[validator] !== 'function' &&
           throwError(`${validator} is not a function.`);
-        msg = COMMON_VALIDATORS[validator](value);
+        msg = COMMON_VALIDATORS[validator](value, fieldRules, fields);
         typeof msg === 'undefined' &&
           throwError(
             `${validator} must return a string, empty incase of success and error message if field is invalid.`
