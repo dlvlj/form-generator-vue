@@ -25,7 +25,7 @@ npm install form-generator-vue
 
 ## How to use
 After this, **Follow Min Config step to get it working.**
-```
+```vue
 <template>
     <form-generator-vue>
     </form-generator-vue>
@@ -53,12 +53,14 @@ export default {
 
 ## Min Required Props
 It needs **two essential props** `form-components` and `form-config` to render a form.
-```
-    <form-generator-vue
-        :form-components="formComponents"
-        :form-config="formConfig"
-    >
-    </form-generator-vue>
+```vue
+    <template>
+        <form-generator-vue
+            :form-components="formComponents"
+            :form-config="formConfig"
+        >
+        </form-generator-vue>
+    </template>
 ```
 ##### **form-components:**
 This prop requires a map of components to know which component will be used for which input type or types.
@@ -185,11 +187,13 @@ properties of `errors` are passed to their respective components as prop **error
 
 ## Get form context
 When the form-generator-vue component is loaded then an event is emited to the parent at `created` lifecycle hook. To get the form context you can use the event `setFormContext`.
-```
-<form-generator-vue
-    @setFormContext = "ctx => formCtx = ctx"
->
-</form-generator-vue>
+```vue
+<template>
+    <form-generator-vue
+        @setFormContext = "ctx => formCtx = ctx"
+    >
+    </form-generator-vue>
+</template>
 <script>
     export default{
         data() {
@@ -220,24 +224,28 @@ There are **two ways of adding helper components**
     * Slots `before` and `after` a component
 
 **Adding helper component using `form-config`**
-```js
-computed: {
-    function FORM_CONFIG  {
-        return {
-            fields: [
-              {
-                model: 'amount',
-                type: 'number',
-              },
-              {
-                model: 'amount_formHelper',
-                type: 'select',
-                required: false
-              }
-            ]
+```vue
+<script>
+    export default {
+        computed: {
+            function FORM_CONFIG  {
+                return {
+                    fields: [
+                    {
+                        model: 'amount',
+                        type: 'number',
+                    },
+                    {
+                        model: 'amount_formHelper',
+                        type: 'select',
+                        required: false
+                    }
+                    ]
+                }
+            }
         }
     }
-}
+</script>
 ```
 
 In the above example the `field-config`, the `amount_formHelper` is helper field for the `amount` field, similarly for model **'gender'** you can create **'gender_formHelper'** helper component. Now the value of `amount` will be assigned to the `amount_helper` and vice versa. **This wont go inside infinite loop of assignmet as `watcher` is used**, which triggers on value change only.
@@ -255,15 +263,19 @@ check **field-config** for options like `required`(if you dont want validations 
 
 ### Writing validators
 `form-rules` prop must be passed to the form-generator-vue component.
-```
-    <form-generator-vue
-        :form-rules="FORM_RULES"
-    >
-    </form-generator-vue>
+```vue
+    <template>
+        <form-generator-vue
+            :form-rules="FORM_RULES"
+        >
+        </form-generator-vue>
+    </template>
     <script>
         import FORM_RULES from 'form-rules.js';
-        computed: {
-            FORM_RULES: () => FORM_RULES
+        export default {
+            computed: {
+                FORM_RULES: () => FORM_RULES
+            }
         }
     </script>
 ```
