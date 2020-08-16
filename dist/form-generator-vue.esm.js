@@ -301,11 +301,23 @@ var script = {
       const REQUIRED = this.fieldRequired(fieldName);
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
       const FIELD_IS_VALID = [true, ""];
-      const config_rules = FIELD_CONFIG.rules || {};
-      const [fieldValid, fieldErrorMsg] = REQUIRED ? this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.formRules, { ...this.fields
+      const config_rules = FIELD_CONFIG.rules || {}; // const [fieldValid, fieldErrorMsg] = REQUIRED
+      //   ? this.submit || this.activeValidation
+      //     ? VALIDATION_ENGINE(
+      //         fieldName,
+      //         this.fields[fieldName],
+      //         config_rules,
+      //         this.formRules,
+      //         { ...this.fields }, //sending immutable copy of fields
+      //         this.submit
+      //       )
+      //     : FIELD_IS_VALID
+      //   : FIELD_IS_VALID;
+
+      const [fieldValid, fieldErrorMsg] = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.formRules, { ...this.fields
       }, //sending immutable copy of fields
-      this.submit) : FIELD_IS_VALID : FIELD_IS_VALID;
-      this.showErrors(fieldName, fieldErrorMsg);
+      this.submit) : FIELD_IS_VALID;
+      !REQUIRED ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) : this.showErrors(fieldName, fieldErrorMsg);
       this.logs && console.log(`model:${fieldName}\n`, `value:${this.fields[fieldName]}\n`, `type:${typeof this.fields[fieldName]}\n`, `isValid:${fieldValid}\n`, `required:${REQUIRED}\n`, `errorMessage:${fieldErrorMsg}`);
       return fieldValid;
     },
@@ -553,7 +565,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-1840fa96";
+const __vue_scope_id__ = "data-v-2399c1e5";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

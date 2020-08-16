@@ -335,8 +335,20 @@ export default {
       const FIELD_IS_VALID = [true, ""];
       const config_rules = FIELD_CONFIG.rules || {};
 
-      const [fieldValid, fieldErrorMsg] = REQUIRED
-        ? this.submit || this.activeValidation
+      // const [fieldValid, fieldErrorMsg] = REQUIRED
+      //   ? this.submit || this.activeValidation
+      //     ? VALIDATION_ENGINE(
+      //         fieldName,
+      //         this.fields[fieldName],
+      //         config_rules,
+      //         this.formRules,
+      //         { ...this.fields }, //sending immutable copy of fields
+      //         this.submit
+      //       )
+      //     : FIELD_IS_VALID
+      //   : FIELD_IS_VALID;
+      const [fieldValid, fieldErrorMsg] =
+        this.submit || this.activeValidation
           ? VALIDATION_ENGINE(
               fieldName,
               this.fields[fieldName],
@@ -345,10 +357,11 @@ export default {
               { ...this.fields }, //sending immutable copy of fields
               this.submit
             )
-          : FIELD_IS_VALID
-        : FIELD_IS_VALID;
+          : FIELD_IS_VALID;
 
-      this.showErrors(fieldName, fieldErrorMsg);
+      !REQUIRED
+        ? !this.submit && this.showErrors(fieldName, fieldErrorMsg)
+        : this.showErrors(fieldName, fieldErrorMsg);
 
       this.logs &&
         console.log(
