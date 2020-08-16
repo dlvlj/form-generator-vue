@@ -385,17 +385,13 @@ export default {
           [fieldName, this.validateField(fieldName)],
         ];
       });
-      const [firstInvalidField] = fieldsStatus.find(
-        ([fieldName, status]) => status === INVALID
-      ) || [""];
+      const [firstInvalidField] = fieldsStatus.find(([fieldName, status]) => {
+        const REQUIRED = this.fieldRequired(fieldName);
+        return REQUIRED && status === INVALID;
+      }) || [""];
 
-      this.logs &&
-        console.log(
-          "fields data",
-          this.fields,
-          "validations status:",
-          fieldsStatus
-        );
+      this.logs && console.log("fields data", this.fields);
+      console.log("validations status:", fieldsStatus);
 
       if (firstInvalidField) {
         // scroll to the component
@@ -405,7 +401,7 @@ export default {
         return;
       }
 
-      console.log("calling submit handler.\n");
+      console.log("Form is valid. calling submit handler.\n");
       await this.submitHandler(this.fields);
 
       this.resetFormState();
