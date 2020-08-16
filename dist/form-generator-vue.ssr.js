@@ -251,7 +251,7 @@ var VALIDATION_ENGINE = function VALIDATION_ENGINE(fieldName, value, fieldRules,
     if (HAS_COMMON_RULES) {
       for (var validator in COMMON_VALIDATORS) {
         typeof COMMON_VALIDATORS[validator] !== 'function' && throwError("".concat(validator, " is not a function."));
-        msg = COMMON_VALIDATORS[validator](value);
+        msg = COMMON_VALIDATORS[validator](value, fieldRules, fields);
         typeof msg === 'undefined' && throwError("".concat(validator, " must return a string, empty incase of success and error message if field is invalid."));
       }
     } // ---------------------------------------------------------------
