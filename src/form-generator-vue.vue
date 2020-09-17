@@ -395,7 +395,7 @@ export default {
 
       if (firstInvalidField) {
         // scroll to the component
-        this.scrollToComponent(firstInvalidField);
+        // this.scrollToComponent(firstInvalidField);
         console.log("Form is not valid.\n");
         this.resetFormState();
         return;
