@@ -10,6 +10,13 @@ function fieldIsEmpty(value) {
 function throwError(msg) {
   throw new Error(msg);
 }
+
+function isFunc(func) {
+  return typeof func === 'function'
+}
+function isUndef(val) {
+  return typeof val === 'undefined'
+}
 //  -------------------------------------------
 // VALIDATION ENGINE ------------------------------------------------------------
 const VALIDATION_ENGINE = (
@@ -31,17 +38,18 @@ const VALIDATION_ENGINE = (
     //RUN COMMON VALIDATIONS ---------------------------------------------
     if (HAS_COMMON_RULES) {
       for (const validator in COMMON_VALIDATORS) {
-        typeof COMMON_VALIDATORS[validator] !== 'function' &&
-          throwError(`${validator} is not a function.`);
+        !isFunc(COMMON_VALIDATORS[validator]) &&
+          console.error(`${validator} is not a function.`);
         msg = COMMON_VALIDATORS[validator](value, fieldRules, fields);
-        typeof msg === 'undefined' &&
-          throwError(
-            `${validator} must return a string, empty incase of success and error message if field is invalid.`
+        isUndef(msg) &&
+          console.error(
+            `${validator} return error string if field is invalid, return empty string when success`
           );
       }
     }
     // ---------------------------------------------------------------
-    if (typeof VALIDATION_FUNCTION !== 'function') {
+    if (!isFunc(VALIDATION_FUNCTION)) {
+      fieldName in MASTER_RULES && console.error(`${VALIDATION_FUNCTION} is not a function.`);
       return validationResult(msg);
     }
     msg = VALIDATION_FUNCTION(value, fieldRules, fields);

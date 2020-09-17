@@ -300,7 +300,7 @@ export default {
         component: { name: "" },
       };
       !name &&
-        this.throwError(
+        console.error(
           `Component cannot be rendered. Component for type "${FIELD_TYPE}" is not found in form-components.`
         );
       return name;
