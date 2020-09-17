@@ -85,8 +85,8 @@ export default {
     submitHandler: {
       type: Function,
       required: false,
-      default: function () {
-        alert("submit handler not present");
+      default: () => {
+        console.error("submit handler not present");
       },
     },
     formRules: {
@@ -117,6 +117,13 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    handleSubmitFail: {
+      type: Function,
+      required: false,
+      default: () => {
+        console.warn("Form submit fail");
+      },
     },
   },
   data() {
@@ -396,7 +403,8 @@ export default {
       if (firstInvalidField) {
         // scroll to the component
         // this.scrollToComponent(firstInvalidField);
-        console.log("Form is not valid.\n");
+        // console.log("Form is not valid.\n");
+        this.handleSubmitFail(this.fields);
         this.resetFormState();
         return;
       }
