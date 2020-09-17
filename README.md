@@ -15,13 +15,17 @@ With **form-generator-vue** you can create forms using the component library of 
 npm install form-generator-vue
 ```
 #### Versions
+ 1.0.9
+* `handle-submit-fail` prop is provided.
+*  Auto scroll to first invalid field Removed.
+
  1.0.5
-* Code optimization, **scroll** to first invalid field on submit.
+* Optimizations and auto scroll to first invalid field on submit.
 
 1.0.4
-* The prop name `custom-componenets-map` has changed to `form-components`.
-* The property `name` is now converted to `model` in `field-config`.
-* `form-components` now supports `error prop` that a component consumes to show error messages.
+* The prop name `custom-componenets-map` changed to `form-components`.
+* The property `name` changed to `model` in `field-config`.
+* `form-components` now supports `errorProp` for each component.
 
 ## How to use
 After this, **Follow Min Config step to get it working.**
@@ -46,7 +50,8 @@ export default {
 |----|---|----|
 |form-config| Object | Form schema |
 |form-components| Object |Fom Components map|
-|submit-handler| function ref |`referrence` of  submit `function`. `form data` will be passed as param.|
+|submit-handler| (values) => {} |submit success `function`.|
+|handle-submit-fail|(values) => {}| handle submit fail `function`.|
 |form-rules| Object | For user defined validations, validation types, common validators|
 |form-editable|Boolean |Sets the editable state of the form. `Default is true`, if `disabled` then form body containing all the fields will be hidden from view. `v-slot:disabled` can be used to show the disabled state.|
 |classes|Object |Can be used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
@@ -177,10 +182,10 @@ properties of `errors` are passed to their respective components as prop **error
 | type | String | optional |`Input type`. Component for it is loaded from `form-components`. If not provided then `text` is set as default and the component for `text` will be picked from `form-components` |
 |value| any |optional| Default value to be passed|
 |props| Object | optional | Component props |
-| show | Boolean/Func returning Boolean(form context available as param) |optional| To dynamically hide or show the field. Field is not validated if hidden. When its visible again `field-config` `value` is assigned else empty is assigned.|
-|triggers|Func that returns object (form context available as parameter)| optional |For adding events to a component. Assigned to `v-on`.|
-|required|Boolean/Func returning Boolean(form context available as param)|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
-|props.disabled|Boolean/Func returning Boolean(form context available as param)|optional| To disable or enable field.|
+| show | Boolean/(FormCtx) => Bool |optional| To dynamically hide or show the field. Field is not validated if hidden. When its visible again `field-config` `value` is assigned else empty is assigned.|
+|triggers|(FormCtx) => ({})| optional |For adding events to a component. Assigned to `v-on`.|
+|required|Boolean/(FormCtx) => Bool|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
+|props.disabled|Boolean/(FormCtx) => Bool|optional| To disable or enable field.|
 |rules|Object|optional| For validations.|
 |component|String|optional| For rendering component which is not in `form-components`.|
 |errorProp|String|optional|Error prop that component will use to show error message.|
@@ -214,7 +219,6 @@ Some usefull properties of form-generator-vue that you can access with the help 
     * fieldsConfig_FLAT
 *   methods:
     *   showErrors(model, msg)
-    *   scrollToComponent(ref)
 
 ## Helper Component/field
 Helper comonents can be added to form to assist a main component. The helper component can be chips to fill in values in the main component field or multiple checkboxes or anything whose sole purpose is to asign value to main field.
@@ -402,8 +406,4 @@ No default CSS is written in this component, you can write your own styles for t
             * col - **"generated-form__body__row__col**
             * col - **"col-`<field-config.model>`"** (dynamic class, to precisely identify col in which component is rendered).
     * footer - **"generated-form__footer"**
-
-
-## Scroll to invalid field manually
-form-generator-vue automatically scrolls to view the first invalid field it encounters and focus on it. `scrollToComponent` function can be invoked explicitly through form context. It needs **ref** of the component you want to scroll to view. **ref = <field-config.model>**
     

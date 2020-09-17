@@ -234,8 +234,12 @@ function fieldIsEmpty(value) {
   return String(value).trim() === '' || ![false, 0].includes(value) && !value ? FIELD_IS_EMPTY : FIELD_IS_VALID;
 }
 
-function throwError(msg) {
-  throw new Error(msg);
+function isFunc(func) {
+  return typeof func === 'function';
+}
+
+function isUndef(val) {
+  return typeof val === 'undefined';
 } //  -------------------------------------------
 // VALIDATION ENGINE ------------------------------------------------------------
 
@@ -250,14 +254,15 @@ var VALIDATION_ENGINE = function VALIDATION_ENGINE(fieldName, value, fieldRules,
     //RUN COMMON VALIDATIONS ---------------------------------------------
     if (HAS_COMMON_RULES) {
       for (var validator in COMMON_VALIDATORS) {
-        typeof COMMON_VALIDATORS[validator] !== 'function' && throwError("".concat(validator, " is not a function."));
+        !isFunc(COMMON_VALIDATORS[validator]) && console.error("".concat(validator, " is not a function."));
         msg = COMMON_VALIDATORS[validator](value, fieldRules, fields);
-        typeof msg === 'undefined' && throwError("".concat(validator, " must return a string, empty incase of success and error message if field is invalid."));
+        isUndef(msg) && console.error("".concat(validator, " return error string if field is invalid, return empty string when success"));
       }
     } // ---------------------------------------------------------------
 
 
-    if (typeof VALIDATION_FUNCTION !== 'function') {
+    if (!isFunc(VALIDATION_FUNCTION)) {
+      fieldName in MASTER_RULES && console.error("".concat(VALIDATION_FUNCTION, " is not a function."));
       return validationResult(msg);
     }
 
@@ -279,7 +284,7 @@ function validationResult(msg) {
       type: Function,
       required: false,
       default: function _default() {
-        alert("submit handler not present");
+        console.error("submit handler not present");
       }
     },
     formRules: {
@@ -319,6 +324,13 @@ function validationResult(msg) {
       required: false,
       default: function _default() {
         return {};
+      }
+    },
+    handleSubmitFail: {
+      type: Function,
+      required: false,
+      default: function _default() {
+        console.warn("Form submit fail");
       }
     }
   },
@@ -530,7 +542,7 @@ function validationResult(msg) {
       },
           name = _ref3.component.name;
 
-      !name && this.throwError("Component cannot be rendered. Component for type \"".concat(FIELD_TYPE, "\" is not found in form-components."));
+      !name && console.error("Component cannot be rendered. Component for type \"".concat(FIELD_TYPE, "\" is not found in form-components."));
       return name;
     },
     fieldDisabled: function fieldDisabled(fieldConfig) {
@@ -602,28 +614,28 @@ function validationResult(msg) {
                 console.log("validations status:", fieldsStatus);
 
                 if (!firstInvalidField) {
-                  _context.next = 13;
+                  _context.next = 12;
                   break;
                 }
 
                 // scroll to the component
-                _this2.scrollToComponent(firstInvalidField);
-
-                console.log("Form is not valid.\n");
+                // this.scrollToComponent(firstInvalidField);
+                // console.log("Form is not valid.\n");
+                _this2.handleSubmitFail(_this2.fields);
 
                 _this2.resetFormState();
 
                 return _context.abrupt("return");
 
-              case 13:
+              case 12:
                 console.log("Form is valid. calling submit handler.\n");
-                _context.next = 16;
+                _context.next = 15;
                 return _this2.submitHandler(_this2.fields);
 
-              case 16:
+              case 15:
                 _this2.resetFormState();
 
-              case 17:
+              case 16:
               case "end":
                 return _context.stop();
             }
@@ -757,18 +769,18 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-6e4ca01d>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-6e4ca01d>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-5ed5932e>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-5ed5932e>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.row
-    }) + " class=\"generated-form__body__row\" data-v-6e4ca01d>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }) + " class=\"generated-form__body__row\" data-v-5ed5932e>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm._ssrNode("<div" + _vm._ssrAttrs({
         class: _vm.classes.col
       }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + _vm._ssrStyle(null, null, {
         display: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig) ? '' : 'none'
-      }) + " data-v-6e4ca01d>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + " data-v-5ed5932e>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -788,7 +800,7 @@ var __vue_render__ = function __vue_render__() {
       class: _vm.classes.col
     }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + _vm._ssrStyle(null, null, {
       display: _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? '' : 'none'
-    }) + " data-v-6e4ca01d>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }) + " data-v-5ed5932e>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -806,7 +818,7 @@ var __vue_render__ = function __vue_render__() {
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2)];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-6e4ca01d>", "</div>", [_vm._t("footer")], 2)], 2);
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-5ed5932e>", "</div>", [_vm._t("footer")], 2)], 2);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -815,10 +827,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-6e4ca01d";
+var __vue_scope_id__ = "data-v-5ed5932e";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-6e4ca01d";
+var __vue_module_identifier__ = "data-v-5ed5932e";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

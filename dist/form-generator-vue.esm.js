@@ -6,8 +6,12 @@ function fieldIsEmpty(value) {
   return String(value).trim() === '' || ![false, 0].includes(value) && !value ? FIELD_IS_EMPTY : FIELD_IS_VALID;
 }
 
-function throwError(msg) {
-  throw new Error(msg);
+function isFunc(func) {
+  return typeof func === 'function';
+}
+
+function isUndef(val) {
+  return typeof val === 'undefined';
 } //  -------------------------------------------
 // VALIDATION ENGINE ------------------------------------------------------------
 
@@ -22,14 +26,15 @@ const VALIDATION_ENGINE = (fieldName, value, fieldRules, MASTER_RULES, fields, f
     //RUN COMMON VALIDATIONS ---------------------------------------------
     if (HAS_COMMON_RULES) {
       for (const validator in COMMON_VALIDATORS) {
-        typeof COMMON_VALIDATORS[validator] !== 'function' && throwError(`${validator} is not a function.`);
+        !isFunc(COMMON_VALIDATORS[validator]) && console.error(`${validator} is not a function.`);
         msg = COMMON_VALIDATORS[validator](value, fieldRules, fields);
-        typeof msg === 'undefined' && throwError(`${validator} must return a string, empty incase of success and error message if field is invalid.`);
+        isUndef(msg) && console.error(`${validator} return error string if field is invalid, return empty string when success`);
       }
     } // ---------------------------------------------------------------
 
 
-    if (typeof VALIDATION_FUNCTION !== 'function') {
+    if (!isFunc(VALIDATION_FUNCTION)) {
+      fieldName in MASTER_RULES && console.error(`${VALIDATION_FUNCTION} is not a function.`);
       return validationResult(msg);
     }
 
@@ -53,8 +58,8 @@ var script = {
     submitHandler: {
       type: Function,
       required: false,
-      default: function () {
-        alert("submit handler not present");
+      default: () => {
+        console.error("submit handler not present");
       }
     },
     formRules: {
@@ -85,6 +90,13 @@ var script = {
       type: Object,
       required: false,
       default: () => ({})
+    },
+    handleSubmitFail: {
+      type: Function,
+      required: false,
+      default: () => {
+        console.warn("Form submit fail");
+      }
     }
   },
 
@@ -279,7 +291,7 @@ var script = {
           name: ""
         }
       };
-      !name && this.throwError(`Component cannot be rendered. Component for type "${FIELD_TYPE}" is not found in form-components.`);
+      !name && console.error(`Component cannot be rendered. Component for type "${FIELD_TYPE}" is not found in form-components.`);
       return name;
     },
 
@@ -339,8 +351,9 @@ var script = {
 
       if (firstInvalidField) {
         // scroll to the component
-        this.scrollToComponent(firstInvalidField);
-        console.log("Form is not valid.\n");
+        // this.scrollToComponent(firstInvalidField);
+        // console.log("Form is not valid.\n");
+        this.handleSubmitFail(this.fields);
         this.resetFormState();
         return;
       }
@@ -569,7 +582,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-6e4ca01d";
+const __vue_scope_id__ = "data-v-5ed5932e";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
