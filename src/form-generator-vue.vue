@@ -5,22 +5,29 @@
     </div>
     <div v-if="formEditable" class="generated-form__body">
       <template v-for="fieldConfig in fieldsConfig">
-        <slot name="sectionLabel" :fieldConfig="fieldConfig" :fieldsConfigFlat="fieldsConfig_FLAT" />
+        <slot
+          name="sectionLabel"
+          :fieldConfig="fieldConfig"
+          :fieldsConfigFlat="fieldsConfig_FLAT"
+        />
         <!-- ROW -->
         <div
           :key="fieldConfig.model"
           class="generated-form__body__row"
-          v-bind="{class: classes.row}"
+          v-bind="{ class: classes.row }"
         >
           <!-- IF ARRAY THEN LOAD MULTIPLE COLUMNS -->
           <template v-if="isArr(fieldConfig)">
             <template v-for="subFieldConfig in fieldConfig">
               <div
-                v-show="fieldVisible(subFieldConfig) && computedComponent(subFieldConfig)"
+                v-show="
+                  fieldVisible(subFieldConfig) &&
+                  computedComponent(subFieldConfig)
+                "
                 :key="subFieldConfig.model"
                 class="generated-form__body__row__col"
                 :class="`col-${subFieldConfig.model}`"
-                v-bind="{class: classes.col}"
+                v-bind="{ class: classes.col }"
               >
                 <template>
                   <slot :name="`${subFieldConfig.model}_before`" />
@@ -30,7 +37,7 @@
                     :ref="subFieldConfig.model"
                     :key="subFieldConfig.model"
                     v-model.trim="fields[subFieldConfig.model]"
-                    :type="subFieldConfig.type ||'text'"
+                    :type="subFieldConfig.type || 'text'"
                     v-bind="bindProps(subFieldConfig)"
                     v-on="bindEvents(subFieldConfig)"
                   />
@@ -42,10 +49,12 @@
           <!-- IF NOT AN ARRAY THEN ITS A FIELD, (CREATES ONE COLUMN PER ROW) -->
           <template v-else>
             <div
-              v-show="fieldVisible(fieldConfig) && computedComponent(fieldConfig)"
+              v-show="
+                fieldVisible(fieldConfig) && computedComponent(fieldConfig)
+              "
               class="generated-form__body__row__col"
               :class="`col-${fieldConfig.model}`"
-              v-bind="{class: classes.col}"
+              v-bind="{ class: classes.col }"
             >
               <template>
                 <slot :name="`${fieldConfig.model}_before`" />
@@ -67,7 +76,11 @@
       </template>
     </div>
     <!-- SHOW DISABLED FIELDS THE WAY YOU WANT USING THIS SLOT -->
-    <slot v-if="!formEditable" name="disabled" :fieldsConfigFlat="fieldsConfig_FLAT" />
+    <slot
+      v-if="!formEditable"
+      name="disabled"
+      :fieldsConfigFlat="fieldsConfig_FLAT"
+    />
     <!-- FOR TEXTUAL AGREEMENTS ABOVE FORM ACTIONS -->
     <slot name="agreement" />
     <!-- FORM ACTIONS -->
