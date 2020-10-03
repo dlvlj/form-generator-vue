@@ -509,6 +509,12 @@ var __vue_render__ = function () {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._v(" "), _c('div', _vm._b({
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig),
+        expression: "\n          isArr(fieldConfig) ||\n          (fieldVisible(fieldConfig) && computedComponent(fieldConfig))\n        "
+      }],
       key: fieldConfig.model,
       staticClass: "generated-form__body__row"
     }, 'div', {
@@ -519,7 +525,7 @@ var __vue_render__ = function () {
           name: "show",
           rawName: "v-show",
           value: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig),
-          expression: "fieldVisible(subFieldConfig) && computedComponent(subFieldConfig)"
+          expression: "\n                fieldVisible(subFieldConfig) &&\n                computedComponent(subFieldConfig)\n              "
         }],
         key: subFieldConfig.model,
         staticClass: "generated-form__body__row__col",
@@ -537,18 +543,12 @@ var __vue_render__ = function () {
         model: {
           value: _vm.fields[subFieldConfig.model],
           callback: function ($$v) {
-            _vm.$set(_vm.fields, subFieldConfig.model, typeof $$v === 'string' ? $$v.trim() : $$v);
+            _vm.$set(_vm.fields, subFieldConfig.model, $$v);
           },
           expression: "fields[subFieldConfig.model]"
         }
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))), _vm._v(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
     })] : [_c('div', _vm._b({
-      directives: [{
-        name: "show",
-        rawName: "v-show",
-        value: _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig),
-        expression: "fieldVisible(fieldConfig) && computedComponent(fieldConfig)"
-      }],
       staticClass: "generated-form__body__row__col",
       class: "col-" + fieldConfig.model
     }, 'div', {
@@ -564,7 +564,7 @@ var __vue_render__ = function () {
       model: {
         value: _vm.fields[fieldConfig.model],
         callback: function ($$v) {
-          _vm.$set(_vm.fields, fieldConfig.model, typeof $$v === 'string' ? $$v.trim() : $$v);
+          _vm.$set(_vm.fields, fieldConfig.model, $$v);
         },
         expression: "fields[fieldConfig.model]"
       }
@@ -582,7 +582,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-5ed5932e";
+const __vue_scope_id__ = "data-v-11028888";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

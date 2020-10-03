@@ -15,6 +15,9 @@ With **form-generator-vue** you can create forms using the component library of 
 npm install form-generator-vue
 ```
 #### Versions
+ 1.1.0
+* `trim` directive modifier removed.
+
  1.0.9
 * `handle-submit-fail` prop is provided.
 *  Auto scroll to first invalid field Removed.

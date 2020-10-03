@@ -769,18 +769,20 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-5ed5932e>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-5ed5932e>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-11028888>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-11028888>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.row
-    }) + " class=\"generated-form__body__row\" data-v-5ed5932e>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }) + " class=\"generated-form__body__row\"" + _vm._ssrStyle(null, null, {
+      display: _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? '' : 'none'
+    }) + " data-v-11028888>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm._ssrNode("<div" + _vm._ssrAttrs({
         class: _vm.classes.col
       }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + _vm._ssrStyle(null, null, {
         display: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig) ? '' : 'none'
-      }) + " data-v-5ed5932e>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + " data-v-11028888>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -791,16 +793,14 @@ var __vue_render__ = function __vue_render__() {
         model: {
           value: _vm.fields[subFieldConfig.model],
           callback: function callback($$v) {
-            _vm.$set(_vm.fields, subFieldConfig.model, typeof $$v === 'string' ? $$v.trim() : $$v);
+            _vm.$set(_vm.fields, subFieldConfig.model, $$v);
           },
           expression: "fields[subFieldConfig.model]"
         }
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
     })] : [_vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.col
-    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + _vm._ssrStyle(null, null, {
-      display: _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? '' : 'none'
-    }) + " data-v-5ed5932e>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-11028888>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -811,14 +811,14 @@ var __vue_render__ = function __vue_render__() {
       model: {
         value: _vm.fields[fieldConfig.model],
         callback: function callback($$v) {
-          _vm.$set(_vm.fields, fieldConfig.model, typeof $$v === 'string' ? $$v.trim() : $$v);
+          _vm.$set(_vm.fields, fieldConfig.model, $$v);
         },
         expression: "fields[fieldConfig.model]"
       }
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2)];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-5ed5932e>", "</div>", [_vm._t("footer")], 2)], 2);
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-11028888>", "</div>", [_vm._t("footer")], 2)], 2);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -827,10 +827,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-5ed5932e";
+var __vue_scope_id__ = "data-v-11028888";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5ed5932e";
+var __vue_module_identifier__ = "data-v-11028888";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
