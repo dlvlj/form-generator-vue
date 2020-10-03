@@ -12,6 +12,10 @@
         />
         <!-- ROW -->
         <div
+          v-show="
+            isArr(fieldConfig) ||
+            (fieldVisible(fieldConfig) && computedComponent(fieldConfig))
+          "
           :key="fieldConfig.model"
           class="generated-form__body__row"
           v-bind="{ class: classes.row }"
@@ -49,9 +53,6 @@
           <!-- IF NOT AN ARRAY THEN ITS A FIELD, (CREATES ONE COLUMN PER ROW) -->
           <template v-else>
             <div
-              v-show="
-                fieldVisible(fieldConfig) && computedComponent(fieldConfig)
-              "
               class="generated-form__body__row__col"
               :class="`col-${fieldConfig.model}`"
               v-bind="{ class: classes.col }"
