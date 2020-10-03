@@ -508,13 +508,7 @@ var __vue_render__ = function () {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-    }), _vm._v(" "), _c('div', _vm._b({
-      directives: [{
-        name: "show",
-        rawName: "v-show",
-        value: _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig),
-        expression: "\n          isArr(fieldConfig) ||\n          (fieldVisible(fieldConfig) && computedComponent(fieldConfig))\n        "
-      }],
+    }), _vm._v(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _c('div', _vm._b({
       key: fieldConfig.model,
       staticClass: "generated-form__body__row"
     }, 'div', {
@@ -568,7 +562,7 @@ var __vue_render__ = function () {
         },
         expression: "fields[fieldConfig.model]"
       }
-    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._v(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2)];
+    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._v(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2) : _vm._e()];
   })], 2) : _vm._e(), _vm._v(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
   }) : _vm._e(), _vm._v(" "), _vm._t("agreement"), _vm._v(" "), _vm._t("actions"), _vm._v(" "), _c('div', {
@@ -582,7 +576,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-11028888";
+const __vue_scope_id__ = "data-v-39e9b830";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
