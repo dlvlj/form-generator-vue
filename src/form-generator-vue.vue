@@ -12,7 +12,7 @@
         />
         <!-- ROW -->
         <div
-          v-show="
+          v-if="
             isArr(fieldConfig) ||
             (fieldVisible(fieldConfig) && computedComponent(fieldConfig))
           "
