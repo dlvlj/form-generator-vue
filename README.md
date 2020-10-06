@@ -1,6 +1,6 @@
 With **form-generator-vue** you can create forms using the component library of your choice or the components that you have created. You get full control over the generated from wether its css styles or js. It comes with a easy to use and highly flexible validation engine.
 #### [contribute](https://github.com/divijhardwaj/form-generator-vue) to make it better.
-#### [demo](https://github.com/divijhardwaj/form-generator-vue-demo)
+#### [demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
 
 ## Features
 * reactive schema based form.
