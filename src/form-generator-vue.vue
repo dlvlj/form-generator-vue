@@ -267,7 +267,7 @@ export default {
     },
     bindProps(fieldConfig) {
       const componentName = this.computedComponent(fieldConfig);
-      const componentData = this.formComponents.find(
+      const formComponent = this.formComponents.find(
         ({ component }) => component.name === componentName
       );
 
@@ -277,7 +277,7 @@ export default {
         ? {
             component: { errorProp: fieldConfig.errorProp },
           }
-        : componentData || { component: { errorProp: "errorMessage" } };
+        : formComponent || { component: { errorProp: "errorMessage" } };
 
       return {
         ...fieldConfig.props,
