@@ -167,7 +167,6 @@ export default {
     return {
       fields,
       errors,
-      loading: false,
       submit: false,
     };
   },
@@ -225,7 +224,6 @@ export default {
   methods: {
     resetFormState() {
       this.submit = false;
-      this.loading = false;
     },
     removeAllErrors() {
       for (const msg in this.errors) {
@@ -398,7 +396,6 @@ export default {
       return fieldValid;
     },
     async submitForm() {
-      this.loading = true;
       this.submit = true;
       const INVALID = false;
       let fieldsStatus = [];
