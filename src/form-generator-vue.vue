@@ -210,11 +210,11 @@ export default {
     this.$emit("setFormContext", this);
     for (const fieldName in this.fields) {
       this.$watch(`fields.${fieldName}`, function (newVal, oldVal) {
-        // for number type field. cannot add multiple directives dynamically
+        // for number type field.
         this.convertToNumber(fieldName);
         // for helper components
         this.updateHelpers(fieldName, newVal);
-        // prevent below function calls when only type is changed.
+        // to prevent below calls when only type is changed.
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         }
@@ -240,14 +240,14 @@ export default {
     },
     updateHelpers(fieldName, newVal) {
       const VAL = newVal;
-      // helper
+      // for helper field
       if (this.isHelperComponent(fieldName)) {
         const fieldBeingHelped = fieldName.split(this.helperComponent)[0];
         fieldBeingHelped in this.fields &&
           (this.fields[fieldBeingHelped] = VAL);
         return;
       }
-      // being helped
+      // for field being helped
       if (`${fieldName}${this.helperComponent}` in this.fields) {
         const helperField = `${fieldName}${this.helperComponent}`;
         this.fields[helperField] = VAL;
@@ -302,7 +302,6 @@ export default {
         ? fieldConfig.triggers(this)
         : {};
     },
-
     computedComponent(fieldConfig) {
       const FIELD_TYPE = fieldConfig.type || "text";
       if ("component" in fieldConfig) {
@@ -356,18 +355,6 @@ export default {
       const FIELD_IS_VALID = [true, ""];
       const config_rules = FIELD_CONFIG.rules || {};
 
-      // const [fieldValid, fieldErrorMsg] = REQUIRED
-      //   ? this.submit || this.activeValidation
-      //     ? VALIDATION_ENGINE(
-      //         fieldName,
-      //         this.fields[fieldName],
-      //         config_rules,
-      //         this.formRules,
-      //         { ...this.fields }, //sending immutable copy of fields
-      //         this.submit
-      //       )
-      //     : FIELD_IS_VALID
-      //   : FIELD_IS_VALID;
       const [fieldValid, fieldErrorMsg] =
         this.submit || this.activeValidation
           ? VALIDATION_ENGINE(
@@ -375,7 +362,7 @@ export default {
               this.fields[fieldName],
               config_rules,
               this.formRules,
-              { ...this.fields }, //sending immutable copy of fields
+              { ...this.fields },
               this.submit
             )
           : FIELD_IS_VALID;
@@ -415,9 +402,6 @@ export default {
       console.log("validations status:", fieldsStatus);
 
       if (firstInvalidField) {
-        // scroll to the component
-        // this.scrollToComponent(firstInvalidField);
-        // console.log("Form is not valid.\n");
         this.handleSubmitFail(this.fields);
         this.resetFormState();
         return;
