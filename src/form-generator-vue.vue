@@ -332,20 +332,35 @@ export default {
       const REQUIRED = true;
       const NOT_REQUIRED = false;
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
-      const config_required = this.isFunc(FIELD_CONFIG.required)
-        ? FIELD_CONFIG.required(this)
-        : Boolean(FIELD_CONFIG.required);
+      // const config_required = this.isFunc(FIELD_CONFIG.required)
+      //   ? FIELD_CONFIG.required(this)
+      //   : Boolean(FIELD_CONFIG.required);
+
+      // return FIELD_CONFIG &&
+      //   !this.fieldDisabled(FIELD_CONFIG) &&
+      //   this.fieldVisible(FIELD_CONFIG)
+      //   ? !this.isHelperComponent(fieldName)
+      //     ? "required" in FIELD_CONFIG
+      //       ? config_required
+      //       : REQUIRED
+      //     : "required" in FIELD_CONFIG
+      //     ? config_required
+      //     : NOT_REQUIRED
+      //   : NOT_REQUIRED;
+
+      const requiredProp =
+        FIELD_CONFIG.props && "required" in FIELD_CONFIG.props
+          ? this.isFunc(FIELD_CONFIG.props.required)
+            ? FIELD_CONFIG.props.required(this)
+            : Boolean(FIELD_CONFIG.props.required)
+          : this.isHelperComponent(fieldName)
+          ? NOT_REQUIRED
+          : REQUIRED;
 
       return FIELD_CONFIG &&
         !this.fieldDisabled(FIELD_CONFIG) &&
         this.fieldVisible(FIELD_CONFIG)
-        ? !this.isHelperComponent(fieldName)
-          ? "required" in FIELD_CONFIG
-            ? config_required
-            : REQUIRED
-          : "required" in FIELD_CONFIG
-          ? config_required
-          : NOT_REQUIRED
+        ? requiredProp
         : NOT_REQUIRED;
     },
 
