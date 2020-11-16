@@ -1,12 +1,11 @@
-With **form-generator-vue** you can create forms using the component library of your choice or the components that you have created. You get full control over the generated from wether its css styles or js. It comes with a easy to use and highly flexible validation engine.
-#### [contribute](https://github.com/divijhardwaj/form-generator-vue) to make it better.
+Create forms using the component library of your choice or the components that you have created. Get full control over the generated form css or js.
+#### [GitHub](https://github.com/divijhardwaj/form-generator-vue)
 #### [demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
 
 ## Features
 * reactive schema based form.
 * compatible with third party component libraries (Tested with vuetifyjs).
 * all types of field and components are supported.
-* full control over form.
 * custom validators.
 * customizable styles.
 
@@ -14,24 +13,7 @@ With **form-generator-vue** you can create forms using the component library of 
 ```
 npm install form-generator-vue
 ```
-#### Versions
- 1.1.0
-* `trim` directive modifier removed.
-
- 1.0.9
-* `handle-submit-fail` prop is provided.
-*  Auto scroll to first invalid field Removed.
-
- 1.0.5
-* Optimizations and auto scroll to first invalid field on submit.
-
-1.0.4
-* The prop name `custom-componenets-map` changed to `form-components`.
-* The property `name` changed to `model` in `field-config`.
-* `form-components` now supports `errorProp` for each component.
-
 ## How to use
-After this, **Follow Min Config step to get it working.**
 ```vue
 <template>
     <form-generator-vue>
@@ -47,7 +29,6 @@ export default {
 }
 </script>
 ```
-
 ## Props
 |props|type|description|
 |----|---|----|
@@ -55,9 +36,9 @@ export default {
 |form-components| Object |Fom Components map|
 |submit-handler| (values) => {} |submit success `function`.|
 |handle-submit-fail|(values) => {}| handle submit fail `function`.|
-|form-rules| Object | For user defined validations, validation types, common validators|
+|form-rules| Object | For user defined validations|
 |form-editable|Boolean |Sets the editable state of the form. `Default is true`, if `disabled` then form body containing all the fields will be hidden from view. `v-slot:disabled` can be used to show the disabled state.|
-|classes|Object |Can be used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
+|classes|Object |Used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
 
 ## Min Required Props
 It needs **two essential props** `form-components` and `form-config` to render a form.
@@ -91,12 +72,11 @@ const formComponents = [
 ```
 
 ##### **form-config**
-this prop requires an object containing the following `options`.
 | options | type | required | description |
 | ------ | ------ | ------ | ---- |
-| fields | Array | yes | contains information of each field |
-| activeValidation | Boolean | Optional | enable/disable validations when user inputs. **false** by default |
-| logs | Boolean | Optional | shows validation logs for easy debugging |
+| fields | Array | yes | contains `field-config` for every field |
+| activeValidation | Boolean | Optional | enable/disable validations on input. Default is `false` |
+| logs | Boolean | Optional | console logs for easy debugging |
 
 ```js
 computed: {
@@ -185,10 +165,10 @@ properties of `errors` are passed to their respective components as prop **error
 | type | String | optional |`Input type`. Component for it is loaded from `form-components`. If not provided then `text` is set as default and the component for `text` will be picked from `form-components` |
 |value| any |optional| Default value to be passed|
 |props| Object | optional | Component props |
-| show | Boolean/(FormCtx) => Bool |optional| To dynamically hide or show the field. Field is not validated if hidden. When its visible again `field-config` `value` is assigned else empty is assigned.|
-|triggers|(FormCtx) => ({})| optional |For adding events to a component. Assigned to `v-on`.|
-|required|Boolean/(FormCtx) => Bool|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
-|props.disabled|Boolean/(FormCtx) => Bool|optional| To disable or enable field.|
+| show | Bool/(ctx) => Bool |optional| To dynamically hide or show the field. Field is not validated if hidden. When its visible again `field-config` `value` is assigned else empty is assigned.|
+|triggers|(ctx) => ({})| optional |For adding events to a component. Assigned to `v-on`.|
+|props.required|Bool/(ctx) => Bool|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
+|props.disabled|Bool/(ctx) => Bool|optional| To disable or enable field.|
 |rules|Object|optional| For validations.|
 |component|String|optional| For rendering component which is not in `form-components`.|
 |errorProp|String|optional|Error prop that component will use to show error message.|
@@ -216,7 +196,6 @@ Some usefull properties of form-generator-vue that you can access with the help 
 * Data property:
     *   fields
     *   errors
-    *   loading (for async submission handling).
 *   Computed Properties:
     * fieldsConfig
     * fieldsConfig_FLAT
@@ -409,4 +388,22 @@ No default CSS is written in this component, you can write your own styles for t
             * col - **"generated-form__body__row__col**
             * col - **"col-`<field-config.model>`"** (dynamic class, to precisely identify col in which component is rendered).
     * footer - **"generated-form__footer"**
-    
+#### Versions
+ 1.1.3
+* `required` prop moved from field-config to field-config.props
+* `loading` data property removed.
+
+ 1.1.0
+* `trim` directive modifier removed.
+
+ 1.0.9
+* `handle-submit-fail` prop is provided.
+*  Auto scroll to first invalid field Removed.
+
+ 1.0.5
+* Optimizations and auto scroll to first invalid field on submit.
+
+1.0.4
+* The prop name `custom-componenets-map` changed to `form-components`.
+* The property `name` changed to `model` in `field-config`.
+* `form-components` now supports `errorProp` for each component.

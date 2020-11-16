@@ -379,7 +379,6 @@ function validationResult(msg) {
     return {
       fields: fields,
       errors: errors,
-      loading: false,
       submit: false
     };
   },
@@ -435,10 +434,10 @@ function validationResult(msg) {
 
     var _loop = function _loop(fieldName) {
       _this.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
-        // for number type field. cannot add multiple directives dynamically
+        // for number type field.
         this.convertToNumber(fieldName); // for helper components
 
-        this.updateHelpers(fieldName, newVal); // prevent below function calls when only type is changed.
+        this.updateHelpers(fieldName, newVal); // to prevent below calls when only type is changed.
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
           return;
@@ -455,7 +454,6 @@ function validationResult(msg) {
   methods: {
     resetFormState: function resetFormState() {
       this.submit = false;
-      this.loading = false;
     },
     removeAllErrors: function removeAllErrors() {
       for (var msg in this.errors) {
@@ -469,13 +467,13 @@ function validationResult(msg) {
       return fieldName.includes(this.helperComponent);
     },
     updateHelpers: function updateHelpers(fieldName, newVal) {
-      var VAL = newVal; // helper
+      var VAL = newVal; // for helper field
 
       if (this.isHelperComponent(fieldName)) {
         var fieldBeingHelped = fieldName.split(this.helperComponent)[0];
         fieldBeingHelped in this.fields && (this.fields[fieldBeingHelped] = VAL);
         return;
-      } // being helped
+      } // for field being helped
 
 
       if ("".concat(fieldName).concat(this.helperComponent) in this.fields) {
@@ -495,7 +493,7 @@ function validationResult(msg) {
       var _objectSpread4;
 
       var componentName = this.computedComponent(fieldConfig);
-      var componentData = this.formComponents.find(function (_ref) {
+      var formComponent = this.formComponents.find(function (_ref) {
         var component = _ref.component;
         return component.name === componentName;
       });
@@ -504,7 +502,7 @@ function validationResult(msg) {
         component: {
           errorProp: fieldConfig.errorProp
         }
-      } : componentData || {
+      } : formComponent || {
         component: {
           errorProp: "errorMessage"
         }
@@ -553,29 +551,31 @@ function validationResult(msg) {
     fieldRequired: function fieldRequired(fieldName) {
       var REQUIRED = true;
       var NOT_REQUIRED = false;
-      var FIELD_CONFIG = this.findFieldConfig(fieldName);
-      var config_required = this.isFunc(FIELD_CONFIG.required) ? FIELD_CONFIG.required(this) : Boolean(FIELD_CONFIG.required);
-      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? !this.isHelperComponent(fieldName) ? "required" in FIELD_CONFIG ? config_required : REQUIRED : "required" in FIELD_CONFIG ? config_required : NOT_REQUIRED : NOT_REQUIRED;
+      var FIELD_CONFIG = this.findFieldConfig(fieldName); // const config_required = this.isFunc(FIELD_CONFIG.required)
+      //   ? FIELD_CONFIG.required(this)
+      //   : Boolean(FIELD_CONFIG.required);
+      // return FIELD_CONFIG &&
+      //   !this.fieldDisabled(FIELD_CONFIG) &&
+      //   this.fieldVisible(FIELD_CONFIG)
+      //   ? !this.isHelperComponent(fieldName)
+      //     ? "required" in FIELD_CONFIG
+      //       ? config_required
+      //       : REQUIRED
+      //     : "required" in FIELD_CONFIG
+      //     ? config_required
+      //     : NOT_REQUIRED
+      //   : NOT_REQUIRED;
+
+      var requiredProp = FIELD_CONFIG.props && "required" in FIELD_CONFIG.props ? this.isFunc(FIELD_CONFIG.props.required) ? FIELD_CONFIG.props.required(this) : Boolean(FIELD_CONFIG.props.required) : this.isHelperComponent(fieldName) ? NOT_REQUIRED : REQUIRED;
+      return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? requiredProp : NOT_REQUIRED;
     },
     validateField: function validateField(fieldName) {
       var REQUIRED = this.fieldRequired(fieldName);
       var FIELD_CONFIG = this.findFieldConfig(fieldName);
       var FIELD_IS_VALID = [true, ""];
-      var config_rules = FIELD_CONFIG.rules || {}; // const [fieldValid, fieldErrorMsg] = REQUIRED
-      //   ? this.submit || this.activeValidation
-      //     ? VALIDATION_ENGINE(
-      //         fieldName,
-      //         this.fields[fieldName],
-      //         config_rules,
-      //         this.formRules,
-      //         { ...this.fields }, //sending immutable copy of fields
-      //         this.submit
-      //       )
-      //     : FIELD_IS_VALID
-      //   : FIELD_IS_VALID;
+      var config_rules = FIELD_CONFIG.rules || {};
 
-      var _ref5 = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.formRules, _objectSpread2({}, this.fields), //sending immutable copy of fields
-      this.submit) : FIELD_IS_VALID,
+      var _ref5 = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.formRules, _objectSpread2({}, this.fields), this.submit) : FIELD_IS_VALID,
           _ref6 = _slicedToArray(_ref5, 2),
           fieldValid = _ref6[0],
           fieldErrorMsg = _ref6[1];
@@ -594,7 +594,6 @@ function validationResult(msg) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this2.loading = true;
                 _this2.submit = true;
                 INVALID = false;
                 fieldsStatus = [];
@@ -614,28 +613,25 @@ function validationResult(msg) {
                 console.log("validations status:", fieldsStatus);
 
                 if (!firstInvalidField) {
-                  _context.next = 12;
+                  _context.next = 11;
                   break;
                 }
 
-                // scroll to the component
-                // this.scrollToComponent(firstInvalidField);
-                // console.log("Form is not valid.\n");
                 _this2.handleSubmitFail(_this2.fields);
 
                 _this2.resetFormState();
 
                 return _context.abrupt("return");
 
-              case 12:
+              case 11:
                 console.log("Form is valid. calling submit handler.\n");
-                _context.next = 15;
+                _context.next = 14;
                 return _this2.submitHandler(_this2.fields);
 
-              case 15:
+              case 14:
                 _this2.resetFormState();
 
-              case 16:
+              case 15:
               case "end":
                 return _context.stop();
             }
@@ -769,18 +765,18 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-39e9b830>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-39e9b830>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-27f16b43>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-27f16b43>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
     }), _vm._ssrNode(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.row
-    }) + " class=\"generated-form__body__row\" data-v-39e9b830>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }) + " class=\"generated-form__body__row\" data-v-27f16b43>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm._ssrNode("<div" + _vm._ssrAttrs({
         class: _vm.classes.col
       }) + _vm._ssrClass("generated-form__body__row__col", "col-" + subFieldConfig.model) + _vm._ssrStyle(null, null, {
         display: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig) ? '' : 'none'
-      }) + " data-v-39e9b830>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + " data-v-27f16b43>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -798,7 +794,7 @@ var __vue_render__ = function __vue_render__() {
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
     })] : [_vm._ssrNode("<div" + _vm._ssrAttrs({
       class: _vm.classes.col
-    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-39e9b830>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    }) + _vm._ssrClass("generated-form__body__row__col", "col-" + fieldConfig.model) + " data-v-27f16b43>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -816,7 +812,7 @@ var __vue_render__ = function __vue_render__() {
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2) : _vm._e()];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-39e9b830>", "</div>", [_vm._t("footer")], 2)], 2);
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-27f16b43>", "</div>", [_vm._t("footer")], 2)], 2);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -825,10 +821,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-39e9b830";
+var __vue_scope_id__ = "data-v-27f16b43";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-39e9b830";
+var __vue_module_identifier__ = "data-v-27f16b43";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
