@@ -1,4 +1,4 @@
-Create forms using the component library of your choice or the components that you have created. Get full control over the generated form css or js.
+Create forms using props based components.
 #### [GitHub](https://github.com/divijhardwaj/form-generator-vue)
 #### [demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
 
