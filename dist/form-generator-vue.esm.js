@@ -167,6 +167,12 @@ var script = {
       handler: function (newVal) {
         !newVal && this.removeAllErrors();
       }
+    },
+    fields: {
+      handler: function (newVal) {
+        this.$emit('input', this.fields);
+      },
+      deep: true
     }
   },
 
@@ -571,7 +577,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-27f16b43";
+const __vue_scope_id__ = "data-v-d2222ff4";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
