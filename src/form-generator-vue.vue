@@ -17,8 +17,7 @@
             (fieldVisible(fieldConfig) && computedComponent(fieldConfig))
           "
           :key="fieldConfig.model"
-          class="generated-form__body__row"
-          v-bind="{ class: classes.row }"
+          :class="['generated-form__body__row', classes.row]"
         >
           <!-- IF ARRAY THEN LOAD MULTIPLE COLUMNS -->
           <template v-if="isArr(fieldConfig)">
@@ -29,9 +28,7 @@
                   computedComponent(subFieldConfig)
                 "
                 :key="subFieldConfig.model"
-                class="generated-form__body__row__col"
-                :class="`col-${subFieldConfig.model}`"
-                v-bind="{ class: classes.col }"
+                :class="['generated-form__body__row__col', `col-${subFieldConfig.model}`, classes.col]"
               >
                 <template>
                   <slot :name="`${subFieldConfig.model}_before`" />
@@ -53,9 +50,7 @@
           <!-- IF NOT AN ARRAY THEN ITS A FIELD, (CREATES ONE COLUMN PER ROW) -->
           <template v-else>
             <div
-              class="generated-form__body__row__col"
-              :class="`col-${fieldConfig.model}`"
-              v-bind="{ class: classes.col }"
+              :class="['generated-form__body__row__col', `col-${fieldConfig.model}`, classes.col]"
             >
               <template>
                 <slot :name="`${fieldConfig.model}_before`" />

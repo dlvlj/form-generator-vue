@@ -503,13 +503,11 @@ var __vue_render__ = function () {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-    }), _vm._v(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _c('div', _vm._b({
+    }), _vm._v(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _c('div', {
       key: fieldConfig.model,
-      staticClass: "generated-form__body__row"
-    }, 'div', {
-      class: _vm.classes.row
-    }, false), [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
-      return [_c('div', _vm._b({
+      class: ['generated-form__body__row', _vm.classes.row]
+    }, [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+      return [_c('div', {
         directives: [{
           name: "show",
           rawName: "v-show",
@@ -517,11 +515,8 @@ var __vue_render__ = function () {
           expression: "\n                fieldVisible(subFieldConfig) &&\n                computedComponent(subFieldConfig)\n              "
         }],
         key: subFieldConfig.model,
-        staticClass: "generated-form__body__row__col",
-        class: "col-" + subFieldConfig.model
-      }, 'div', {
-        class: _vm.classes.col
-      }, false), [[_vm._t(subFieldConfig.model + "_before"), _vm._v(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+        class: ['generated-form__body__row__col', "col-" + subFieldConfig.model, _vm.classes.col]
+      }, [[_vm._t(subFieldConfig.model + "_before"), _vm._v(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -537,12 +532,9 @@ var __vue_render__ = function () {
           expression: "fields[subFieldConfig.model]"
         }
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))), _vm._v(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
-    })] : [_c('div', _vm._b({
-      staticClass: "generated-form__body__row__col",
-      class: "col-" + fieldConfig.model
-    }, 'div', {
-      class: _vm.classes.col
-    }, false), [[_vm._t(fieldConfig.model + "_before"), _vm._v(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    })] : [_c('div', {
+      class: ['generated-form__body__row__col', "col-" + fieldConfig.model, _vm.classes.col]
+    }, [[_vm._t(fieldConfig.model + "_before"), _vm._v(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -571,7 +563,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-27f16b43";
+const __vue_scope_id__ = "data-v-209d1bcc";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
