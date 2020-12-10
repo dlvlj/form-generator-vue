@@ -224,7 +224,9 @@ There are **two ways of adding helper components**
                     {
                         model: 'amount_formHelper',
                         type: 'select',
-                        required: false
+                        props: {
+                          required: false
+                        }
                     }
                     ]
                 }
