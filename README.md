@@ -1,7 +1,4 @@
 Create forms using any component library.
-#### [GitHub](https://github.com/divijhardwaj/form-generator-vue)
-#### [demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
-
 ## Features
 * reactive schema based form.
 * compatible with third party component libraries (Tested with vuetifyjs).
@@ -9,6 +6,7 @@ Create forms using any component library.
 * custom validators.
 * customizable styles.
 
+#### [Demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
 ### Install
 ```
 npm install form-generator-vue
@@ -393,6 +391,10 @@ No default CSS is written in this component, you can write your own styles for t
             * col - **"generated-form__body__row__col**
             * col - **"col-`<model>`"** (dynamic class, to precisely identify col in which component is rendered).
     * footer - **"generated-form__footer"**
+
+#### Contributors
+This project exists thanks to all the people who contribute. [Contribute](https://github.com/divijhardwaj/form-generator-vue).
+* [Carlos Noguera](https://github.com/kaysersoze)
 #### Versions
  1.1.5
 * v-model support added.
