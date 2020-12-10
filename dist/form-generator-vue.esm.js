@@ -537,7 +537,7 @@ var __vue_render__ = function () {
           },
           expression: "fields[subFieldConfig.model]"
         }
-      }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig))), _vm._v(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
+      }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig)), [_vm._t("" + subFieldConfig.model)], 2), _vm._v(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
     })] : [_c('div', {
       class: ['generated-form__body__row__col', "col-" + fieldConfig.model, _vm.classes.col]
     }, [[_vm._t(fieldConfig.model + "_before"), _vm._v(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
@@ -555,7 +555,7 @@ var __vue_render__ = function () {
         },
         expression: "fields[fieldConfig.model]"
       }
-    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig))), _vm._v(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2) : _vm._e()];
+    }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig)), [_vm._t("" + fieldConfig.model)], 2), _vm._v(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2) : _vm._e()];
   })], 2) : _vm._e(), _vm._v(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
   }) : _vm._e(), _vm._v(" "), _vm._t("agreement"), _vm._v(" "), _vm._t("actions"), _vm._v(" "), _c('div', {
@@ -569,7 +569,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-9484fb46";
+const __vue_scope_id__ = "data-v-3c8a1513";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
