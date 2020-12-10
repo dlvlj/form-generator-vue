@@ -5,8 +5,6 @@ Create forms using any component library.
 * all types of field and components are supported.
 * custom validators.
 * customizable styles.
-
-#### [Demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
 ### Install
 ```
 npm install form-generator-vue
