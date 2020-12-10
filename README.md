@@ -1,4 +1,4 @@
-Create forms using props based components.
+Create forms using any component library.
 #### [GitHub](https://github.com/divijhardwaj/form-generator-vue)
 #### [demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
 
@@ -356,14 +356,17 @@ Input sanitization functions can be written here for different input types.
 For form header information.
 
 #### v-slot:`sectionLabel`
-Single lable for multiple components.
+Single label for multiple components.
 **slot props** `fieldConfig`, `fieldsConfigFlat`.
+
+#### Sub component slot
+`v-slot:<model>` for adding sub components to the parent component.
 
 #### Slots `before` and `after` a component
 For adding support components or ui elements before or after a component.
-* v-slot:`<field-config.model>_before`
-* v-slot:`<field-config.model>_after`
-(replace **<field-config.model>** with the **model** property of **field-config**)
+* v-slot:`<model>_before`
+* v-slot:`<model>_after`
+(replace **<model>** with the **model** property of **field-config**)
 
 #### v-slot:`disabled`
 This slot is only visible when the `form-editable` prop of `form-generator-vue` is enabled. When enabled the form body(containing all the components/fields) hides from view and only this slot is visible.
@@ -388,9 +391,13 @@ No default CSS is written in this component, you can write your own styles for t
     * body - **"generated-form__body"**
         * row - **"generated-form__body__row"**
             * col - **"generated-form__body__row__col**
-            * col - **"col-`<field-config.model>`"** (dynamic class, to precisely identify col in which component is rendered).
+            * col - **"col-`<model>`"** (dynamic class, to precisely identify col in which component is rendered).
     * footer - **"generated-form__footer"**
 #### Versions
+ 1.1.5
+* v-model support added.
+* sub component slot added to support nested components like radio button group etc.
+
  1.1.3
 * `required` prop moved from field-config to field-config.props
 * `loading` data property removed.
