@@ -199,6 +199,12 @@ export default {
         !newVal && this.removeAllErrors();
       },
     },
+    fields: {
+      handler: function (newVal) {
+        this.$emit('input', this.fields);
+      },
+      deep: true
+    },
   },
   created() {
     this.$emit("setFormContext", this);
