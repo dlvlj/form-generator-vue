@@ -95,6 +95,10 @@
 import VALIDATION_ENGINE from "./validation-engine.js";
 export default {
   props: {
+    value: {
+      type: Object,
+      default: null,
+    },
     submitHandler: {
       type: Function,
       required: false,
@@ -209,6 +213,12 @@ export default {
       },
       deep: true
     },
+    value: {
+      handler: function (newVal) {
+        this.fields = this.value
+      },
+      immediate: true,
+    }
   },
   created() {
     this.$emit("setFormContext", this);
@@ -257,6 +267,8 @@ export default {
       }
     },
     setDefaultFieldValue(fieldConfig) {
+      console.log('setDefaultFieldValue', fieldConfig)
+
       this.fields[fieldConfig.model] =
         "value" in fieldConfig ? fieldConfig.value : "";
     },
