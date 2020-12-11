@@ -55,6 +55,10 @@ function validationResult(msg) {
 //
 var script = {
   props: {
+    value: {
+      type: Object,
+      default: null
+    },
     submitHandler: {
       type: Function,
       required: false,
@@ -173,6 +177,12 @@ var script = {
         this.$emit('input', this.fields);
       },
       deep: true
+    },
+    value: {
+      handler: function (newVal) {
+        this.fields = this.value;
+      },
+      immediate: true
     }
   },
 
@@ -569,7 +579,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-3c8a1513";
+const __vue_scope_id__ = "data-v-511c507c";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
