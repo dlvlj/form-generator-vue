@@ -390,10 +390,10 @@ No default CSS is written in this component, you can write your own styles for t
             * col - **"col-`<model>`"** (dynamic class, to precisely identify col in which component is rendered).
     * footer - **"generated-form__footer"**
 
-#### Contributors
+## Contributors
 This project exists thanks to all the people who contribute. [Contribute](https://github.com/divijhardwaj/form-generator-vue).
 * [Carlos Noguera](https://github.com/kaysersoze)
-#### Versions
+## Versions
  1.1.5
 * v-model support added.
 * sub component slot added to support nested components like radio button group etc.
