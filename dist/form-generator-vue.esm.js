@@ -241,7 +241,6 @@ var script = {
     },
 
     setDefaultFieldValue(fieldConfig) {
-      console.log('setDefaultFieldValue', fieldConfig);
       this.fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
     },
 
@@ -580,7 +579,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-158234f0";
+const __vue_scope_id__ = "data-v-511c507c";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
