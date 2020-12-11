@@ -41,7 +41,9 @@
                     :type="subFieldConfig.type || 'text'"
                     v-bind="bindProps(subFieldConfig)"
                     v-on="bindEvents(subFieldConfig)"
-                  />
+                  >
+                    <slot :name="`${subFieldConfig.model}`"/>
+                  </component>
                   <slot :name="`${subFieldConfig.model}_after`" />
                 </template>
               </div>
@@ -63,7 +65,9 @@
                   :type="fieldConfig.type || 'text'"
                   v-bind="bindProps(fieldConfig)"
                   v-on="bindEvents(fieldConfig)"
-                />
+                >
+                  <slot :name="`${fieldConfig.model}`"/>
+                </component>
                 <slot :name="`${fieldConfig.model}_after`" />
               </template>
             </div>
