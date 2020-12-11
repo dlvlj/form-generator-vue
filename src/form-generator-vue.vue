@@ -267,8 +267,6 @@ export default {
       }
     },
     setDefaultFieldValue(fieldConfig) {
-      console.log('setDefaultFieldValue', fieldConfig)
-
       this.fields[fieldConfig.model] =
         "value" in fieldConfig ? fieldConfig.value : "";
     },
