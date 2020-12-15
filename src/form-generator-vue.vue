@@ -222,28 +222,22 @@ export default {
       },
       deep: true,
     },
-    // value: {
-    //   handler: function (newVal) {
-    //     this.fields = this.value
-    //   },
-    //   immediate: true,
-    // }
+    value: {
+      handler: function () {
+        if (this.fields && this.value && Object.keys(this.value).length) {
+          for (const fieldName in this.value) {
+            if (fieldName in this.fields) {
+              this.fields[fieldName] = this.value[fieldName];
+            }
+          }
+        }
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   created() {
     this.$emit("setFormContext", this);
-    if (this.value && Object.keys(this.value).length) {
-      for (const fieldName in this.value) {
-        if (fieldName in this.fields) {
-          this.$watch(
-            `value.${fieldName}`,
-            function (newVal, oldVal) {
-              this.fields[fieldName] = newVal;
-            },
-            { immediate: true }
-          );
-        }
-      }
-    }
     for (const fieldName in this.fields) {
       this.$watch(`fields.${fieldName}`, function (newVal, oldVal) {
         // for number type field.
