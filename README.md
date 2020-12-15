@@ -1,10 +1,13 @@
-Create forms using any component library.
+Create beautiful forms using any component library for vue.
 ## Features
 * reactive schema based form.
-* compatible with third party component libraries (Tested with vuetifyjs).
-* all types of field and components are supported.
-* custom validators.
+* compatible with third party component libraries and custom components.
+* comes with a validation engine.
 * customizable styles.
+
+## Demo
+[https://divijbhardwaj.github.io/form-generator-vue-demo/](https://divijbhardwaj.github.io/form-generator-vue-demo/)
+
 ### Install
 ```
 npm install form-generator-vue
@@ -12,13 +15,17 @@ npm install form-generator-vue
 ## How to use
 ```vue
 <template>
-    <form-generator-vue>
-    </form-generator-vue>
+    <form-generator-vue v-model="fields"/>
 </template>
 
 <script>
 import FormGeneratorVue from 'form-generator-vue';
 export default {
+    data() {
+        return {
+            fields: {}
+        }
+    },
     components: {
         FormGeneratorVue
     }
@@ -28,28 +35,28 @@ export default {
 ## Props
 |props|type|description|
 |----|---|----|
-|form-config| Object | Form schema |
-|form-components| Object |Fom Components map|
+|form-config| obj | Form schema |
+|form-components| obj |Fom Components map|
 |submit-handler| (values) => {} |submit success `function`.|
 |handle-submit-fail|(values) => {}| handle submit fail `function`.|
-|form-rules| Object | For user defined validations|
-|form-editable|Boolean |Sets the editable state of the form. `Default is true`, if `disabled` then form body containing all the fields will be hidden from view. `v-slot:disabled` can be used to show the disabled state.|
-|classes|Object |Used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
+|form-rules| obj | For user defined validations|
+|form-editable|bool |Sets the editable state of the form. `Default is true`, if `disabled` then form body containing all the fields will be hidden from view. `v-slot:disabled` can be used to show the disabled state.|
+|classes|obj |Used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
 
 ## Min Required Props
 It needs **two essential props** `form-components` and `form-config` to render a form.
 ```vue
     <template>
         <form-generator-vue
+            v-model="fields"
             :form-components="formComponents"
             :form-config="formConfig"
-        >
-        </form-generator-vue>
+        />
     </template>
 ```
 ##### **form-components:**
 This prop requires a map of components to know which component will be used for which input type or types.
-**IMPORTANT - The components that you want to use must be globally registered. Follow [Official Doc](https://vuejs.org/v2/guide/components-registration.html) to learn how to register component**.
+**IMPORTANT - The components that you want to use must be globally registered. Follow [Official Doc](https://vuejs.org/v2/guide/components-registration.html) to learn how to register component.**.
 ```js
 const formComponents = [
   {
@@ -71,8 +78,8 @@ const formComponents = [
 | options | type | required | description |
 | ------ | ------ | ------ | ---- |
 | fields | Array | yes | contains `field-config` for every field |
-| activeValidation | Boolean | Optional | enable/disable validations on input. Default is `false` |
-| logs | Boolean | Optional | console logs for easy debugging |
+| activeValidation | bool | Optional | enable/disable validations on input. Default is `false` |
+| logs | bool | Optional | console logs for easy debugging |
 
 ```js
 computed: {
@@ -90,9 +97,6 @@ computed: {
               {
                 model: 'gender',
                 type: 'select',
-                props: {
-            
-                }
               }
             ]
         }
@@ -117,7 +121,6 @@ computed: {
               {
                 model: 'gender',
                 type: 'select',
-                props: {}
               },
               [
                 {
@@ -134,25 +137,6 @@ computed: {
     }
 }
 ```
-When the above `form-config` is passed to the `form-generator-vue` as a prop then the following data properties are created inside it.
-```js
-fields: {
-    firstName: 'divij',
-    gender: '',
-    countryCode: '',
-    mobile: ''
-},
-errors: {
-    firstName: '',
-    gender: '',
-    countryCode: '',
-    mobile: ''
-}
-```
-Every key in `fields` has its own component with which it is `v-model`ed with.
-
-properties of `errors` are passed to their respective components as prop **errorMessage** by default unless error prop is explicitly specified in `form-components` or `field-config`.
-
 #### `field-config` Options
 
 | options | type | required | purpose |
@@ -160,12 +144,12 @@ properties of `errors` are passed to their respective components as prop **error
 | model | String | true | `v-model`s with component.|
 | type | String | optional |`Input type`. Component for it is loaded from `form-components`. If not provided then `text` is set as default and the component for `text` will be picked from `form-components` |
 |value| any |optional| Default value to be passed|
-|props| Object | optional | Component props |
-| show | Bool/(ctx) => Bool |optional| To dynamically hide or show the field. Field is not validated if hidden. When its visible again `field-config` `value` is assigned else empty is assigned.|
+|props| obj | optional | Component props |
+| show | bool/(ctx) => bool |optional| To dynamically hide or show the field. Field is not validated if hidden. When its visible again `field-config` `value` is assigned else empty is assigned.|
 |triggers|(ctx) => ({})| optional |For adding events to a component. Assigned to `v-on`.|
-|props.required|Bool/(ctx) => Bool|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
-|props.disabled|Bool/(ctx) => Bool|optional| To disable or enable field.|
-|rules|Object|optional| For validations.|
+|props.required|bool/(ctx) => bool|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
+|props.disabled|bool/(ctx) => bool|optional| To disable or enable field.|
+|rules|obj|optional| For validations.|
 |component|String|optional| For rendering component which is not in `form-components`.|
 |errorProp|String|optional|Error prop that component will use to show error message.|
 
@@ -175,31 +159,21 @@ When the form-generator-vue component is loaded then an event is emited to the p
 <template>
     <form-generator-vue
         @setFormContext = "ctx => formCtx = ctx"
-    >
-    </form-generator-vue>
+    />
 </template>
 <script>
     export default{
         data() {
             return {
-                formCtx: undefined
+                formCtx: null
             }
         }
     }
 </script>
 ```
-Some usefull properties of form-generator-vue that you can access with the help of its context.
-* Data property:
-    *   fields
-    *   errors
-*   Computed Properties:
-    * fieldsConfig
-    * fieldsConfig_FLAT
-*   methods:
-    *   showErrors(model, msg)
 
 ## Helper Component/field
-Helper comonents can be added to form to assist a main component. The helper component can be chips to fill in values in the main component field or multiple checkboxes or anything whose sole purpose is to asign value to main field.
+Helper components can be added to form to assist a component. The helper component can be any component whose sole purpose is to asign value to the host component.
 
 There are **two ways of adding helper components**
     * Adding helper components through `form-config`.
@@ -232,49 +206,131 @@ There are **two ways of adding helper components**
 </script>
 ```
 
-In the above example the `field-config`, the `amount_formHelper` is helper field for the `amount` field, similarly for model **'gender'** you can create **'gender_formHelper'** helper component. Now the value of `amount` will be assigned to the `amount_helper` and vice versa. **This wont go inside infinite loop of assignmet as `watcher` is used**, which triggers on value change only.
+In the above example the `amount_formHelper` is helper field for the `amount` field. The value of `amount` will be assigned to the `amount_helper` and vice versa. This wont go inside infinite loop of assignmet as `watcher` is being used.
 
-Helper components are required by default, it is recommended to set `required` equals false for helper fields/component as form will not submit if its value is empty.
+**Helper components are required by default, it is recommended to set required false for helper fields/component as form will not submit if its value is empty.**
 
 ## Validation
-form-generator-vue comes with a flexible validation engine where user can write ther own vaidators for each field, validation types for generic validation methods like regex or common validators for multiple fields.
+form-generator-vue comes with a flexible validation engine where user can write their own vaidators for each field, validation types for regex and common validators for multiple fields.
 
-The error prop(`errorMessage` is passed as default) which is passsed the component, it contains the error data that can be passed to the componet if the validation fails.
+The error prop `errorMessage` is passed as default prop to every component, it contains the error data that can be passed to the componet if the validation fails.
 
-non empty fields are checked by default. If encounter any empty field then it will set the error prop with String 'Required'.
+During validation of form if any required field is empty its error prop will be set to 'Required'(**will be user controlled soon**) string.
 
-check **field-config** for options like `required`(if you dont want validations on a specific field).
+To turn off validation on a field set "required: false" in field-config.
 
-### Writing validators
-`form-rules` prop must be passed to the form-generator-vue component.
+### Adding validators
+`form-rules` prop should be passed to the form-generator-vue component for adding your validators.
 ```vue
     <template>
         <form-generator-vue
+            v-model="fields"
             :form-rules="FORM_RULES"
-        >
-        </form-generator-vue>
+        />
     </template>
     <script>
         import FORM_RULES from 'form-rules.js';
         export default {
+            data() {
+                return {
+                    fields: {}
+                }  
+            },
             computed: {
-                FORM_RULES: () => FORM_RULES
+                FORM_RULES: () => FORM_RULES,
             }
         }
     </script>
 ```
+**NOTE -** validation functions should return empty string on validation success. In case validation fails it should return error data(any data type that your component supports array, string, obj).
+
+##### For field specific validator
+**field-config**
+```js
+    {
+      model: "confirmPassword",
+      type: "password",
+      props: {
+        "append-icon": this.showPassword ? "mdi-eye" : "mdi-eye-off",
+        label: "Confirm",
+        outlined: true,
+        dense: true,
+      },
+      rules:{
+        errorMsg: 'Confirm your password'
+      },
+      triggers: (ctx) => ({
+        "click:append": () =>
+          (this.showPassword = !this.showPassword),
+      }),
+    },
+```
+
+**form-rules.js**
+```js
+    export default {
+        confirmPassword: function (value, rules = {}, fields) {
+            const {password} = fields;
+            const {errorMsg} = rules;
+            const success = '';
+            const findMatch = () => {
+              return password == value ? success : errorMsg;
+            }
+            return password ? findMatch() : success;
+        }
+    }
+```
+
+##### Validation types
+Validation types can be used to handle validation on multiple regex or bool condition type fields using a common function.
+**field-config**
+```js
+    {
+        model: 'password',
+        rules: {
+            type: 'regex',
+            rules:{
+                regex: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
+                errorMsg: `Password must be a combination of at least 6 alphanumeric 
+                and special character(s) (e.g. '~','!','@','#','$','%', etc.)`
+            },
+        }
+    }
+```
+**form-rules.js**
+```js
+    export default {
+        //for regex
+        regex: function (value, rules = {}, fields) {
+            const {regex, errorMsg} = rules;
+            if (!regex || !regex.constructor == RegExp) {
+              console.error(`${regex} is not a valid RegExp`);
+              return '';
+            }
+            return regex.test(value) ? '' : errMsg || 'Invalid Input!';
+        },
+        //for functions
+        function: function (value, rules = {}, fields) {
+            const { func, errorMsg } = rules || { condtion: undefined };
+            if (typeof func !== 'function') {
+              console.error(`condition should be a function returning boolean`);
+              return '';
+            }
+            const result = func();
+            return result ? '' : errorMsg || 'Invalid input';
+        },
+    }
+```
+
+##### Common validators (`COMMON_VALIDATORS`)
+Input sanitization functions can be written here for different input types. All functions under common validators will be called for each field.
 
 **form-rules.js** (from demo)
 ```js
-const MASTER_RULES = {
-  email: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-  password: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
-  // mobile: /^\+\d{1,3}-\d{9,10}$/
-}
 export default {
   // will be applied to all fields ------------
   COMMON_VALIDATORS: {
-    number: value => {
+    number: (value, rules, fields) => {
       if (typeof value === 'number') {
         if (value < 0) {
           return 'Cannot be negative';
@@ -282,68 +338,22 @@ export default {
       }
       return '';
     },
-  },
-
-  // VALIDATION TYPES (common logic for multiple regex type validations)---------
-  regex: function (value, rules = {}, fields) {
-    const regex = rules.regex || MASTER_RULES[rules.ruleName];
-    const errMsg = rules.errorMsg || 'Invalid input';
-    if (!regex || !regex.constructor == RegExp) {
-      console.error(`${regex} is not a valid RegExp`);
-      return '';
+    string: (value, rules, fields) => {
+        if(typeof value === "string") {
+            if(value === '') {
+                return 'Cannot leave empty'
+            }
+        }
+        return '';
     }
-    return regex.test(value) ? '' : errMsg;
-  },
-
-  condition: function (value, rules = {}, fields) {
-    console.log('gg');
-    const { condition } = rules || { condtion: undefined };
-    if (!['function', 'boolean'].includes(typeof condition)) {
-      console.error(`condition should be a function returning boolean or boolean itself`);
-      return '';
-    }
-    const result = typeof condition === 'function' ? condition() : condition;
-    return result ? '' : rules.errorMsg || 'Invalid input';
-  },
-
-  // VALIDATION FOR SPECIFIC FIELD -------------
-  confirmPassword: function (value, rules = {}, fields) {
-    const password = fields.password;
-    const errorMsg = 'Confirm your password';
-    const success = '';
-    const findMatch = () => {
-      return password == value ? success : errorMsg;
-    }
-    return password ? findMatch() : success;
   }
 }
 ```
 
-`form-rules` exports an object in which all the properties are validation functions, they must return empty string on validation success. If validation fails it must return error data(can be of any data type that your comonent can support).
-
-##### For field specific validator
-If your `field-config` contains `model:'fullName'` and you want to write a validation function specifically for this field then your validation function name should be `fullName`.
-
-##### Validation types
-You can also create **validation types** for using a common validation function for multiple different type of fields. For that you can create a common validation function for lets say **regex** testing or for **min-max** limit. You can name your function whatever you want.
-Lets say you name your function **'regex'** for validating multiple regex type fields then you need to add `type` property to your `field-config`, it will look like this.
-
-```js
-    {
-        model: 'amount',
-        rules: {
-            type: 'regex'
-        }
-    }
-```
-
-##### Common validators (`COMMON_VALIDATORS`)
-Input sanitization functions can be written here for different input types.
-
 **Following params are available in validators/functions.**
-* **param 1:** `value`, value of current field/component.
+* **param 1:** `value`, value of the field.
 * **param 2:** `rules`, rules specified in `field-config`.
-* **param 3:** `fields`, data of all the fields.
+* **param 3:** `fields`, value of all the fields.
 
 ## Slots
 #### [Slots Arrangement](https://drive.google.com/file/d/1vq3KcNKR0CAHy8BYKi0FsNeieAwoSGpl/view?usp=sharing)
@@ -379,7 +389,7 @@ For form actions like submit and cancel etc.
 For footer notes, etc.
 
 ## Styling
-No default CSS is written in this component, you can write your own styles for the generated form. **BEM** methodology is beign used to enure no class conflicts with third party component library.
+No default CSS is present in form generator. **BEM** methodology is used to enure no class conflicts with third party component library.
 
 #### Classes
 * form - **"generated-form"**
@@ -394,6 +404,10 @@ No default CSS is written in this component, you can write your own styles for t
 This project exists thanks to all the people who contribute. [Contribute](https://github.com/divijhardwaj/form-generator-vue).
 * [Carlos Noguera](https://github.com/kaysersoze)
 ## Versions
+ 1.1.7
+* Fixed form not validating properly and v-model bug.
+* Added v-model now supports field errors too.
+
  1.1.5
 * v-model support added.
 * sub component slot added to support nested components like radio button group etc.
