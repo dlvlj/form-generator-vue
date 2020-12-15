@@ -28,7 +28,11 @@
                   computedComponent(subFieldConfig)
                 "
                 :key="subFieldConfig.model"
-                :class="['generated-form__body__row__col', `col-${subFieldConfig.model}`, classes.col]"
+                :class="[
+                  'generated-form__body__row__col',
+                  `col-${subFieldConfig.model}`,
+                  classes.col,
+                ]"
               >
                 <template>
                   <slot :name="`${subFieldConfig.model}_before`" />
@@ -42,7 +46,7 @@
                     v-bind="bindProps(subFieldConfig)"
                     v-on="bindEvents(subFieldConfig)"
                   >
-                    <slot :name="`${subFieldConfig.model}`"/>
+                    <slot :name="`${subFieldConfig.model}`" />
                   </component>
                   <slot :name="`${subFieldConfig.model}_after`" />
                 </template>
@@ -52,7 +56,11 @@
           <!-- IF NOT AN ARRAY THEN ITS A FIELD, (CREATES ONE COLUMN PER ROW) -->
           <template v-else>
             <div
-              :class="['generated-form__body__row__col', `col-${fieldConfig.model}`, classes.col]"
+              :class="[
+                'generated-form__body__row__col',
+                `col-${fieldConfig.model}`,
+                classes.col,
+              ]"
             >
               <template>
                 <slot :name="`${fieldConfig.model}_before`" />
@@ -66,7 +74,7 @@
                   v-bind="bindProps(fieldConfig)"
                   v-on="bindEvents(fieldConfig)"
                 >
-                  <slot :name="`${fieldConfig.model}`"/>
+                  <slot :name="`${fieldConfig.model}`" />
                 </component>
                 <slot :name="`${fieldConfig.model}_after`" />
               </template>
@@ -98,6 +106,7 @@ export default {
     value: {
       type: Object,
       default: null,
+      required: false,
     },
     submitHandler: {
       type: Function,
@@ -209,19 +218,32 @@ export default {
     },
     fields: {
       handler: function (newVal) {
-        this.$emit('input', this.fields);
+        this.$emit("input", this.fields);
       },
-      deep: true
+      deep: true,
     },
-    value: {
-      handler: function (newVal) {
-        this.fields = this.value
-      },
-      immediate: true,
-    }
+    // value: {
+    //   handler: function (newVal) {
+    //     this.fields = this.value
+    //   },
+    //   immediate: true,
+    // }
   },
   created() {
     this.$emit("setFormContext", this);
+    if (this.value && Object.keys(this.value).length) {
+      for (const fieldName in this.value) {
+        if (fieldName in this.fields) {
+          this.$watch(
+            `value.${fieldName}`,
+            function (newVal, oldVal) {
+              this.fields[fieldName] = newVal;
+            },
+            { immediate: true }
+          );
+        }
+      }
+    }
     for (const fieldName in this.fields) {
       this.$watch(`fields.${fieldName}`, function (newVal, oldVal) {
         // for number type field.

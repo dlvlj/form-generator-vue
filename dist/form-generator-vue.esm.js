@@ -57,7 +57,8 @@ var script = {
   props: {
     value: {
       type: Object,
-      default: null
+      default: null,
+      required: false
     },
     submitHandler: {
       type: Function,
@@ -174,20 +175,32 @@ var script = {
     },
     fields: {
       handler: function (newVal) {
-        this.$emit('input', this.fields);
+        this.$emit("input", this.fields);
       },
       deep: true
-    },
-    value: {
-      handler: function (newVal) {
-        this.fields = this.value;
-      },
-      immediate: true
-    }
+    } // value: {
+    //   handler: function (newVal) {
+    //     this.fields = this.value
+    //   },
+    //   immediate: true,
+    // }
+
   },
 
   created() {
     this.$emit("setFormContext", this);
+
+    if (this.value && Object.keys(this.value).length) {
+      for (const fieldName in this.value) {
+        if (fieldName in this.fields) {
+          this.$watch(`value.${fieldName}`, function (newVal, oldVal) {
+            this.fields[fieldName] = newVal;
+          }, {
+            immediate: true
+          });
+        }
+      }
+    }
 
     for (const fieldName in this.fields) {
       this.$watch(`fields.${fieldName}`, function (newVal, oldVal) {
@@ -579,7 +592,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-511c507c";
+const __vue_scope_id__ = "data-v-c25be67c";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

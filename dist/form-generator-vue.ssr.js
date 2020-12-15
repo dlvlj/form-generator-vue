@@ -282,7 +282,8 @@ function validationResult(msg) {
   props: {
     value: {
       type: Object,
-      default: null
+      default: null,
+      required: false
     },
     submitHandler: {
       type: Function,
@@ -432,39 +433,55 @@ function validationResult(msg) {
     },
     fields: {
       handler: function handler(newVal) {
-        this.$emit('input', this.fields);
+        this.$emit("input", this.fields);
       },
       deep: true
-    },
-    value: {
-      handler: function handler(newVal) {
-        this.fields = this.value;
-      },
-      immediate: true
-    }
+    } // value: {
+    //   handler: function (newVal) {
+    //     this.fields = this.value
+    //   },
+    //   immediate: true,
+    // }
+
   },
   created: function created() {
     var _this = this;
 
     this.$emit("setFormContext", this);
 
-    var _loop = function _loop(fieldName) {
-      _this.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
-        // for number type field.
-        this.convertToNumber(fieldName); // for helper components
+    if (this.value && Object.keys(this.value).length) {
+      var _loop = function _loop(fieldName) {
+        if (fieldName in _this.fields) {
+          _this.$watch("value.".concat(fieldName), function (newVal, oldVal) {
+            this.fields[fieldName] = newVal;
+          }, {
+            immediate: true
+          });
+        }
+      };
 
-        this.updateHelpers(fieldName, newVal); // to prevent below calls when only type is changed.
+      for (var fieldName in this.value) {
+        _loop(fieldName);
+      }
+    }
+
+    var _loop2 = function _loop2(_fieldName) {
+      _this.$watch("fields.".concat(_fieldName), function (newVal, oldVal) {
+        // for number type field.
+        this.convertToNumber(_fieldName); // for helper components
+
+        this.updateHelpers(_fieldName, newVal); // to prevent below calls when only type is changed.
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
           return;
         }
 
-        this.validateField(fieldName);
+        this.validateField(_fieldName);
       });
     };
 
-    for (var fieldName in this.fields) {
-      _loop(fieldName);
+    for (var _fieldName in this.fields) {
+      _loop2(_fieldName);
     }
   },
   methods: {
@@ -781,14 +798,14 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-511c507c>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-511c507c>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-c25be67c>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-c25be67c>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-    }), _vm._ssrNode(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row', _vm.classes.row]) + " data-v-511c507c>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }), _vm._ssrNode(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row', _vm.classes.row]) + " data-v-c25be67c>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row__col', "col-" + subFieldConfig.model, _vm.classes.col]) + _vm._ssrStyle(null, null, {
         display: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig) ? '' : 'none'
-      }) + " data-v-511c507c>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + " data-v-c25be67c>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -804,7 +821,7 @@ var __vue_render__ = function __vue_render__() {
           expression: "fields[subFieldConfig.model]"
         }
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig)), [_vm._t("" + subFieldConfig.model)], 2), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
-    })] : [_vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row__col', "col-" + fieldConfig.model, _vm.classes.col]) + " data-v-511c507c>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    })] : [_vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row__col', "col-" + fieldConfig.model, _vm.classes.col]) + " data-v-c25be67c>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -822,7 +839,7 @@ var __vue_render__ = function __vue_render__() {
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig)), [_vm._t("" + fieldConfig.model)], 2), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2) : _vm._e()];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-511c507c>", "</div>", [_vm._t("footer")], 2)], 2);
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-c25be67c>", "</div>", [_vm._t("footer")], 2)], 2);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -831,10 +848,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-511c507c";
+var __vue_scope_id__ = "data-v-c25be67c";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-511c507c";
+var __vue_module_identifier__ = "data-v-c25be67c";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
