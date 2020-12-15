@@ -173,24 +173,29 @@ var script = {
         !newVal && this.removeAllErrors();
       }
     },
-    fields: {
-      handler: function (newVal) {
-        this.$emit("input", this.fields);
-      },
-      deep: true
-    },
     value: {
       handler: function () {
         if (this.fields && this.value && Object.keys(this.value).length) {
-          for (const fieldName in this.value) {
+          for (const fieldName in this.value["values"]) {
             if (fieldName in this.fields) {
-              this.fields[fieldName] = this.value[fieldName];
+              this.fields[fieldName] = this.value["values"][fieldName];
+              this.errors[fieldName] = this.value["errors"][fieldName];
             }
           }
         }
       },
       immediate: true,
       deep: true
+    },
+    fields: {
+      handler: function (newVal) {
+        this.$emit("input", {
+          values: this.fields,
+          errors: this.errors
+        });
+      },
+      deep: true,
+      immediate: true
     }
   },
 
@@ -587,7 +592,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-7384e1cc";
+const __vue_scope_id__ = "data-v-54db7e4c";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;

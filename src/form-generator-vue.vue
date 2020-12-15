@@ -216,24 +216,26 @@ export default {
         !newVal && this.removeAllErrors();
       },
     },
-    fields: {
-      handler: function (newVal) {
-        this.$emit("input", this.fields);
-      },
-      deep: true,
-    },
     value: {
       handler: function () {
         if (this.fields && this.value && Object.keys(this.value).length) {
-          for (const fieldName in this.value) {
+          for (const fieldName in this.value["values"]) {
             if (fieldName in this.fields) {
-              this.fields[fieldName] = this.value[fieldName];
+              this.fields[fieldName] = this.value["values"][fieldName];
+              this.errors[fieldName] = this.value["errors"][fieldName];
             }
           }
         }
       },
       immediate: true,
       deep: true,
+    },
+    fields: {
+      handler: function (newVal) {
+        this.$emit("input", { values: this.fields, errors: this.errors });
+      },
+      deep: true,
+      immediate: true,
     },
   },
   created() {
