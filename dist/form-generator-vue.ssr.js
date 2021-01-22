@@ -423,6 +423,11 @@ function validationResult(msg) {
       }
 
       return flatConfig;
+    },
+    vModelValid: function vModelValid() {
+      var parentValid = this.value && _typeof(this.value) && this.value === 'object' && !this.isArr(this.value);
+      var hasChildren = parentValid && 'values' in this.value && 'errors' in this.value;
+      return hasChildren && _typeof(this.value.values) === 'object' && !this.isArr(this.value.values) && _typeof(this.value.errors) === 'object' && !this.isArr(this.value.errors);
     }
   },
   watch: {
@@ -433,12 +438,10 @@ function validationResult(msg) {
     },
     value: {
       handler: function handler() {
-        if (this.fields && this.value && Object.keys(this.value).length) {
+        if (this.vModelValid) {
           for (var fieldName in this.value["values"]) {
-            if (fieldName in this.fields) {
-              this.fields[fieldName] = this.value["values"][fieldName];
-              this.errors[fieldName] = this.value["errors"][fieldName];
-            }
+            fieldName in this.fields && (this.fields[fieldName] = this.value["values"][fieldName]);
+            fieldName in this.errors && (this.errors[fieldName] = this.value["errors"][fieldName]);
           }
         }
       },
@@ -794,14 +797,14 @@ var __vue_render__ = function __vue_render__() {
         return _vm.submitForm($event);
       }
     }
-  }, [_vm._ssrNode("<div class=\"generated-form__header\" data-v-54db7e4c>", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\" data-v-54db7e4c>", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
+  }, [_vm._ssrNode("<div class=\"generated-form__header\">", "</div>", [_vm._t("header")], 2), _vm._ssrNode(" "), _vm.formEditable ? _vm._ssrNode("<div class=\"generated-form__body\">", "</div>", [_vm._l(_vm.fieldsConfig, function (fieldConfig) {
     return [_vm._t("sectionLabel", null, {
       "fieldConfig": fieldConfig,
       "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-    }), _vm._ssrNode(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row', _vm.classes.row]) + " data-v-54db7e4c>", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
+    }), _vm._ssrNode(" "), _vm.isArr(fieldConfig) || _vm.fieldVisible(fieldConfig) && _vm.computedComponent(fieldConfig) ? _vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row', _vm.classes.row]) + ">", "</div>", [_vm.isArr(fieldConfig) ? [_vm._l(fieldConfig, function (subFieldConfig) {
       return [_vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row__col', "col-" + subFieldConfig.model, _vm.classes.col]) + _vm._ssrStyle(null, null, {
         display: _vm.fieldVisible(subFieldConfig) && _vm.computedComponent(subFieldConfig) ? '' : 'none'
-      }) + " data-v-54db7e4c>", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
+      }) + ">", "</div>", [[_vm._t(subFieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(subFieldConfig), _vm._g(_vm._b({
         key: subFieldConfig.model,
         ref: subFieldConfig.model,
         refInFor: true,
@@ -817,7 +820,7 @@ var __vue_render__ = function __vue_render__() {
           expression: "fields[subFieldConfig.model]"
         }
       }, 'component', _vm.bindProps(subFieldConfig), false), _vm.bindEvents(subFieldConfig)), [_vm._t("" + subFieldConfig.model)], 2), _vm._ssrNode(" "), _vm._t(subFieldConfig.model + "_after")]], 2)];
-    })] : [_vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row__col', "col-" + fieldConfig.model, _vm.classes.col]) + " data-v-54db7e4c>", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
+    })] : [_vm._ssrNode("<div" + _vm._ssrClass(null, ['generated-form__body__row__col', "col-" + fieldConfig.model, _vm.classes.col]) + ">", "</div>", [[_vm._t(fieldConfig.model + "_before"), _vm._ssrNode(" "), _c(_vm.computedComponent(fieldConfig), _vm._g(_vm._b({
       key: fieldConfig.model,
       ref: fieldConfig.model,
       refInFor: true,
@@ -835,7 +838,7 @@ var __vue_render__ = function __vue_render__() {
     }, 'component', _vm.bindProps(fieldConfig), false), _vm.bindEvents(fieldConfig)), [_vm._t("" + fieldConfig.model)], 2), _vm._ssrNode(" "), _vm._t(fieldConfig.model + "_after")]], 2)]], 2) : _vm._e()];
   })], 2) : _vm._e(), _vm._ssrNode(" "), !_vm.formEditable ? _vm._t("disabled", null, {
     "fieldsConfigFlat": _vm.fieldsConfig_FLAT
-  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\" data-v-54db7e4c>", "</div>", [_vm._t("footer")], 2)], 2);
+  }) : _vm._e(), _vm._ssrNode(" "), _vm._t("agreement"), _vm._ssrNode(" "), _vm._t("actions"), _vm._ssrNode(" "), _vm._ssrNode("<div class=\"generated-form__footer\">", "</div>", [_vm._t("footer")], 2)], 2);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -844,10 +847,10 @@ var __vue_staticRenderFns__ = [];
 var __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = "data-v-54db7e4c";
+var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-54db7e4c";
+var __vue_module_identifier__ = "data-v-211a7142";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

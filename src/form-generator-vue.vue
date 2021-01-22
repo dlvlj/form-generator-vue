@@ -209,6 +209,11 @@ export default {
       }
       return flatConfig;
     },
+    vModelValid() {
+      const parentValid =  this.value && typeof this.value && this.value === 'object' && !this.isArr(this.value); 
+      const hasChildren = parentValid && 'values' in this.value && 'errors' in this.value;
+      return hasChildren && typeof this.value.values === 'object' && !this.isArr(this.value.values) && typeof this.value.errors === 'object' && !this.isArr(this.value.errors);
+    }
   },
   watch: {
     formEditable: {
@@ -218,12 +223,10 @@ export default {
     },
     value: {
       handler: function () {
-        if (this.fields && this.value && Object.keys(this.value).length) {
+        if (this.vModelValid) {
           for (const fieldName in this.value["values"]) {
-            if (fieldName in this.fields) {
-              this.fields[fieldName] = this.value["values"][fieldName];
-              this.errors[fieldName] = this.value["errors"][fieldName];
-            }
+            fieldName in this.fields && (this.fields[fieldName] = this.value["values"][fieldName]);
+            fieldName in this.errors && (this.errors[fieldName] = this.value["errors"][fieldName]);
           }
         }
       },
@@ -497,6 +500,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
