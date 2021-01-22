@@ -583,21 +583,7 @@ function validationResult(msg) {
     fieldRequired: function fieldRequired(fieldName) {
       var REQUIRED = true;
       var NOT_REQUIRED = false;
-      var FIELD_CONFIG = this.findFieldConfig(fieldName); // const config_required = this.isFunc(FIELD_CONFIG.required)
-      //   ? FIELD_CONFIG.required(this)
-      //   : Boolean(FIELD_CONFIG.required);
-      // return FIELD_CONFIG &&
-      //   !this.fieldDisabled(FIELD_CONFIG) &&
-      //   this.fieldVisible(FIELD_CONFIG)
-      //   ? !this.isHelperComponent(fieldName)
-      //     ? "required" in FIELD_CONFIG
-      //       ? config_required
-      //       : REQUIRED
-      //     : "required" in FIELD_CONFIG
-      //     ? config_required
-      //     : NOT_REQUIRED
-      //   : NOT_REQUIRED;
-
+      var FIELD_CONFIG = this.findFieldConfig(fieldName);
       var requiredProp = FIELD_CONFIG.props && "required" in FIELD_CONFIG.props ? this.isFunc(FIELD_CONFIG.props.required) ? FIELD_CONFIG.props.required(this) : Boolean(FIELD_CONFIG.props.required) : this.isHelperComponent(fieldName) ? NOT_REQUIRED : REQUIRED;
       return FIELD_CONFIG && !this.fieldDisabled(FIELD_CONFIG) && this.fieldVisible(FIELD_CONFIG) ? requiredProp : NOT_REQUIRED;
     },
@@ -850,7 +836,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-3577c7ea";
+var __vue_module_identifier__ = "data-v-41b2c942";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
