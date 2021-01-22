@@ -445,7 +445,7 @@ function validationResult(msg) {
           }
         }
       },
-      immediate: true,
+      // immediate: true,
       deep: true
     },
     fields: {
@@ -850,7 +850,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-211a7142";
+var __vue_module_identifier__ = "data-v-3577c7ea";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

@@ -188,7 +188,7 @@ var script = {
           }
         }
       },
-      immediate: true,
+      // immediate: true,
       deep: true
     },
     fields: {
