@@ -190,6 +190,10 @@ export default {
         ? this.formConfig.activeValidation
         : false;
     },
+    activeValidationDelay() {
+      const hasActiveValidationDelay = "activeValidationDelay" in this.formConfig && this.formConfig.activeValidationDelay && !isNaN(this.formConfig.activeValidationDelay);
+      return this.activeValidation && hasActiveValidationDelay? this.formConfig.activeValidationDelay : false;
+    },
     logs() {
       return "logs" in this.formConfig ? this.formConfig.logs : false;
     },
@@ -253,11 +257,27 @@ export default {
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         }
-        this.validateField(fieldName);
+        this.activeValidationDelay ? this.debounceValidateField(fieldName) : this.validateField(fieldName);
       });
     }
   },
   methods: {
+    debounce: (func, wait)=> {
+      let timeOut;
+      return function executedFunction() {
+        clearTimeout(timeOut);
+        timeOut=setTimeout(function(){
+          clearTimeout(timeOut);
+          func();
+        },wait);
+      }
+    },
+    debounceValidateField(fieldName) {
+      const de = this.debounce(() => {
+        this.validateField(fieldName)
+      }, this.activeValidationDelay);
+      de();
+    },
     resetFormState() {
       this.submit = false;
     },

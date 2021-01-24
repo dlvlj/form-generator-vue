@@ -401,6 +401,10 @@ function isUndef(val) {
     activeValidation: function activeValidation() {
       return "activeValidation" in this.formConfig ? this.formConfig.activeValidation : false;
     },
+    activeValidationDelay: function activeValidationDelay() {
+      var hasActiveValidationDelay = "activeValidationDelay" in this.formConfig && this.formConfig.activeValidationDelay && !isNaN(this.formConfig.activeValidationDelay);
+      return this.activeValidation && hasActiveValidationDelay ? this.formConfig.activeValidationDelay : false;
+    },
     logs: function logs() {
       return "logs" in this.formConfig ? this.formConfig.logs : false;
     },
@@ -482,7 +486,7 @@ function isUndef(val) {
           return;
         }
 
-        this.validateField(fieldName);
+        this.activeValidationDelay ? this.debounceValidateField(fieldName) : this.validateField(fieldName);
       });
     };
 
@@ -491,6 +495,24 @@ function isUndef(val) {
     }
   },
   methods: {
+    debounce: function debounce(func, wait) {
+      var timeOut;
+      return function executedFunction() {
+        clearTimeout(timeOut);
+        timeOut = setTimeout(function () {
+          clearTimeout(timeOut);
+          func();
+        }, wait);
+      };
+    },
+    debounceValidateField: function debounceValidateField(fieldName) {
+      var _this2 = this;
+
+      var de = this.debounce(function () {
+        _this2.validateField(fieldName);
+      }, this.activeValidationDelay);
+      de();
+    },
     resetFormState: function resetFormState() {
       this.submit = false;
     },
@@ -611,7 +633,7 @@ function isUndef(val) {
       return fieldValid;
     },
     submitForm: function submitForm() {
-      var _this2 = this;
+      var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var formValidationStatus, submitFail;
@@ -619,19 +641,19 @@ function isUndef(val) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this2.submit = true;
+                _this3.submit = true;
                 formValidationStatus = {};
-                Object.keys(_this2.fields).forEach(function (fieldName) {
-                  var required = _this2.fieldRequired(fieldName);
+                Object.keys(_this3.fields).forEach(function (fieldName) {
+                  var required = _this3.fieldRequired(fieldName);
 
-                  formValidationStatus[fieldName] = _this2.validateField(fieldName) || !required;
+                  formValidationStatus[fieldName] = _this3.validateField(fieldName) || !required;
                 });
                 submitFail = Object.keys(formValidationStatus).find(function (fieldName) {
                   return !formValidationStatus[fieldName];
                 });
 
-                if (_this2.logs) {
-                  console.log("form data:", _this2.fields);
+                if (_this3.logs) {
+                  console.log("form data:", _this3.fields);
                   console.log("form validations:", formValidationStatus);
                 }
 
@@ -640,18 +662,18 @@ function isUndef(val) {
                   break;
                 }
 
-                _this2.resetFormState();
+                _this3.resetFormState();
 
-                _this2.handleSubmitFail(_this2.fields);
+                _this3.handleSubmitFail(_this3.fields);
 
                 return _context.abrupt("return");
 
               case 9:
                 _context.next = 11;
-                return _this2.submitHandler(_this2.fields);
+                return _this3.submitHandler(_this3.fields);
 
               case 11:
-                _this2.resetFormState();
+                _this3.resetFormState();
 
               case 12:
               case "end":
@@ -825,7 +847,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-09b250ff";
+var __vue_module_identifier__ = "data-v-c765da22";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
