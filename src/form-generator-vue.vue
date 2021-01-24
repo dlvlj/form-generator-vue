@@ -401,7 +401,7 @@ export default {
           : FIELD_IS_VALID;
 
       !REQUIRED
-        ? !this.submit && this.showErrors(fieldName, fieldErrorMsg)
+        ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) // for active validation
         : this.showErrors(fieldName, fieldErrorMsg);
 
       this.logs &&
@@ -417,31 +417,24 @@ export default {
     },
     async submitForm() {
       this.submit = true;
-      const INVALID = false;
-      let fieldsStatus = [];
+      let formValidationStatus = {};
+
       Object.keys(this.fields).forEach((fieldName) => {
-        fieldsStatus = [
-          ...fieldsStatus,
-          [fieldName, this.validateField(fieldName)],
-        ];
+        const required = this.fieldRequired(fieldName);
+        formValidationStatus[fieldName] = this.validateField(fieldName) || !required;
       });
-      const [firstInvalidField] = fieldsStatus.find(([fieldName, status]) => {
-        const REQUIRED = this.fieldRequired(fieldName);
-        return REQUIRED && status === INVALID;
-      }) || [""];
 
-      this.logs && console.log("fields data", this.fields);
-      console.log("validations status:", fieldsStatus);
-
-      if (firstInvalidField) {
-        this.handleSubmitFail(this.fields);
+      const submitFail = Object.keys(formValidationStatus).find(fieldName => !formValidationStatus[fieldName]);
+      if(this.logs) {
+        console.log("form data:", this.fields); 
+        console.log("form validations:", formValidationStatus);
+      }
+      if (submitFail) {
         this.resetFormState();
+        this.handleSubmitFail(this.fields);
         return;
       }
-
-      console.log("Form is valid. calling submit handler.\n");
       await this.submitHandler(this.fields);
-
       this.resetFormState();
     },
     scrollToComponent(fieldName) {

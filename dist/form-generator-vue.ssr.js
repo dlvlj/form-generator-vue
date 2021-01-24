@@ -598,7 +598,8 @@ function validationResult(msg) {
           fieldValid = _ref6[0],
           fieldErrorMsg = _ref6[1];
 
-      !REQUIRED ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) : this.showErrors(fieldName, fieldErrorMsg);
+      !REQUIRED ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) // for active validation
+      : this.showErrors(fieldName, fieldErrorMsg);
       this.logs && console.log("model:".concat(fieldName, "\n"), "value:".concat(this.fields[fieldName], "\n"), "type:".concat(_typeof(this.fields[fieldName]), "\n"), "isValid:".concat(fieldValid, "\n"), "required:".concat(REQUIRED, "\n"), "errorMessage:".concat(fieldErrorMsg));
       return fieldValid;
     },
@@ -606,50 +607,46 @@ function validationResult(msg) {
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var INVALID, fieldsStatus, _ref7, _ref8, firstInvalidField;
-
+        var formValidationStatus, submitFail;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _this2.submit = true;
-                INVALID = false;
-                fieldsStatus = [];
+                formValidationStatus = {};
                 Object.keys(_this2.fields).forEach(function (fieldName) {
-                  fieldsStatus = [].concat(_toConsumableArray(fieldsStatus), [[fieldName, _this2.validateField(fieldName)]]);
+                  var required = _this2.fieldRequired(fieldName);
+
+                  formValidationStatus[fieldName] = _this2.validateField(fieldName) || !required;
                 });
-                _ref7 = fieldsStatus.find(function (_ref9) {
-                  var _ref10 = _slicedToArray(_ref9, 2),
-                      fieldName = _ref10[0],
-                      status = _ref10[1];
+                submitFail = Object.keys(formValidationStatus).find(function (fieldName) {
+                  return !formValidationStatus[fieldName];
+                });
 
-                  var REQUIRED = _this2.fieldRequired(fieldName);
+                if (_this2.logs) {
+                  console.log("form data:", _this2.fields);
+                  console.log("form validations:", formValidationStatus);
+                }
 
-                  return REQUIRED && status === INVALID;
-                }) || [""], _ref8 = _slicedToArray(_ref7, 1), firstInvalidField = _ref8[0];
-                _this2.logs && console.log("fields data", _this2.fields);
-                console.log("validations status:", fieldsStatus);
-
-                if (!firstInvalidField) {
-                  _context.next = 11;
+                if (!submitFail) {
+                  _context.next = 9;
                   break;
                 }
 
-                _this2.handleSubmitFail(_this2.fields);
-
                 _this2.resetFormState();
+
+                _this2.handleSubmitFail(_this2.fields);
 
                 return _context.abrupt("return");
 
-              case 11:
-                console.log("Form is valid. calling submit handler.\n");
-                _context.next = 14;
+              case 9:
+                _context.next = 11;
                 return _this2.submitHandler(_this2.fields);
 
-              case 14:
+              case 11:
                 _this2.resetFormState();
 
-              case 15:
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -836,7 +833,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-cf8247fa";
+var __vue_module_identifier__ = "data-v-451efe2a";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

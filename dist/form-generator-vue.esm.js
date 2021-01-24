@@ -347,32 +347,32 @@ var script = {
       const config_rules = FIELD_CONFIG.rules || {};
       const [fieldValid, fieldErrorMsg] = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.formRules, { ...this.fields
       }, this.submit) : FIELD_IS_VALID;
-      !REQUIRED ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) : this.showErrors(fieldName, fieldErrorMsg);
+      !REQUIRED ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) // for active validation
+      : this.showErrors(fieldName, fieldErrorMsg);
       this.logs && console.log(`model:${fieldName}\n`, `value:${this.fields[fieldName]}\n`, `type:${typeof this.fields[fieldName]}\n`, `isValid:${fieldValid}\n`, `required:${REQUIRED}\n`, `errorMessage:${fieldErrorMsg}`);
       return fieldValid;
     },
 
     async submitForm() {
       this.submit = true;
-      const INVALID = false;
-      let fieldsStatus = [];
+      let formValidationStatus = {};
       Object.keys(this.fields).forEach(fieldName => {
-        fieldsStatus = [...fieldsStatus, [fieldName, this.validateField(fieldName)]];
+        const required = this.fieldRequired(fieldName);
+        formValidationStatus[fieldName] = this.validateField(fieldName) || !required;
       });
-      const [firstInvalidField] = fieldsStatus.find(([fieldName, status]) => {
-        const REQUIRED = this.fieldRequired(fieldName);
-        return REQUIRED && status === INVALID;
-      }) || [""];
-      this.logs && console.log("fields data", this.fields);
-      console.log("validations status:", fieldsStatus);
+      const submitFail = Object.keys(formValidationStatus).find(fieldName => !formValidationStatus[fieldName]);
 
-      if (firstInvalidField) {
-        this.handleSubmitFail(this.fields);
+      if (this.logs) {
+        console.log("form data:", this.fields);
+        console.log("form validations:", formValidationStatus);
+      }
+
+      if (submitFail) {
         this.resetFormState();
+        this.handleSubmitFail(this.fields);
         return;
       }
 
-      console.log("Form is valid. calling submit handler.\n");
       await this.submitHandler(this.fields);
       this.resetFormState();
     },
