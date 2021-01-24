@@ -351,11 +351,11 @@ function isUndef(val) {
     var errors = {};
 
     function addFieldsAndErrors(fieldConfig) {
-      fields = _objectSpread2(_objectSpread2({}, fields), {}, _defineProperty({}, fieldConfig.model, "value" in fieldConfig ? fieldConfig.value : ""));
-      errors = _objectSpread2(_objectSpread2({}, errors), {}, _defineProperty({}, fieldConfig.model, ""));
+      fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
+      errors[fieldConfig.model] = "";
     }
 
-    if ("fields" in this.formConfig) {
+    if ("fields" in this.formConfig && this.isArr(this.formConfig.fields) && this.formConfig.fields.length) {
       var _iterator = _createForOfIteratorHelper(this.formConfig.fields),
           _step;
 
@@ -564,7 +564,7 @@ function isUndef(val) {
       return SHOW;
     },
     bindProps: function bindProps(fieldConfig) {
-      var _objectSpread4;
+      var _objectSpread2$1;
 
       var componentName = this.computedComponent(fieldConfig);
       var formComponent = this.formComponents.find(function (_ref2) {
@@ -583,7 +583,7 @@ function isUndef(val) {
       },
           errorProp = _ref3.component.errorProp;
 
-      return _objectSpread2(_objectSpread2({}, fieldConfig.props), {}, (_objectSpread4 = {}, _defineProperty(_objectSpread4, errorProp, this.errors[fieldConfig.model]), _defineProperty(_objectSpread4, "disabled", this.fieldDisabled(fieldConfig)), _objectSpread4));
+      return _objectSpread2(_objectSpread2({}, fieldConfig.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorProp, this.errors[fieldConfig.model]), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(fieldConfig)), _objectSpread2$1));
     },
     findFieldConfig: function findFieldConfig(fieldName) {
       return this.fieldsConfig_FLAT.find(function (conf) {
@@ -863,7 +863,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-00312bc0";
+var __vue_module_identifier__ = "data-v-74742b06";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

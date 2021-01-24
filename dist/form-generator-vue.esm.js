@@ -117,15 +117,11 @@ var script = {
     let errors = {};
 
     function addFieldsAndErrors(fieldConfig) {
-      fields = { ...fields,
-        [fieldConfig.model]: "value" in fieldConfig ? fieldConfig.value : ""
-      };
-      errors = { ...errors,
-        [fieldConfig.model]: ""
-      };
+      fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
+      errors[fieldConfig.model] = "";
     }
 
-    if ("fields" in this.formConfig) {
+    if ("fields" in this.formConfig && this.isArr(this.formConfig.fields) && this.formConfig.fields.length) {
       for (const config of this.formConfig.fields) {
         if (this.isArr(config)) {
           for (const subConfig of config) {
