@@ -654,21 +654,6 @@ function validationResult(msg) {
         }, _callee);
       }))();
     },
-    scrollToComponent: function scrollToComponent(fieldName) {
-      var fieldConfig = this.findFieldConfig(fieldName);
-      var componentName = this.computedComponent(fieldConfig);
-      this.logs && console.log("scroll to:", "".concat(componentName ? fieldName : "".concat(fieldName, "(component not found)")));
-
-      if (!componentName) {
-        return;
-      }
-
-      var ref = fieldName;
-      var el = this.$refs[ref][0].$el;
-      el && el.scrollIntoView({
-        behavior: "smooth"
-      }) && el.focus();
-    },
     isUndef: function isUndef(val) {
       return typeof val === "undefined";
     },
@@ -833,7 +818,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-451efe2a";
+var __vue_module_identifier__ = "data-v-7347a01f";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

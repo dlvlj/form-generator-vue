@@ -377,22 +377,6 @@ var script = {
       this.resetFormState();
     },
 
-    scrollToComponent(fieldName) {
-      const fieldConfig = this.findFieldConfig(fieldName);
-      const componentName = this.computedComponent(fieldConfig);
-      this.logs && console.log("scroll to:", `${componentName ? fieldName : `${fieldName}(component not found)`}`);
-
-      if (!componentName) {
-        return;
-      }
-
-      const ref = fieldName;
-      const el = this.$refs[ref][0].$el;
-      el && el.scrollIntoView({
-        behavior: "smooth"
-      }) && el.focus();
-    },
-
     isUndef(val) {
       return typeof val === "undefined";
     },
