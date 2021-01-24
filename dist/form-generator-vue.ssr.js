@@ -231,33 +231,45 @@ var FIELD_IS_VALID = ''; // VALIDATION ENGINE
 
 function VALIDATION_ENGINE (fieldName, fieldValue, fieldRules, validationRules, allFields, submit) {
   var msg = fieldIsEmpty(fieldValue);
-  var COMMON_VALIDATORS = validationRules.COMMON_VALIDATORS;
-  var HAS_COMMON_RULES = !COMMON_VALIDATORS || !Object.keys(COMMON_VALIDATORS).length ? false : true;
-  var VALIDATION_FUNCTION = validationRules[fieldName] || validationRules[fieldRules.type] || undefined;
+  var filters = validationRules.FILTERS;
+  var hasFilters = _typeof(filters) === 'object' && !Array.isArray(filters) && Object.keys(filters).length;
+  var validator = validationRules[fieldName] || validationRules[fieldRules.type];
 
   if (msg !== FIELD_IS_EMPTY) {
-    if (HAS_COMMON_RULES) {
-      for (var validator in COMMON_VALIDATORS) {
-        !isFunc(COMMON_VALIDATORS[validator]) && console.error("".concat(validator, " is not a function."));
-        msg = COMMON_VALIDATORS[validator](fieldValue, fieldRules, allFields);
-        isUndef(msg) && console.error("".concat(validator, " return error string if field is invalid, return empty string when success"));
+    if (hasFilters) {
+      for (var filter in filters) {
+        if (!isFunc(filters[filter])) {
+          console.error("".concat(filter, " is not a function."));
+          break;
+        }
+
+        msg = filters[filter](fieldValue, fieldRules, allFields);
+
+        if (isUndef(msg)) {
+          msg = FIELD_IS_VALID;
+          console.error("function ".concat(filter, " returning undefined."));
+        }
+
+        if (msg !== FIELD_IS_VALID) {
+          break;
+        }
       }
     }
 
-    if (!isFunc(VALIDATION_FUNCTION)) {
-      fieldName in validationRules && console.error("".concat(VALIDATION_FUNCTION, " is not a function."));
-      return validationResult(msg);
+    if (!isFunc(validator)) {
+      fieldName in validationRules && console.error("".concat(validator, " is not a function."));
+      return result(msg);
     }
 
-    msg = VALIDATION_FUNCTION(fieldValue, fieldRules, allFields);
-    return validationResult(msg);
+    msg = validator(fieldValue, fieldRules, allFields);
+    return result(msg);
   } else {
     msg = submit ? 'Required' : '';
-    return validationResult(msg);
+    return result(msg);
   }
 }
 
-function validationResult(msg) {
+function result(msg) {
   var PASS = [true, ''];
   var FAIL = [false, msg];
   return msg !== FIELD_IS_VALID ? FAIL : PASS;
