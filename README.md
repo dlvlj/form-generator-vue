@@ -37,7 +37,7 @@ export default {
 |----|---|----|
 |form-config| obj | Form schema |
 |form-components| obj |Fom Components map|
-|submit-handler| (values) => {} |submit success `function`.|
+|submit-handler| (values) => {} |submit success `function`, can be async/sync.|
 |handle-submit-fail|(values) => {}| handle submit fail `function`.|
 |form-rules| obj | For user defined validations|
 |form-editable|bool |Sets the editable state of the form. `Default is true`, if `disabled` then form body containing all the fields will be hidden from view. `v-slot:disabled` can be used to show the disabled state.|
