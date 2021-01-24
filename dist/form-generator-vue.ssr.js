@@ -439,6 +439,13 @@ function isUndef(val) {
       var parentValid = this.value && _typeof(this.value) === 'object' && !this.isArr(this.value);
       var hasChildren = parentValid && 'values' in this.value && 'errors' in this.value;
       return hasChildren && _typeof(this.value.values) === 'object' && !this.isArr(this.value.values) && _typeof(this.value.errors) === 'object' && !this.isArr(this.value.errors);
+    },
+    debounceValidateField: function debounceValidateField() {
+      var _this = this;
+
+      return this.debounce(function (fieldName) {
+        _this.validateField(fieldName);
+      }, this.activeValidationDelay);
     }
   },
   watch: {
@@ -471,12 +478,12 @@ function isUndef(val) {
     }
   },
   created: function created() {
-    var _this = this;
+    var _this2 = this;
 
     this.$emit("setFormContext", this);
 
     var _loop = function _loop(fieldName) {
-      _this.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
+      _this2.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
         // for number type field.
         this.convertToNumber(fieldName); // for helper components
 
@@ -497,21 +504,13 @@ function isUndef(val) {
   methods: {
     debounce: function debounce(func, wait) {
       var timeOut;
-      return function executedFunction() {
+      return function executedFunction(param) {
         clearTimeout(timeOut);
         timeOut = setTimeout(function () {
           clearTimeout(timeOut);
-          func();
+          func(param);
         }, wait);
       };
-    },
-    debounceValidateField: function debounceValidateField(fieldName) {
-      var _this2 = this;
-
-      var de = this.debounce(function () {
-        _this2.validateField(fieldName);
-      }, this.activeValidationDelay);
-      de();
     },
     resetFormState: function resetFormState() {
       this.submit = false;
@@ -847,7 +846,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-c765da22";
+var __vue_module_identifier__ = "data-v-3dfa14df";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

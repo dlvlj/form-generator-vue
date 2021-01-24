@@ -182,6 +182,12 @@ var script = {
       const parentValid = this.value && typeof this.value === 'object' && !this.isArr(this.value);
       const hasChildren = parentValid && 'values' in this.value && 'errors' in this.value;
       return hasChildren && typeof this.value.values === 'object' && !this.isArr(this.value.values) && typeof this.value.errors === 'object' && !this.isArr(this.value.errors);
+    },
+
+    debounceValidateField() {
+      return this.debounce(fieldName => {
+        this.validateField(fieldName);
+      }, this.activeValidationDelay);
     }
 
   },
@@ -237,20 +243,13 @@ var script = {
   methods: {
     debounce: (func, wait) => {
       let timeOut;
-      return function executedFunction() {
+      return function executedFunction(param) {
         clearTimeout(timeOut);
         timeOut = setTimeout(function () {
           clearTimeout(timeOut);
-          func();
+          func(param);
         }, wait);
       };
-    },
-
-    debounceValidateField(fieldName) {
-      const de = this.debounce(() => {
-        this.validateField(fieldName);
-      }, this.activeValidationDelay);
-      de();
     },
 
     resetFormState() {
