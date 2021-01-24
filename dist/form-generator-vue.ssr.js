@@ -425,7 +425,7 @@ function validationResult(msg) {
       return flatConfig;
     },
     vModelValid: function vModelValid() {
-      var parentValid = this.value && _typeof(this.value) && this.value === 'object' && !this.isArr(this.value);
+      var parentValid = this.value && _typeof(this.value) === 'object' && !this.isArr(this.value);
       var hasChildren = parentValid && 'values' in this.value && 'errors' in this.value;
       return hasChildren && _typeof(this.value.values) === 'object' && !this.isArr(this.value.values) && _typeof(this.value.errors) === 'object' && !this.isArr(this.value.errors);
     }
@@ -836,7 +836,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-41b2c942";
+var __vue_module_identifier__ = "data-v-cf8247fa";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

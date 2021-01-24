@@ -210,7 +210,7 @@ export default {
       return flatConfig;
     },
     vModelValid() {
-      const parentValid =  this.value && typeof this.value && this.value === 'object' && !this.isArr(this.value); 
+      const parentValid =  this.value && typeof this.value === 'object' && !this.isArr(this.value); 
       const hasChildren = parentValid && 'values' in this.value && 'errors' in this.value;
       return hasChildren && typeof this.value.values === 'object' && !this.isArr(this.value.values) && typeof this.value.errors === 'object' && !this.isArr(this.value.errors);
     }
