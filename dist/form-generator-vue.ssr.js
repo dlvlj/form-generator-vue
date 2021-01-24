@@ -458,16 +458,16 @@ function isUndef(val) {
       handler: function handler() {
         if (this.vModelValid) {
           for (var fieldName in this.value["values"]) {
-            fieldName in this.fields && (this.fields[fieldName] = this.value["values"][fieldName]);
-            fieldName in this.errors && (this.errors[fieldName] = this.value["errors"][fieldName]);
+            this.fields[fieldName] = this.value["values"][fieldName];
+            this.errors[fieldName] = this.value["errors"][fieldName];
           }
         }
       },
-      // immediate: true,
       deep: true
     },
     fields: {
       handler: function handler(newVal) {
+        this.cleanData();
         this.$emit("input", {
           values: this.fields,
           errors: this.errors
@@ -502,6 +502,20 @@ function isUndef(val) {
     }
   },
   methods: {
+    cleanData: function cleanData() {
+      var _this3 = this;
+
+      var uf = Object.keys(this.fields).filter(function (fieldName) {
+        return !_this3.fieldsConfig_FLAT.find(function (_ref) {
+          var model = _ref.model;
+          return model === fieldName;
+        });
+      });
+      uf.forEach(function (fieldName) {
+        delete _this3.fields[fieldName];
+        delete _this3.errors[fieldName];
+      });
+    },
     debounce: function debounce(func, wait) {
       var timeOut;
       return function executedFunction(param) {
@@ -553,12 +567,12 @@ function isUndef(val) {
       var _objectSpread4;
 
       var componentName = this.computedComponent(fieldConfig);
-      var formComponent = this.formComponents.find(function (_ref) {
-        var component = _ref.component;
+      var formComponent = this.formComponents.find(function (_ref2) {
+        var component = _ref2.component;
         return component.name === componentName;
       });
 
-      var _ref2 = fieldConfig.errorProp ? {
+      var _ref3 = fieldConfig.errorProp ? {
         component: {
           errorProp: fieldConfig.errorProp
         }
@@ -567,7 +581,7 @@ function isUndef(val) {
           errorProp: "errorMessage"
         }
       },
-          errorProp = _ref2.component.errorProp;
+          errorProp = _ref3.component.errorProp;
 
       return _objectSpread2(_objectSpread2({}, fieldConfig.props), {}, (_objectSpread4 = {}, _defineProperty(_objectSpread4, errorProp, this.errors[fieldConfig.model]), _defineProperty(_objectSpread4, "disabled", this.fieldDisabled(fieldConfig)), _objectSpread4));
     },
@@ -590,15 +604,15 @@ function isUndef(val) {
         return fieldConfig.component;
       }
 
-      var _ref3 = this.formComponents.find(function (_ref4) {
-        var type = _ref4.type;
+      var _ref4 = this.formComponents.find(function (_ref5) {
+        var type = _ref5.type;
         return type.includes(FIELD_TYPE);
       }) || {
         component: {
           name: ""
         }
       },
-          name = _ref3.component.name;
+          name = _ref4.component.name;
 
       !name && console.error("Component cannot be rendered. Component for type \"".concat(FIELD_TYPE, "\" is not found in form-components."));
       return name;
@@ -621,10 +635,10 @@ function isUndef(val) {
       var FIELD_IS_VALID = [true, ""];
       var config_rules = FIELD_CONFIG.rules || {};
 
-      var _ref5 = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.validationRules, _objectSpread2({}, this.fields), this.submit) : FIELD_IS_VALID,
-          _ref6 = _slicedToArray(_ref5, 2),
-          fieldValid = _ref6[0],
-          fieldErrorMsg = _ref6[1];
+      var _ref6 = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.validationRules, _objectSpread2({}, this.fields), this.submit) : FIELD_IS_VALID,
+          _ref7 = _slicedToArray(_ref6, 2),
+          fieldValid = _ref7[0],
+          fieldErrorMsg = _ref7[1];
 
       !REQUIRED ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) // for active validation
       : this.showErrors(fieldName, fieldErrorMsg);
@@ -632,7 +646,7 @@ function isUndef(val) {
       return fieldValid;
     },
     submitForm: function submitForm() {
-      var _this3 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var formValidationStatus, submitFail;
@@ -640,41 +654,44 @@ function isUndef(val) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this3.submit = true;
+                _this4.submit = true;
                 formValidationStatus = {};
-                Object.keys(_this3.fields).forEach(function (fieldName) {
-                  var required = _this3.fieldRequired(fieldName);
 
-                  formValidationStatus[fieldName] = _this3.validateField(fieldName) || !required;
+                _this4.cleanData();
+
+                Object.keys(_this4.fields).forEach(function (fieldName) {
+                  var required = _this4.fieldRequired(fieldName);
+
+                  formValidationStatus[fieldName] = _this4.validateField(fieldName) || !required;
                 });
                 submitFail = Object.keys(formValidationStatus).find(function (fieldName) {
                   return !formValidationStatus[fieldName];
                 });
 
-                if (_this3.logs) {
-                  console.log("form data:", _this3.fields);
+                if (_this4.logs) {
+                  console.log("form data:", _this4.fields);
                   console.log("form validations:", formValidationStatus);
                 }
 
                 if (!submitFail) {
-                  _context.next = 9;
+                  _context.next = 10;
                   break;
                 }
 
-                _this3.resetFormState();
+                _this4.resetFormState();
 
-                _this3.handleSubmitFail(_this3.fields);
+                _this4.handleSubmitFail(_this4.fields);
 
                 return _context.abrupt("return");
 
-              case 9:
-                _context.next = 11;
-                return _this3.submitHandler(_this3.fields);
-
-              case 11:
-                _this3.resetFormState();
+              case 10:
+                _context.next = 12;
+                return _this4.submitHandler(_this4.fields);
 
               case 12:
+                _this4.resetFormState();
+
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -846,7 +863,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-3dfa14df";
+var __vue_module_identifier__ = "data-v-00312bc0";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

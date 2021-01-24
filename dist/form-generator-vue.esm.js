@@ -201,16 +201,16 @@ var script = {
       handler: function () {
         if (this.vModelValid) {
           for (const fieldName in this.value["values"]) {
-            fieldName in this.fields && (this.fields[fieldName] = this.value["values"][fieldName]);
-            fieldName in this.errors && (this.errors[fieldName] = this.value["errors"][fieldName]);
+            this.fields[fieldName] = this.value["values"][fieldName];
+            this.errors[fieldName] = this.value["errors"][fieldName];
           }
         }
       },
-      // immediate: true,
       deep: true
     },
     fields: {
       handler: function (newVal) {
+        this.cleanData();
         this.$emit("input", {
           values: this.fields,
           errors: this.errors
@@ -241,6 +241,16 @@ var script = {
   },
 
   methods: {
+    cleanData() {
+      const uf = Object.keys(this.fields).filter(fieldName => !this.fieldsConfig_FLAT.find(({
+        model
+      }) => model === fieldName));
+      uf.forEach(fieldName => {
+        delete this.fields[fieldName];
+        delete this.errors[fieldName];
+      });
+    },
+
     debounce: (func, wait) => {
       let timeOut;
       return function executedFunction(param) {
@@ -385,6 +395,7 @@ var script = {
     async submitForm() {
       this.submit = true;
       let formValidationStatus = {};
+      this.cleanData();
       Object.keys(this.fields).forEach(fieldName => {
         const required = this.fieldRequired(fieldName);
         formValidationStatus[fieldName] = this.validateField(fieldName) || !required;
