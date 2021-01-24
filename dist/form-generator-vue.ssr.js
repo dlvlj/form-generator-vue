@@ -226,9 +226,42 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       }
     }
   };
-}// helpers -------------------------------------------
-var FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
-var FIELD_IS_VALID = '';
+}var FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
+var FIELD_IS_VALID = ''; // VALIDATION ENGINE 
+
+function VALIDATION_ENGINE (fieldName, fieldValue, fieldRules, validationRules, allFields, submit) {
+  var msg = fieldIsEmpty(fieldValue);
+  var COMMON_VALIDATORS = validationRules.COMMON_VALIDATORS;
+  var HAS_COMMON_RULES = !COMMON_VALIDATORS || !Object.keys(COMMON_VALIDATORS).length ? false : true;
+  var VALIDATION_FUNCTION = validationRules[fieldName] || validationRules[fieldRules.type] || undefined;
+
+  if (msg !== FIELD_IS_EMPTY) {
+    if (HAS_COMMON_RULES) {
+      for (var validator in COMMON_VALIDATORS) {
+        !isFunc(COMMON_VALIDATORS[validator]) && console.error("".concat(validator, " is not a function."));
+        msg = COMMON_VALIDATORS[validator](fieldValue, fieldRules, allFields);
+        isUndef(msg) && console.error("".concat(validator, " return error string if field is invalid, return empty string when success"));
+      }
+    }
+
+    if (!isFunc(VALIDATION_FUNCTION)) {
+      fieldName in validationRules && console.error("".concat(VALIDATION_FUNCTION, " is not a function."));
+      return validationResult(msg);
+    }
+
+    msg = VALIDATION_FUNCTION(fieldValue, fieldRules, allFields);
+    return validationResult(msg);
+  } else {
+    msg = submit ? 'Required' : '';
+    return validationResult(msg);
+  }
+}
+
+function validationResult(msg) {
+  var PASS = [true, ''];
+  var FAIL = [false, msg];
+  return msg !== FIELD_IS_VALID ? FAIL : PASS;
+}
 
 function fieldIsEmpty(value) {
   return String(value).trim() === '' || ![false, 0].includes(value) && !value ? FIELD_IS_EMPTY : FIELD_IS_VALID;
@@ -240,44 +273,6 @@ function isFunc(func) {
 
 function isUndef(val) {
   return typeof val === 'undefined';
-} //  -------------------------------------------
-// VALIDATION ENGINE ------------------------------------------------------------
-
-
-var VALIDATION_ENGINE = function VALIDATION_ENGINE(fieldName, value, fieldRules, MASTER_RULES, fields, formSubmit) {
-  var msg = fieldIsEmpty(value);
-  var COMMON_VALIDATORS = MASTER_RULES.COMMON_VALIDATORS;
-  var HAS_COMMON_RULES = !COMMON_VALIDATORS || !Object.keys(COMMON_VALIDATORS).length ? false : true;
-  var VALIDATION_FUNCTION = MASTER_RULES[fieldName] || MASTER_RULES[fieldRules.type] || undefined;
-
-  if (msg !== FIELD_IS_EMPTY) {
-    //RUN COMMON VALIDATIONS ---------------------------------------------
-    if (HAS_COMMON_RULES) {
-      for (var validator in COMMON_VALIDATORS) {
-        !isFunc(COMMON_VALIDATORS[validator]) && console.error("".concat(validator, " is not a function."));
-        msg = COMMON_VALIDATORS[validator](value, fieldRules, fields);
-        isUndef(msg) && console.error("".concat(validator, " return error string if field is invalid, return empty string when success"));
-      }
-    } // ---------------------------------------------------------------
-
-
-    if (!isFunc(VALIDATION_FUNCTION)) {
-      fieldName in MASTER_RULES && console.error("".concat(VALIDATION_FUNCTION, " is not a function."));
-      return validationResult(msg);
-    }
-
-    msg = VALIDATION_FUNCTION(value, fieldRules, fields);
-    return validationResult(msg);
-  } else {
-    msg = formSubmit ? 'Required' : '';
-    return validationResult(msg);
-  }
-};
-
-function validationResult(msg) {
-  var PASS = [true, ''];
-  var FAIL = [false, msg];
-  return msg !== FIELD_IS_VALID ? FAIL : PASS;
 }var script = {
   props: {
     value: {
@@ -292,7 +287,7 @@ function validationResult(msg) {
         console.error("submit handler not present");
       }
     },
-    formRules: {
+    validationRules: {
       type: Object,
       required: false,
       default: function _default() {
@@ -593,7 +588,7 @@ function validationResult(msg) {
       var FIELD_IS_VALID = [true, ""];
       var config_rules = FIELD_CONFIG.rules || {};
 
-      var _ref5 = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.formRules, _objectSpread2({}, this.fields), this.submit) : FIELD_IS_VALID,
+      var _ref5 = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.validationRules, _objectSpread2({}, this.fields), this.submit) : FIELD_IS_VALID,
           _ref6 = _slicedToArray(_ref5, 2),
           fieldValid = _ref6[0],
           fieldErrorMsg = _ref6[1];
@@ -818,7 +813,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-7347a01f";
+var __vue_module_identifier__ = "data-v-09b250ff";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

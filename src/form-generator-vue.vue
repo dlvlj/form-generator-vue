@@ -115,7 +115,7 @@ export default {
         console.error("submit handler not present");
       },
     },
-    formRules: {
+    validationRules: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -394,7 +394,7 @@ export default {
               fieldName,
               this.fields[fieldName],
               config_rules,
-              this.formRules,
+              this.validationRules,
               { ...this.fields },
               this.submit
             )

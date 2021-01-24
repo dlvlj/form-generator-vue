@@ -1,6 +1,39 @@
-// helpers -------------------------------------------
 const FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
-const FIELD_IS_VALID = '';
+const FIELD_IS_VALID = ''; // VALIDATION ENGINE 
+
+function VALIDATION_ENGINE (fieldName, fieldValue, fieldRules, validationRules, allFields, submit) {
+  let msg = fieldIsEmpty(fieldValue);
+  const COMMON_VALIDATORS = validationRules.COMMON_VALIDATORS;
+  const HAS_COMMON_RULES = !COMMON_VALIDATORS || !Object.keys(COMMON_VALIDATORS).length ? false : true;
+  const VALIDATION_FUNCTION = validationRules[fieldName] || validationRules[fieldRules.type] || undefined;
+
+  if (msg !== FIELD_IS_EMPTY) {
+    if (HAS_COMMON_RULES) {
+      for (const validator in COMMON_VALIDATORS) {
+        !isFunc(COMMON_VALIDATORS[validator]) && console.error(`${validator} is not a function.`);
+        msg = COMMON_VALIDATORS[validator](fieldValue, fieldRules, allFields);
+        isUndef(msg) && console.error(`${validator} return error string if field is invalid, return empty string when success`);
+      }
+    }
+
+    if (!isFunc(VALIDATION_FUNCTION)) {
+      fieldName in validationRules && console.error(`${VALIDATION_FUNCTION} is not a function.`);
+      return validationResult(msg);
+    }
+
+    msg = VALIDATION_FUNCTION(fieldValue, fieldRules, allFields);
+    return validationResult(msg);
+  } else {
+    msg = submit ? 'Required' : '';
+    return validationResult(msg);
+  }
+}
+
+function validationResult(msg) {
+  const PASS = [true, ''];
+  const FAIL = [false, msg];
+  return msg !== FIELD_IS_VALID ? FAIL : PASS;
+}
 
 function fieldIsEmpty(value) {
   return String(value).trim() === '' || ![false, 0].includes(value) && !value ? FIELD_IS_EMPTY : FIELD_IS_VALID;
@@ -12,44 +45,6 @@ function isFunc(func) {
 
 function isUndef(val) {
   return typeof val === 'undefined';
-} //  -------------------------------------------
-// VALIDATION ENGINE ------------------------------------------------------------
-
-
-const VALIDATION_ENGINE = (fieldName, value, fieldRules, MASTER_RULES, fields, formSubmit) => {
-  let msg = fieldIsEmpty(value);
-  const COMMON_VALIDATORS = MASTER_RULES.COMMON_VALIDATORS;
-  const HAS_COMMON_RULES = !COMMON_VALIDATORS || !Object.keys(COMMON_VALIDATORS).length ? false : true;
-  const VALIDATION_FUNCTION = MASTER_RULES[fieldName] || MASTER_RULES[fieldRules.type] || undefined;
-
-  if (msg !== FIELD_IS_EMPTY) {
-    //RUN COMMON VALIDATIONS ---------------------------------------------
-    if (HAS_COMMON_RULES) {
-      for (const validator in COMMON_VALIDATORS) {
-        !isFunc(COMMON_VALIDATORS[validator]) && console.error(`${validator} is not a function.`);
-        msg = COMMON_VALIDATORS[validator](value, fieldRules, fields);
-        isUndef(msg) && console.error(`${validator} return error string if field is invalid, return empty string when success`);
-      }
-    } // ---------------------------------------------------------------
-
-
-    if (!isFunc(VALIDATION_FUNCTION)) {
-      fieldName in MASTER_RULES && console.error(`${VALIDATION_FUNCTION} is not a function.`);
-      return validationResult(msg);
-    }
-
-    msg = VALIDATION_FUNCTION(value, fieldRules, fields);
-    return validationResult(msg);
-  } else {
-    msg = formSubmit ? 'Required' : '';
-    return validationResult(msg);
-  }
-};
-
-function validationResult(msg) {
-  const PASS = [true, ''];
-  const FAIL = [false, msg];
-  return msg !== FIELD_IS_VALID ? FAIL : PASS;
 }
 
 //
@@ -67,7 +62,7 @@ var script = {
         console.error("submit handler not present");
       }
     },
-    formRules: {
+    validationRules: {
       type: Object,
       required: false,
       default: () => ({})
@@ -345,7 +340,7 @@ var script = {
       const FIELD_CONFIG = this.findFieldConfig(fieldName);
       const FIELD_IS_VALID = [true, ""];
       const config_rules = FIELD_CONFIG.rules || {};
-      const [fieldValid, fieldErrorMsg] = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.formRules, { ...this.fields
+      const [fieldValid, fieldErrorMsg] = this.submit || this.activeValidation ? VALIDATION_ENGINE(fieldName, this.fields[fieldName], config_rules, this.validationRules, { ...this.fields
       }, this.submit) : FIELD_IS_VALID;
       !REQUIRED ? !this.submit && this.showErrors(fieldName, fieldErrorMsg) // for active validation
       : this.showErrors(fieldName, fieldErrorMsg);
