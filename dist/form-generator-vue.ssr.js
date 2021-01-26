@@ -366,12 +366,16 @@ function result(error) {
 var script = {
   mixins: [props],
   data: function data() {
+    var _this = this;
+
+    var INIT = true;
     var fields = {};
     var errors = {};
 
-    var addFieldsAndErrors = function addFieldsAndErrors(fieldConfig) {
-      fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
-      errors[fieldConfig.model] = "";
+    var addFieldsAndErrors = function addFieldsAndErrors(model) {
+      // console.log(this.value,this.vModelValid(INIT));
+      fields[model] = _this.vModelValid(INIT) && 'values' in _this.value ? _this.value.values[model] : '';
+      errors[model] = _this.vModelValid(INIT) && 'errors' in _this.value ? _this.value.errors[model] : '';
     };
 
     if ("fields" in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
@@ -389,7 +393,7 @@ var script = {
             try {
               for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
                 var subConfig = _step2.value;
-                addFieldsAndErrors(subConfig);
+                addFieldsAndErrors(subConfig.model);
               }
             } catch (err) {
               _iterator2.e(err);
@@ -397,7 +401,7 @@ var script = {
               _iterator2.f();
             }
           } else {
-            addFieldsAndErrors(config);
+            addFieldsAndErrors(config.model);
           }
         }
       } catch (err) {
@@ -466,18 +470,16 @@ var script = {
 
       return flatConfig;
     },
-    vModelValid: function vModelValid() {
-      var parentValid = this.value && UTILS.isObjNotArr(this.value);
-
-      var hasChildren = parentValid && UTILS.hasProperty(['values', 'errors'], this.value);
-
-      return hasChildren && UTILS.isObjNotArr([this.value.values, this.value.errors]);
-    },
+    // vModelValid() {
+    //   const parentValid =  this.value && UTILS.isObjNotArr(this.value); 
+    //   const hasChildren = parentValid && UTILS.hasProperty(['values', 'errors'], this.value);
+    //   return hasChildren && UTILS.isObjNotArr([this.value.values, this.value.errors]);
+    // },
     debounceValidateField: function debounceValidateField() {
-      var _this = this;
+      var _this2 = this;
 
       return this.debounce(function (fieldName) {
-        _this.validateField(fieldName);
+        _this2.validateField(fieldName);
       }, this.activeValidationDelay);
     }
   },
@@ -489,7 +491,7 @@ var script = {
     },
     value: {
       handler: function handler() {
-        if (this.vModelValid) {
+        if (this.vModelValid()) {
           for (var fieldName in this.value["values"]) {
             this.fields[fieldName] = this.value["values"][fieldName];
             this.errors[fieldName] = this.value["errors"][fieldName];
@@ -511,12 +513,12 @@ var script = {
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this3 = this;
 
     this.$emit("setFormContext", this);
 
     var _loop = function _loop(fieldName) {
-      _this2.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
+      _this3.$watch("fields.".concat(fieldName), function (newVal, oldVal) {
         // for number type field.
         this.convertToNumber(fieldName); // for helper components
 
@@ -535,18 +537,31 @@ var script = {
     }
   },
   methods: {
+    vModelValid: function vModelValid() {
+      var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var parentValid = this.value && UTILS.isObjNotArr(this.value);
+
+      if (init) {
+        return parentValid && 'values' in this.value;
+      }
+
+      var hasChildren = parentValid && UTILS.hasProperty(['values', 'errors'], this.value);
+
+      return hasChildren && UTILS.isObjNotArr([this.value.values, this.value.errors]);
+    },
     removeUnwantedFields: function removeUnwantedFields() {
-      var _this3 = this;
+      var _this4 = this;
 
       var uf = Object.keys(this.fields).filter(function (fieldName) {
-        return !_this3.fieldsConfigFlat.find(function (_ref) {
+        return !_this4.fieldsConfigFlat.find(function (_ref) {
           var model = _ref.model;
           return model === fieldName;
         });
       });
       uf.forEach(function (fieldName) {
-        delete _this3.fields[fieldName];
-        delete _this3.errors[fieldName];
+        delete _this4.fields[fieldName];
+        delete _this4.errors[fieldName];
       });
     },
     debounce: function debounce(func, wait) {
@@ -668,7 +683,7 @@ var script = {
       return valid;
     },
     handleSubmit: function handleSubmit() {
-      var _this4 = this;
+      var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var formValidationStatus, submitFail;
@@ -676,20 +691,20 @@ var script = {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this4.submit = true;
+                _this5.submit = true;
                 formValidationStatus = {};
 
-                _this4.removeUnwantedFields();
+                _this5.removeUnwantedFields();
 
-                Object.keys(_this4.fields).forEach(function (fieldName) {
-                  formValidationStatus[fieldName] = _this4.validateField(fieldName) || !_this4.fieldIsRequired(fieldName);
+                Object.keys(_this5.fields).forEach(function (fieldName) {
+                  formValidationStatus[fieldName] = _this5.validateField(fieldName) || !_this5.fieldIsRequired(fieldName);
                 });
                 submitFail = Object.keys(formValidationStatus).find(function (fieldName) {
                   return !formValidationStatus[fieldName];
                 });
 
-                if (_this4.logs) {
-                  console.log("form data:", _this4.fields);
+                if (_this5.logs) {
+                  console.log("form data:", _this5.fields);
                   console.log("form validations:", formValidationStatus);
                 }
 
@@ -698,18 +713,18 @@ var script = {
                   break;
                 }
 
-                _this4.resetFormState();
+                _this5.resetFormState();
 
-                _this4.onSubmitFail(_this4.fields);
+                _this5.onSubmitFail(_this5.fields);
 
                 return _context.abrupt("return");
 
               case 10:
                 _context.next = 12;
-                return _this4.onSubmit(_this4.fields);
+                return _this5.onSubmit(_this5.fields);
 
               case 12:
-                _this4.resetFormState();
+                _this5.resetFormState();
 
               case 13:
               case "end":
@@ -853,7 +868,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-20e352f4";
+var __vue_module_identifier__ = "data-v-5d9029de";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

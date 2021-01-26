@@ -104,20 +104,21 @@ const HELPER_COMPONENT = "_helper";
 export default {
   mixins: [props],
   data() {
+    const INIT = true;
     let fields = {};
     let errors = {};
-    const addFieldsAndErrors = fieldConfig => {
-        fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
-        errors[fieldConfig.model] = "";
+    const addFieldsAndErrors = model => {
+        fields[model] = this.vModelValid(INIT) && 'values' in this.value ? this.value.values[model]: '';
+        errors[model] = this.vModelValid(INIT) && 'errors' in this.value ? this.value.errors[model]: '';
     }
     if ("fields" in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
       for (const config of this.schema.fields) {
         if (UTILS.isArr(config)) {
           for (const subConfig of config) {
-            addFieldsAndErrors(subConfig);
+            addFieldsAndErrors(subConfig.model);
           }
         } else {
-          addFieldsAndErrors(config);
+          addFieldsAndErrors(config.model);
         }
       }
     }
@@ -159,11 +160,6 @@ export default {
       }
       return flatConfig;
     },
-    vModelValid() {
-      const parentValid =  this.value && UTILS.isObjNotArr(this.value); 
-      const hasChildren = parentValid && UTILS.hasProperty(['values', 'errors'], this.value);
-      return hasChildren && UTILS.isObjNotArr([this.value.values, this.value.errors]);
-    },
     debounceValidateField() {
       return this.debounce((fieldName) => {
         this.validateField(fieldName)
@@ -178,7 +174,7 @@ export default {
     },
     value: {
       handler: function() {
-        if (this.vModelValid) {
+        if (this.vModelValid()) {
           for (const fieldName in this.value["values"]) {
             this.fields[fieldName] = this.value["values"][fieldName];
             this.errors[fieldName] = this.value["errors"][fieldName];
@@ -213,6 +209,14 @@ export default {
     }
   },
   methods: {
+    vModelValid(init = false) {
+      const parentValid =  this.value && UTILS.isObjNotArr(this.value); 
+      if(init) {
+        return parentValid && 'values' in this.value;
+      }
+      const hasChildren = parentValid && UTILS.hasProperty(['values', 'errors'], this.value);
+      return hasChildren && UTILS.isObjNotArr([this.value.values, this.value.errors]);
+    },
     removeUnwantedFields() {
       const uf = Object.keys(this.fields).filter(fieldName => !this.fieldsConfigFlat.find(({model}) => model === fieldName));
       uf.forEach(fieldName => {
