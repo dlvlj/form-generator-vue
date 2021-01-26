@@ -166,7 +166,6 @@ var script = {
     let errors = {};
 
     const addFieldsAndErrors = model => {
-      // console.log(this.value,this.vModelValid(INIT));
       fields[model] = this.vModelValid(INIT) && 'values' in this.value ? this.value.values[model] : '';
       errors[model] = this.vModelValid(INIT) && 'errors' in this.value ? this.value.errors[model] : '';
     };
@@ -226,11 +225,6 @@ var script = {
       return flatConfig;
     },
 
-    // vModelValid() {
-    //   const parentValid =  this.value && UTILS.isObjNotArr(this.value); 
-    //   const hasChildren = parentValid && UTILS.hasProperty(['values', 'errors'], this.value);
-    //   return hasChildren && UTILS.isObjNotArr([this.value.values, this.value.errors]);
-    // },
     debounceValidateField() {
       return this.debounce(fieldName => {
         this.validateField(fieldName);

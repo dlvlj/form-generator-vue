@@ -373,7 +373,6 @@ var script = {
     var errors = {};
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
-      // console.log(this.value,this.vModelValid(INIT));
       fields[model] = _this.vModelValid(INIT) && 'values' in _this.value ? _this.value.values[model] : '';
       errors[model] = _this.vModelValid(INIT) && 'errors' in _this.value ? _this.value.errors[model] : '';
     };
@@ -470,11 +469,6 @@ var script = {
 
       return flatConfig;
     },
-    // vModelValid() {
-    //   const parentValid =  this.value && UTILS.isObjNotArr(this.value); 
-    //   const hasChildren = parentValid && UTILS.hasProperty(['values', 'errors'], this.value);
-    //   return hasChildren && UTILS.isObjNotArr([this.value.values, this.value.errors]);
-    // },
     debounceValidateField: function debounceValidateField() {
       var _this2 = this;
 
@@ -868,7 +862,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5d9029de";
+var __vue_module_identifier__ = "data-v-5674ba86";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
