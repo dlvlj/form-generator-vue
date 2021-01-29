@@ -100,7 +100,7 @@ const UTILS = {
     return children.every(child => child in parent);
   },
 
-  handlefuncAndBool(val, funcParams) {
+  handlefuncOrBool(val, funcParams) {
     let res = Boolean(val);
 
     if (UTILS.isFunc(val)) {
@@ -349,12 +349,12 @@ var script = {
     },
 
     setDefaultFieldValue(fieldConfig) {
-      this.fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
+      this.fields[fieldConfig.model] = fieldConfig.model in this.value.values ? this.value.values[fieldConfig.model] : '';
     },
 
     fieldIsVisible(fieldConfig) {
       const VISIBLE = true;
-      const fieldVisible = "show" in fieldConfig ? UTILS.handlefuncAndBool(fieldConfig.show, this) : VISIBLE;
+      const fieldVisible = "show" in fieldConfig ? UTILS.handlefuncOrBool(fieldConfig.show, this) : VISIBLE;
       !fieldVisible && this.setDefaultFieldValue(fieldConfig);
       return fieldVisible;
     },
@@ -404,7 +404,7 @@ var script = {
     fieldIsDisabled(fieldConfig) {
       const DISABLED = true;
       const hasDisabledProp = fieldConfig && fieldConfig.props && "disabled" in fieldConfig.props;
-      const fieldDisabled = hasDisabledProp ? UTILS.handlefuncAndBool(fieldConfig.props.disabled, this) : !DISABLED;
+      const fieldDisabled = hasDisabledProp ? UTILS.handlefuncOrBool(fieldConfig.props.disabled, this) : !DISABLED;
       return !this.editable || fieldDisabled ? DISABLED : !DISABLED;
     },
 
@@ -413,7 +413,7 @@ var script = {
       const fieldName = name || config.model;
       const fieldConfig = config || this.findFieldConfig(fieldName);
       const hasRequiredProp = fieldConfig && fieldConfig.props && 'required' in fieldConfig.props;
-      const fieldRequired = hasRequiredProp ? UTILS.handlefuncAndBool(fieldConfig.props.required, this) : !this.isHelperComponent(fieldName);
+      const fieldRequired = hasRequiredProp ? UTILS.handlefuncOrBool(fieldConfig.props.required, this) : !this.isHelperComponent(fieldName);
       return fieldConfig && !this.fieldIsDisabled(fieldConfig) && this.fieldIsVisible(fieldConfig) ? fieldRequired : !REQUIRED;
     },
 

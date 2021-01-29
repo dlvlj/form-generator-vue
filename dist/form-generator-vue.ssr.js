@@ -312,7 +312,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       return child in parent;
     });
   },
-  handlefuncAndBool: function handlefuncAndBool(val, funcParams) {
+  handlefuncOrBool: function handlefuncOrBool(val, funcParams) {
     var res = Boolean(val);
 
     if (UTILS.isFunc(val)) {
@@ -601,11 +601,11 @@ var script = {
       }
     },
     setDefaultFieldValue: function setDefaultFieldValue(fieldConfig) {
-      this.fields[fieldConfig.model] = "value" in fieldConfig ? fieldConfig.value : "";
+      this.fields[fieldConfig.model] = fieldConfig.model in this.value.values ? this.value.values[fieldConfig.model] : '';
     },
     fieldIsVisible: function fieldIsVisible(fieldConfig) {
       var VISIBLE = true;
-      var fieldVisible = "show" in fieldConfig ? UTILS.handlefuncAndBool(fieldConfig.show, this) : VISIBLE;
+      var fieldVisible = "show" in fieldConfig ? UTILS.handlefuncOrBool(fieldConfig.show, this) : VISIBLE;
       !fieldVisible && this.setDefaultFieldValue(fieldConfig);
       return fieldVisible;
     },
@@ -649,7 +649,7 @@ var script = {
     fieldIsDisabled: function fieldIsDisabled(fieldConfig) {
       var DISABLED = true;
       var hasDisabledProp = fieldConfig && fieldConfig.props && "disabled" in fieldConfig.props;
-      var fieldDisabled = hasDisabledProp ? UTILS.handlefuncAndBool(fieldConfig.props.disabled, this) : !DISABLED;
+      var fieldDisabled = hasDisabledProp ? UTILS.handlefuncOrBool(fieldConfig.props.disabled, this) : !DISABLED;
       return !this.editable || fieldDisabled ? DISABLED : !DISABLED;
     },
     fieldIsRequired: function fieldIsRequired(name, config) {
@@ -657,7 +657,7 @@ var script = {
       var fieldName = name || config.model;
       var fieldConfig = config || this.findFieldConfig(fieldName);
       var hasRequiredProp = fieldConfig && fieldConfig.props && 'required' in fieldConfig.props;
-      var fieldRequired = hasRequiredProp ? UTILS.handlefuncAndBool(fieldConfig.props.required, this) : !this.isHelperComponent(fieldName);
+      var fieldRequired = hasRequiredProp ? UTILS.handlefuncOrBool(fieldConfig.props.required, this) : !this.isHelperComponent(fieldName);
       return fieldConfig && !this.fieldIsDisabled(fieldConfig) && this.fieldIsVisible(fieldConfig) ? fieldRequired : !REQUIRED;
     },
     validateField: function validateField(fieldName) {
@@ -862,7 +862,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5674ba86";
+var __vue_module_identifier__ = "data-v-2062e0c2";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

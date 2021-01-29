@@ -265,13 +265,13 @@ export default {
     },
     setDefaultFieldValue(fieldConfig) {
       this.fields[fieldConfig.model] =
-        "value" in fieldConfig ? fieldConfig.value : "";
+        fieldConfig.model in this.value.values ? this.value.values[fieldConfig.model] : '';
     },
     fieldIsVisible(fieldConfig) {
       const VISIBLE = true
       const fieldVisible =
         "show" in fieldConfig
-          ? UTILS.handlefuncAndBool(fieldConfig.show, this)
+          ? UTILS.handlefuncOrBool(fieldConfig.show, this)
           : VISIBLE;
       !fieldVisible && this.setDefaultFieldValue(fieldConfig);
       return fieldVisible;
@@ -325,7 +325,7 @@ export default {
       const hasDisabledProp = fieldConfig && fieldConfig.props && "disabled" in fieldConfig.props;
       const fieldDisabled =
         hasDisabledProp
-          ? UTILS.handlefuncAndBool(fieldConfig.props.disabled, this)
+          ? UTILS.handlefuncOrBool(fieldConfig.props.disabled, this)
           : !DISABLED;
       return !this.editable || fieldDisabled? DISABLED : !DISABLED;
     },
@@ -336,7 +336,7 @@ export default {
       const hasRequiredProp = fieldConfig && fieldConfig.props && 'required' in fieldConfig.props;
       const fieldRequired =
         hasRequiredProp
-          ? UTILS.handlefuncAndBool(fieldConfig.props.required, this)
+          ? UTILS.handlefuncOrBool(fieldConfig.props.required, this)
           : !this.isHelperComponent(fieldName);
       return fieldConfig && !this.fieldIsDisabled(fieldConfig) && this.fieldIsVisible(fieldConfig)
         ? fieldRequired
