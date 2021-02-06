@@ -22,16 +22,11 @@ export default {
       required: false,
       default: () => [],
     },
-    editable: {
+    disabled: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
-    // validationConfig: {
-    //   type: Object,
-    //   required: false,
-    //   default: () => ({}),
-    // },
     schema: {
       type: Object,
       default: () => ({}),

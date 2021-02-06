@@ -35,12 +35,22 @@ const UTILS = {
     }
     return children.every(child => child in parent);
   },
-  handlefuncOrBool(val, funcParams) {
+  handlefuncOrBool(val, funcParams = undefined) {
     let res = Boolean(val);
     if(UTILS.isFunc(val)) {
      res = val(funcParams);
     }
     return res;
-  }
+  },
+  debounce(func, wait) {
+    let timeOut;
+    return function executedFunction(param) {
+      clearTimeout(timeOut);
+      timeOut=setTimeout(function(){
+        clearTimeout(timeOut);
+        func(param);
+      },wait);
+    }
+  },
 };
 export default UTILS;

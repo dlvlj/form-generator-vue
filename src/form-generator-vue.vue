@@ -1,19 +1,12 @@
 <template>
-  <form class="generated-form" @submit.prevent="handleSubmit">
+  <form class="fgv-form" @submit.prevent="handleSubmit">
     <!-- header section -->
-    <div class="generated-form__header">
+    <div class="fgv-form__header">
       <slot name="header" />
     </div>
     <!-- body -->
-    <div v-if="editable" class="generated-form__body">
-      <slot name="body-start"/>
+    <div class="fgv-form__body">
       <template v-for="(fieldConfig, i) in fieldsConfig">
-        <!-- for section label -->
-        <slot
-          name="sectionLabel"
-          :fieldConfig="fieldConfig"
-          :fieldsConfigFlat="fieldsConfigFlat"
-        />
         <!-- ROW -->
         <div
           v-if="
@@ -21,19 +14,19 @@
             (fieldIsVisible(fieldConfig) && componentToRender(fieldConfig))
           "
           :key="i"
-          :class="['generated-form__body__row', classes.row]"
+          :class="['fgv-form__body__row', classes.row]"
         >
           <!-- IF ARRAY THEN CREATE MULTIPLE COLUMNS IN A ROW -->
           <template v-if="UTILS.isArr(fieldConfig)">
             <template v-for="subFieldConfig in fieldConfig">
               <div
+                :key="subFieldConfig.model"
                 v-show="
                   fieldIsVisible(subFieldConfig) &&
                   componentToRender(subFieldConfig)
                 "
-                :key="subFieldConfig.model"
                 :class="[
-                  'generated-form__body__row__col',
+                  'fgv-form__body__row__col',
                   `col-${subFieldConfig.model}`,
                   classes.col,
                 ]"
@@ -54,15 +47,19 @@
               </div>
             </template>
           </template>
-          <!-- IF NOT AN ARRAY THEN ITS A COLUMN (CREATES ONE COLUMN PER ROW) -->
+          <!-- IF NOT AN ARRAY THEN CREATES A COLUMN -->
           <template v-else>
             <div
+              :key="fieldConfig.model"
+              v-show="
+                fieldIsVisible(fieldConfig) &&
+                componentToRender(fieldConfig)
+              "
               :class="[
-                'generated-form__body__row__col',
+                'fgv-form__body__row__col',
                 `col-${fieldConfig.model}`,
                 classes.col,
               ]"
-              :key="fieldConfig.model"
             >
               <template>
                 <slot :name="`${fieldConfig.model}_before`" />
@@ -81,16 +78,9 @@
           </template>
         </div>
       </template>
-      <slot name="body-end"/>
     </div>
-    <!-- to show uneditable form state -->
-    <slot
-      v-if="!editable"
-      name="uneditable"
-      :fieldsConfigFlat="fieldsConfigFlat"
-    />
     <!-- footer section -->
-    <div class="generated-form__footer">
+    <div class="fgv-form__footer">
       <slot name="footer" />
     </div>
   </form>
@@ -100,7 +90,6 @@
 import props from './main/mixins/props';
 import VALIDATION_ENGINE from "./main/validation-engine";
 import UTILS from './main/utils';
-const HELPER_COMPONENT = "_helper";
 export default {
   mixins: [props],
   data() {
@@ -161,15 +150,15 @@ export default {
       return flatConfig;
     },
     debounceValidateField() {
-      return this.debounce((fieldName) => {
+      return UTILS.debounce((fieldName) => {
         this.validateField(fieldName)
       }, this.activeValidationDelay);
     },
   },
   watch: {
-    editable: {
+    disabled: {
       handler: function(newVal) {
-        !newVal && this.removeAllErrors();
+        newVal && this.removeAllErrors();
       },
     },
     value: {
@@ -193,19 +182,18 @@ export default {
     },
   },
   created() {
-    this.$emit("setFormContext", this);
     for (const fieldName in this.fields) {
       this.$watch(`fields.${fieldName}`, function (newVal, oldVal) {
         // for number type field.
         this.convertToNumber(fieldName);
-        // for helper components
-        this.updateHelpers(fieldName, newVal);
-        // to prevent below calls when only type is changed.
+        // for helper field.
+        // this.updateHelpers(fieldName, newVal);
+        // to prevent below calls when only type is changed and not value.
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         }
         this.activeValidationDelay ? this.debounceValidateField(fieldName) : this.validateField(fieldName);
-      });
+      }, {deep:true});
     }
   },
   methods: {
@@ -224,16 +212,6 @@ export default {
         delete this.errors[fieldName];
       })
     },
-    debounce: (func, wait)=> {
-      let timeOut;
-      return function executedFunction(param) {
-        clearTimeout(timeOut);
-        timeOut=setTimeout(function(){
-          clearTimeout(timeOut);
-          func(param);
-        },wait);
-      }
-    },
     resetFormState() {
       this.submit = false;
     },
@@ -245,24 +223,6 @@ export default {
     setError(field, msg) {
       this.errors[field] = msg;
     },
-    isHelperComponent(fieldName) {
-      return fieldName.includes(HELPER_COMPONENT);
-    },
-    updateHelpers(fieldName, newVal) {
-      const VAL = newVal;
-      // for helper field
-      if (this.isHelperComponent(fieldName)) {
-        const [fieldBeingHelped] = fieldName.split(HELPER_COMPONENT);
-        fieldBeingHelped in this.fields &&
-          (this.fields[fieldBeingHelped] = VAL);
-        return;
-      }
-      // for field being helped
-      if (`${fieldName}${HELPER_COMPONENT}` in this.fields) {
-        const helperField = `${fieldName}${HELPER_COMPONENT}`;
-        this.fields[helperField] = VAL;
-      }
-    },
     setDefaultFieldValue(fieldConfig) {
       this.fields[fieldConfig.model] =
         fieldConfig.model in this.value.values ? this.value.values[fieldConfig.model] : '';
@@ -271,7 +231,7 @@ export default {
       const VISIBLE = true
       const fieldVisible =
         "show" in fieldConfig
-          ? UTILS.handlefuncOrBool(fieldConfig.show, this)
+          ? UTILS.handlefuncOrBool(fieldConfig.show)
           : VISIBLE;
       !fieldVisible && this.setDefaultFieldValue(fieldConfig);
       return fieldVisible;
@@ -296,6 +256,9 @@ export default {
       return this.fieldsConfigFlat.find((conf) => conf.model === fieldName);
     },
     convertToNumber(fieldName) {
+      if(!isNaN(this.fields[fieldName])) {
+        return;
+      }
       const fieldConfig = this.findFieldConfig(fieldName);
       fieldConfig &&
         fieldConfig.type === "number" &&
@@ -325,9 +288,9 @@ export default {
       const hasDisabledProp = fieldConfig && fieldConfig.props && "disabled" in fieldConfig.props;
       const fieldDisabled =
         hasDisabledProp
-          ? UTILS.handlefuncOrBool(fieldConfig.props.disabled, this)
+          ? UTILS.handlefuncOrBool(fieldConfig.props.disabled)
           : !DISABLED;
-      return !this.editable || fieldDisabled? DISABLED : !DISABLED;
+      return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
     fieldIsRequired(name, config) {
       const REQUIRED = true;
@@ -336,8 +299,8 @@ export default {
       const hasRequiredProp = fieldConfig && fieldConfig.props && 'required' in fieldConfig.props;
       const fieldRequired =
         hasRequiredProp
-          ? UTILS.handlefuncOrBool(fieldConfig.props.required, this)
-          : !this.isHelperComponent(fieldName);
+          ? UTILS.handlefuncOrBool(fieldConfig.props.required) : REQUIRED;
+          // : !this.isHelperComponent(fieldName);
       return fieldConfig && !this.fieldIsDisabled(fieldConfig) && this.fieldIsVisible(fieldConfig)
         ? fieldRequired
         : !REQUIRED;
