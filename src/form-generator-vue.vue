@@ -10,12 +10,13 @@
         <!-- ROW -->
         <div
           v-if="
-            UTILS.isArr(fieldConfig) ||
+            UTILS.isArr(fieldConfig) && fieldConfig.length ||
             (fieldIsVisible(fieldConfig) && componentToRender(fieldConfig))
           "
           :key="i"
           :class="['fgv-form__body__row', classes.row]"
         >
+        
           <!-- IF ARRAY THEN CREATE MULTIPLE COLUMNS IN A ROW -->
           <template v-if="UTILS.isArr(fieldConfig)">
             <template v-for="subFieldConfig in fieldConfig">
@@ -47,6 +48,7 @@
               </div>
             </template>
           </template>
+
           <!-- IF NOT AN ARRAY THEN CREATES A COLUMN -->
           <template v-else>
             <div
@@ -132,7 +134,7 @@ export default {
       return "logs" in this.schema ? this.schema.logs : false;
     },
     fieldsConfig() {
-      return "fields" in this.schema && this.schema.fields.length
+      return "fields" in this.schema && UTILS.isArr(this.schema.fields)
         ? this.schema.fields
         : [];
     },
