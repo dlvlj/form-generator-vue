@@ -14,7 +14,7 @@
           :class="[CLASS.row, classes.row]"
         >
         
-          <!-- IF ARRAY THEN CREATE MULTIPLE COLUMNS IN A ROW -->
+          <!-- IF HAS FIELDS -->
           <template v-if="UTILS.isArr(schema)">
             <template v-for="s in schema">
               <div
@@ -43,7 +43,7 @@
             </template>
           </template>
 
-          <!-- IF NOT AN ARRAY THEN CREATES A COLUMN -->
+          <!-- IF IS FIELD -->
           <template v-else>
             <div
               :key="schema.model"
