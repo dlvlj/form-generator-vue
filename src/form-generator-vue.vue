@@ -1,49 +1,43 @@
 <template>
   <form :class="[CLASS.form]" @submit.prevent="handleSubmit">
-    <!-- header section -->
+    <!-- header -->
     <div :class="[CLASS.header]">
       <slot :name="SLOT.header" />
     </div>
     <!-- body -->
     <div :class="[CLASS.body]">
-      <template v-for="(fieldConfig, i) in fieldsConfig">
+      <template v-for="(schema, i) in fieldsSchema">
         <!-- ROW -->
         <div
-          v-if="
-            UTILS.isArr(fieldConfig) && fieldConfig.length ||
-            (fieldIsVisible(fieldConfig) && componentToRender(fieldConfig))
-          "
+          v-if="hasFields(schema) || isfield(schema)"
           :key="i"
           :class="[CLASS.row, classes.row]"
         >
         
           <!-- IF ARRAY THEN CREATE MULTIPLE COLUMNS IN A ROW -->
-          <template v-if="UTILS.isArr(fieldConfig)">
-            <template v-for="subFieldConfig in fieldConfig">
+          <template v-if="UTILS.isArr(schema)">
+            <template v-for="s in schema">
               <div
-                :key="subFieldConfig.model"
-                v-show="
-                  fieldIsVisible(subFieldConfig) &&
-                  componentToRender(subFieldConfig)
-                "
+                :key="s.model"
+                v-show="isfield(s)"
                 :class="[
                   CLASS.col,
-                  subFieldConfig.model,
+                  s.model,
                   classes.col,
                 ]"
               >
                 <template>
-                  <slot :name="SLOT.beforeComponent(subFieldConfig.model)" />
+                  <slot :name="SLOT.beforeComponent(s.model)" />
                   <!-- COMPONENT -->
                   <component
-                    :is="componentToRender(subFieldConfig)"
-                    v-model="fields[subFieldConfig.model]"
-                    v-bind="componentProps(subFieldConfig)"
-                    v-on="componentEvents(subFieldConfig)"
+                    :is="componentToRender(s)"
+                    v-model="fields[s.model]"
+                    v-bind="componentProps(s)"
+                    v-on="componentEvents(s)"
                   >
-                    <slot :name="subFieldConfig.model" />
+                    <slot :name="s.model" />
                   </component>
-                  <slot :name="SLOT.afterComponent(subFieldConfig.model)" />
+                  <slot :name="SLOT.afterComponent(s.model)" />
                 </template>
               </div>
             </template>
@@ -52,36 +46,33 @@
           <!-- IF NOT AN ARRAY THEN CREATES A COLUMN -->
           <template v-else>
             <div
-              :key="fieldConfig.model"
-              v-show="
-                fieldIsVisible(fieldConfig) &&
-                componentToRender(fieldConfig)
-              "
+              :key="schema.model"
+              v-show="isfield(schema)"
               :class="[
                 CLASS.col,
-                fieldConfig.model,
+                schema.model,
                 classes.col,
               ]"
             >
               <template>
-                <slot :name="SLOT.beforeComponent(fieldConfig.model)" />
+                <slot :name="SLOT.beforeComponent(schema.model)" />
                 <!-- COMPONENT -->
                 <component
-                  :is="componentToRender(fieldConfig)"
-                  v-model="fields[fieldConfig.model]"
-                  v-bind="componentProps(fieldConfig)"
-                  v-on="componentEvents(fieldConfig)"
+                  :is="componentToRender(schema)"
+                  v-model="fields[schema.model]"
+                  v-bind="componentProps(schema)"
+                  v-on="componentEvents(schema)"
                 >
-                  <slot :name="fieldConfig.model" />
+                  <slot :name="schema.model" />
                 </component>
-                <slot :name="SLOT.afterComponent(fieldConfig.model)" />
+                <slot :name="SLOT.afterComponent(schema.model)" />
               </template>
             </div>
           </template>
         </div>
       </template>
     </div>
-    <!-- footer section -->
+    <!-- footer -->
     <div :class="CLASS.footer">
       <slot :name="SLOT.footer" />
     </div>
@@ -105,13 +96,13 @@ export default {
         errors[model] = this.vModelValid(INIT) && VMODEL.errors in this.value ? this.value.errors[model]: '';
     }
     if (SCHEMA.fields in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
-      for (const config of this.schema.fields) {
-        if (UTILS.isArr(config)) {
-          for (const subConfig of config) {
-            addFieldsAndErrors(subConfig.model);
+      for (const schema of this.schema.fields) {
+        if (UTILS.isArr(schema)) {
+          for (const s of conf) {
+            addFieldsAndErrors(s.model);
           }
         } else {
-          addFieldsAndErrors(config.model);
+          addFieldsAndErrors(schema.model);
         }
       }
     }
@@ -137,27 +128,27 @@ export default {
     logs() {
       return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
     },
-    fieldsConfig() {
+    fieldsSchema() {
       return SCHEMA.fields in this.schema && UTILS.isArr(this.schema[SCHEMA.fields])
         ? this.schema[SCHEMA.fields]
         : [];
     },
-    fieldsConfigFlat() {
-      let flatConfig = [];
-      for (const config of this.fieldsConfig) {
-        if (UTILS.isArr(config)) {
-          for(const subConfig of config) {
-            flatConfig.push(subConfig);
+    fieldsSchemaFlat() {
+      let flatSchema = [];
+      for (const schema of this.fieldsSchema) {
+        if (UTILS.isArr(schema)) {
+          for(const s of schema) {
+            flatSchema.push(s);
           }
         } else {
-          flatConfig.push(config);
+          flatSchema.push(schema);
         }
       }
-      return flatConfig;
+      return flatSchema;
     },
     deValidateField() {
-      return UTILS.debounce((fieldName) => {
-        this.validateField(fieldName)
+      return UTILS.debounce((model) => {
+        this.validateField(model)
       }, this.activeValidationDelay);
     },
   },
@@ -170,9 +161,9 @@ export default {
     value: {
       handler: function() {
         if (this.vModelValid()) {
-          for (const fieldName in this.value[VMODEL.values]) {
-            this.fields[fieldName] = this.value[VMODEL.values][fieldName];
-            this.errors[fieldName] = this.value[VMODEL.errors][fieldName];
+          for (const model in this.value[VMODEL.values]) {
+            this.fields[model] = this.value[VMODEL.values][model];
+            this.errors[model] = this.value[VMODEL.errors][model];
           }
         }
       },
@@ -180,7 +171,7 @@ export default {
     },
     fields: {
       handler: function() {
-        this.removeUnwantedFields();
+        this.rmUnwantedModels();
         this.$emit("input", { values: this.fields, errors: this.errors });
       },
       deep: true,
@@ -188,21 +179,27 @@ export default {
     },
   },
   created() {
-    for (const fieldName in this.fields) {
-      this.$watch(`fields.${fieldName}`, function (newVal, oldVal) {
+    for (const model in this.fields) {
+      this.$watch(`fields.${model}`, function (newVal, oldVal) {
         // for number type field.
-        this.toNum(fieldName);
-        // this.updateHelpers(fieldName, newVal);
+        this.typeCoercion(model);
+        // this.updateHelpers(model, newVal);
 
         // to prevent below calls when only type is changed and not value.
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         }
-        this.activeValidationDelay ? this.deValidateField(fieldName) : this.validateField(fieldName);
+        this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
       }, {deep:true});
     }
   },
   methods: {
+    hasFields(schema) {
+      return UTILS.isArr(schema) && schema.length
+    },
+    isfield(schema) {
+     return !this.fieldHidden(schema) && this.componentToRender(schema)
+    },
     vModelValid(init = false) {
       const parentValid =  this.value && UTILS.isObjNotArr(this.value);
       const valValid = VMODEL.values in this.value && UTILS.isObjNotArr(this.value[VMODEL.values]);
@@ -216,50 +213,50 @@ export default {
       this.submit = false;
     },
     removeAllErrors() {
-      for (const fieldName in this.errors) {
-        this.errors[fieldName] = "";
+      for (const model in this.errors) {
+        this.errors[model] = "";
       }
     },
-    setError(field, msg) {
-      this.errors[field] = msg;
+    setError(model, msg) {
+      this.errors[model] = msg;
     },
     findComponentData(name) {
       return this.formComponents.find(
         c => c.compData && c.compData.name === name
       );
     },
-    componentProps(fieldConfig) {
-      const componentName = this.componentToRender(fieldConfig);
+    componentProps(schema) {
+      const componentName = this.componentToRender(schema);
       const component = this.findComponentData(componentName);
-      const errorPropName = fieldConfig.errorProp  || component && component.compData.errorProp ||  'error';
+      const errorPropName = schema.errorProp  || component && component.compData.errorProp ||  'error';
       return {
-        ...fieldConfig.props,
-        [errorPropName]: this.errors[fieldConfig.model],
-        ref: fieldConfig.model,
-        type: fieldConfig.type || FIELD.type.text,
-        disabled: this.fieldDisabled(fieldConfig),
-        required: this.fieldRequired(null,fieldConfig)
+        ...schema.props,
+        [errorPropName]: this.errors[schema.model],
+        ref: schema.model,
+        type: schema.type || FIELD.type.text,
+        disabled: this.fieldDisabled(schema),
+        required: this.fieldRequired(null,schema)
       };
     },
-    toNum(fieldName) {
-      if(!isNaN(this.fields[fieldName])) {
+    typeCoercion(model) {
+      if(!isNaN(this.fields[model])) {
         return;
       }
-      const fieldConfig = this.findFieldConfig(fieldName);
-      fieldConfig &&
-        fieldConfig.type === FIELD.type.number &&
-        this.fields[fieldName] &&
-        (this.fields[fieldName] = Number(this.fields[fieldName]));
+      const schema = this.findSchema(model);
+      schema &&
+        schema.type === FIELD.type.number &&
+        this.fields[model] &&
+        (this.fields[model] = Number(this.fields[model]));
     },
-    componentEvents(fieldConfig) {
-      return FIELD.events in fieldConfig && UTILS.isFunc(fieldConfig[FIELD.events])
-        ? fieldConfig[FIELD.events](this)
+    componentEvents(schema) {
+      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events])
+        ? schema[FIELD.events](this)
         : {};
     },
-    componentToRender(fieldConfig) {
-      const fieldType = fieldConfig.type || FIELD.type.text;
-      if (FIELD.component in fieldConfig && fieldConfig[FIELD.component] && UTILS.isStr(fieldConfig[FIELD.component])) {
-        return fieldConfig.component;
+    componentToRender(schema) {
+      const fieldType = schema.type || FIELD.type.text;
+      if (FIELD.component in schema && schema[FIELD.component] && UTILS.isStr(schema[FIELD.component])) {
+        return schema.component;
       }
       const component = this.formComponents.find(({ type }) => type.includes(fieldType));
       const componentName = component && component.compData? component.compData.name : '';
@@ -269,59 +266,59 @@ export default {
         );
       return componentName;
     },
-    findFieldConfig(fieldName) {
-      return this.fieldsConfigFlat.find((conf) => conf.model === fieldName);
+    findSchema(model) {
+      return this.fieldsSchemaFlat.find(({m}) => m === model);
     },
-    fieldDisabled(fieldConfig) {
+    fieldDisabled(schema) {
       const DISABLED = true;
-      const hasDisabledProp = fieldConfig && fieldConfig.props && FIELD.props.disabled in fieldConfig.props;
+      const hasDisabledProp = schema && schema.props && FIELD.props.disabled in schema.props;
       const fieldDisabled =
         hasDisabledProp
-          ? UTILS.handlefuncOrBool(fieldConfig.props[FIELD.props.disabled])
+          ? UTILS.handlefuncOrBool(schema.props[FIELD.props.disabled])
           : !DISABLED;
       return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
-    fieldRequired(name, config = null) {
+    fieldRequired(m, s = null) {
       const REQUIRED = true;
-      const fieldName = name || config.model;
-      const fieldConfig = config || this.findFieldConfig(fieldName);
-      const hasRequiredProp = fieldConfig && fieldConfig.props && FIELD.props.required in fieldConfig.props;
+      const model = m || s.model;
+      const schema = s || this.findSchema(model);
+      const hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
       const fieldRequired =
         hasRequiredProp
-          ? UTILS.handlefuncOrBool(fieldConfig.props[FIELD.props.required]) : REQUIRED;
-          // : !this.isHelperComponent(fieldName);
-      return fieldConfig && !this.fieldDisabled(fieldConfig) && this.fieldIsVisible(fieldConfig)
+          ? UTILS.handlefuncOrBool(schema.props[FIELD.props.required]) : REQUIRED;
+          // : !this.isHelperComponent(model);
+      return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema)
         ? fieldRequired
         : !REQUIRED;
     },
-    removeUnwantedFields() {
-      const uf = Object.keys(this.fields).filter(fieldName => !this.fieldsConfigFlat.find(({model}) => model === fieldName));
-      uf.forEach(fieldName => {
-        delete this.fields[fieldName];
-        delete this.errors[fieldName];
+    rmUnwantedModels() {
+      const uf = Object.keys(this.fields).filter(model => !this.fieldsSchemaFlat.find(({m}) => m === model));
+      uf.forEach(model => {
+        delete this.fields[model];
+        delete this.errors[model];
       })
     },
-    fieldIsVisible(fieldConfig) {
-      const VISIBLE = true
-      const fieldVisible =
-        FIELD.show in fieldConfig
-          ? UTILS.handlefuncOrBool(fieldConfig[FIELD.show])
-          : VISIBLE;
-      // !fieldVisible && this.setDefaultFieldValue(fieldConfig);
-      return fieldVisible;
+    fieldHidden(schema) {
+      const HIDDEN = true;
+      const fieldHidden =
+        FIELD.hide in schema
+          ? UTILS.handlefuncOrBool(schema[FIELD.hide])
+          : !HIDDEN;
+      // !fieldVisible && this.setDefaultFieldValue(schema);
+      return fieldHidden;
     },
-    validateField(fieldName) {
+    validateField(model) {
       const SUCCESS = [true, ""];
-      const fieldConfig = this.findFieldConfig(fieldName);
-      const fieldRequired = this.fieldRequired(null, fieldConfig);
-      const fieldRule = fieldConfig.rules || {};
-      const fieldActiveValidation = 'activeValidation' in fieldConfig ? Boolean(fieldConfig.activeValidation) : this.activeValidation;
+      const schema = this.findSchema(model);
+      const fieldRequired = this.fieldRequired(null, schema);
+      const fieldRule = schema.rules || {};
+      const fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
 
       const [valid, error] =
         this.submit || fieldActiveValidation
           ? VALIDATION_ENGINE(
-              fieldName,
-              this.fields[fieldName],
+              model,
+              this.fields[model],
               fieldRule,
               this.validationRules,
               { ...this.fields },
@@ -330,13 +327,13 @@ export default {
           : SUCCESS;
 
       !fieldRequired
-        ? !this.submit && this.setError(fieldName, error)
-        : this.setError(fieldName, error);
+        ? !this.submit && this.setError(model, error)
+        : this.setError(model, error);
       this.logs &&
         console.log(
-          `model:${fieldName}\n`,
-          `value:${this.fields[fieldName]}\n`,
-          `type:${typeof this.fields[fieldName]}\n`,
+          `model:${model}\n`,
+          `value:${this.fields[model]}\n`,
+          `type:${typeof this.fields[model]}\n`,
           `valid:${valid}\n`,
           `required:${fieldRequired}\n`,
           `error:${error}`
@@ -346,13 +343,13 @@ export default {
     async handleSubmit() {
       this.submit = true;
       const formValidationStatus = {};
-      this.removeUnwantedFields();
+      this.rmUnwantedModels();
       
-      Object.keys(this.fields).forEach((fieldName) => {
-        formValidationStatus[fieldName] = this.validateField(fieldName) || !this.fieldRequired(fieldName);
+      Object.keys(this.fields).forEach((model) => {
+        formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
       });
 
-      const submitFail = Object.keys(formValidationStatus).find(fieldName => !formValidationStatus[fieldName]);
+      const submitFail = Object.keys(formValidationStatus).find(model => !formValidationStatus[model]);
       
       if(this.logs) {
         console.log("form data:", this.fields); 
