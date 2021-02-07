@@ -420,8 +420,8 @@ var FIELD = {
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
       // on init if v-model has values then validate and apply those values.
-      fields[model] = _this.vModelValid(INIT) && VMODEL.values in _this.value ? _this.value.values[model] : '';
-      errors[model] = _this.vModelValid(INIT) && VMODEL.errors in _this.value ? _this.value.errors[model] : '';
+      fields[model] = _this.vModelValid(INIT) && VMODEL.values in _this.value && _this.value.values[model] || '';
+      errors[model] = _this.vModelValid(INIT) && VMODEL.errors in _this.value && _this.value.errors[model] || '';
     };
 
     if (SCHEMA.fields in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
@@ -574,6 +574,7 @@ var FIELD = {
 
         this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
       }, {
+        immediate: true,
         deep: true
       });
     };
@@ -654,9 +655,9 @@ var FIELD = {
       !componentName && console.error("Component cannot be rendered. Component for type \"".concat(fieldType, "\" is not found in form-components."));
       return componentName;
     },
-    findSchema: function findSchema(model) {
+    findSchema: function findSchema(m) {
       return this.fieldsSchemaFlat.find(function (_ref2) {
-        var m = _ref2.m;
+        var model = _ref2.model;
         return m === model;
       });
     },
@@ -895,7 +896,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5618e522";
+var __vue_module_identifier__ = "data-v-89008cc4";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

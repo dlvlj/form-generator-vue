@@ -92,8 +92,8 @@ export default {
     let errors = {};
     const addFieldsAndErrors = model => {
         // on init if v-model has values then validate and apply those values.
-        fields[model] = this.vModelValid(INIT) && VMODEL.values in this.value ? this.value.values[model]: '';
-        errors[model] = this.vModelValid(INIT) && VMODEL.errors in this.value ? this.value.errors[model]: '';
+        fields[model] = this.vModelValid(INIT) && VMODEL.values in this.value && this.value.values[model] || '';
+        errors[model] = this.vModelValid(INIT) && VMODEL.errors in this.value && this.value.errors[model] || '';
     }
     if (SCHEMA.fields in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
       for (const schema of this.schema.fields) {
@@ -190,7 +190,7 @@ export default {
           return;
         }
         this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
-      }, {deep:true});
+      }, {immediate: true, deep:true});
     }
   },
   methods: {
@@ -266,8 +266,8 @@ export default {
         );
       return componentName;
     },
-    findSchema(model) {
-      return this.fieldsSchemaFlat.find(({m}) => m === model);
+    findSchema(m) {
+      return this.fieldsSchemaFlat.find(({model}) => m === model);
     },
     fieldDisabled(schema) {
       const DISABLED = true;
