@@ -388,7 +388,7 @@ var SLOT = {
 };
 var SCHEMA = {
   fields: 'fields',
-  activeValidation: 'activevalidation',
+  activeValidation: 'activeValidation',
   avDelay: 'activeValidationDelay',
   logs: 'logs'
 };
@@ -433,7 +433,7 @@ var FIELD = {
           var schema = _step.value;
 
           if (UTILS.isArr(schema)) {
-            var _iterator2 = _createForOfIteratorHelper(conf),
+            var _iterator2 = _createForOfIteratorHelper(schema),
                 _step2;
 
             try {
@@ -895,7 +895,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-50b9b0fa";
+var __vue_module_identifier__ = "data-v-428fa977";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

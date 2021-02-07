@@ -17,7 +17,7 @@ export const SLOT = {
 
 export const SCHEMA = {
   fields: 'fields',
-  activeValidation: 'activevalidation',
+  activeValidation: 'activeValidation',
   avDelay: 'activeValidationDelay',
   logs: 'logs'
 }

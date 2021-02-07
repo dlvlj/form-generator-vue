@@ -98,7 +98,7 @@ export default {
     if (SCHEMA.fields in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
       for (const schema of this.schema.fields) {
         if (UTILS.isArr(schema)) {
-          for (const s of conf) {
+          for (const s of schema) {
             addFieldsAndErrors(s.model);
           }
         } else {
