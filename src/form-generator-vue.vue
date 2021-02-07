@@ -292,7 +292,7 @@ export default {
         : !REQUIRED;
     },
     rmUnwantedModels() {
-      const uf = Object.keys(this.fields).filter(model => !this.fieldsSchemaFlat.find(({m}) => m === model));
+      const uf = Object.keys(this.fields).filter(m => !this.fieldsSchemaFlat.find(({model}) => m === model));
       uf.forEach(model => {
         delete this.fields[model];
         delete this.errors[model];

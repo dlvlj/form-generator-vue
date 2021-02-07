@@ -431,8 +431,8 @@ var script = {
     },
 
     rmUnwantedModels() {
-      const uf = Object.keys(this.fields).filter(model => !this.fieldsSchemaFlat.find(({
-        m
+      const uf = Object.keys(this.fields).filter(m => !this.fieldsSchemaFlat.find(({
+        model
       }) => m === model));
       uf.forEach(model => {
         delete this.fields[model];

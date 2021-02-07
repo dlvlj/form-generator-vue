@@ -679,9 +679,9 @@ var FIELD = {
     rmUnwantedModels: function rmUnwantedModels() {
       var _this4 = this;
 
-      var uf = Object.keys(this.fields).filter(function (model) {
+      var uf = Object.keys(this.fields).filter(function (m) {
         return !_this4.fieldsSchemaFlat.find(function (_ref3) {
-          var m = _ref3.m;
+          var model = _ref3.model;
           return m === model;
         });
       });
@@ -895,7 +895,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-428fa977";
+var __vue_module_identifier__ = "data-v-5618e522";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
