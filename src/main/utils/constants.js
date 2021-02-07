@@ -11,14 +11,15 @@ export const CLASS = {
 export const SLOT = {
   header: 'header',
   footer: 'footer',
-  beforeComponent: '_before',
-  afterComponent: '_after',
+  beforeComponent: v => `${v}_before`,
+  afterComponent:  v => `${v}_after`,
 }
 
 export const SCHEMA = {
   fields: 'fields',
   activeValidation: 'activevalidation',
-  avDelay: 'activeValidationDelay'
+  avDelay: 'activeValidationDelay',
+  logs: 'logs'
 }
 
 export const VMODEL = {
@@ -26,6 +27,17 @@ export const VMODEL = {
   errors: 'errors'
 }
 
-export const SCHEMA = {
+export const FIELD = {
+  events: 'events',
+  component:'component',
+  show: 'show',
+  type: {
+    text: 'text',
+    number: 'number'
+  },
+  props:{
+    required: 'required',
+    disabled: 'disabled'
+  }
 }
 

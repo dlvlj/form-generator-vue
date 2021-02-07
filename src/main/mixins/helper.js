@@ -18,5 +18,9 @@ export default {
         this.fields[helperField] = VAL;
       }
     },
+    setDefaultFieldValue(fieldConfig) {
+      this.fields[fieldConfig.model] =
+        fieldConfig.model in this.value.values ? this.value.values[fieldConfig.model] : '';
+    },
   }
 }
