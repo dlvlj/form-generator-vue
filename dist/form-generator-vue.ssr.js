@@ -420,8 +420,8 @@ var FIELD = {
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
       // on init if v-model has values then validate and apply those values.
-      fields[model] = _this.vModelValid(INIT) && VMODEL.values in _this.value && _this.value.values[model] || '';
-      errors[model] = _this.vModelValid(INIT) && VMODEL.errors in _this.value && _this.value.errors[model] || '';
+      fields[model] = _this.vModelValid(INIT) && VMODEL.values in _this.value && _this.value[VMODEL.values][model] || '';
+      errors[model] = _this.vModelValid(INIT) && VMODEL.errors in _this.value && _this.value[VMODEL.errors][model] || '';
     };
 
     if (SCHEMA.fields in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
@@ -710,7 +710,14 @@ var FIELD = {
           error = _ref5[1];
 
       !fieldRequired ? !this.submit && this.setError(model, error) : this.setError(model, error);
-      this.logs && console.log("model:".concat(model, "\n"), "value:".concat(this.fields[model], "\n"), "type:".concat(_typeof(this.fields[model]), "\n"), "valid:".concat(valid, "\n"), "required:".concat(fieldRequired, "\n"), "error:".concat(error));
+      this.logs && console.log({
+        model: model,
+        value: this.fields[model],
+        type: _typeof(this.fields[model]),
+        valid: valid,
+        required: fieldRequired,
+        error: error
+      });
       return valid;
     },
     handleSubmit: function handleSubmit() {
@@ -896,7 +903,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-eec65134";
+var __vue_module_identifier__ = "data-v-6a205e63";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

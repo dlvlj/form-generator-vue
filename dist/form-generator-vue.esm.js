@@ -211,8 +211,8 @@ var script = {
 
     const addFieldsAndErrors = model => {
       // on init if v-model has values then validate and apply those values.
-      fields[model] = this.vModelValid(INIT) && VMODEL.values in this.value && this.value.values[model] || '';
-      errors[model] = this.vModelValid(INIT) && VMODEL.errors in this.value && this.value.errors[model] || '';
+      fields[model] = this.vModelValid(INIT) && VMODEL.values in this.value && this.value[VMODEL.values][model] || '';
+      errors[model] = this.vModelValid(INIT) && VMODEL.errors in this.value && this.value[VMODEL.errors][model] || '';
     };
 
     if (SCHEMA.fields in this.schema && UTILS.isArr(this.schema.fields) && this.schema.fields.length) {
@@ -457,7 +457,14 @@ var script = {
       const [valid, error] = this.submit || fieldActiveValidation ? VALIDATION_ENGINE(model, this.fields[model], fieldRule, this.validationRules, { ...this.fields
       }, this.submit) : SUCCESS;
       !fieldRequired ? !this.submit && this.setError(model, error) : this.setError(model, error);
-      this.logs && console.log(`model:${model}\n`, `value:${this.fields[model]}\n`, `type:${typeof this.fields[model]}\n`, `valid:${valid}\n`, `required:${fieldRequired}\n`, `error:${error}`);
+      this.logs && console.log({
+        model,
+        value: this.fields[model],
+        type: typeof this.fields[model],
+        valid,
+        required: fieldRequired,
+        error
+      });
       return valid;
     },
 
