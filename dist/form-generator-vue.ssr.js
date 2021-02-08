@@ -574,7 +574,6 @@ var FIELD = {
 
         this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
       }, {
-        immediate: true,
         deep: true
       });
     };
@@ -903,7 +902,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-6a205e63";
+var __vue_module_identifier__ = "data-v-77bcd110";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

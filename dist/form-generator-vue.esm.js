@@ -322,7 +322,6 @@ var script = {
 
         this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
       }, {
-        immediate: true,
         deep: true
       });
     }

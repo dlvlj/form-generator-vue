@@ -190,7 +190,7 @@ export default {
           return;
         }
         this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
-      }, {immediate: true, deep:true});
+      }, {deep:true});
     }
   },
   methods: {
