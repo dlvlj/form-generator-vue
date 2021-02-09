@@ -177,7 +177,9 @@ const SLOT = {
   header: 'header',
   footer: 'footer',
   beforeComponent: v => `${v}_before`,
-  afterComponent: v => `${v}_after`
+  afterComponent: v => `${v}_after`,
+  beforeRow: 'before-row',
+  afterRow: 'after-row'
 };
 const SCHEMA = {
   fields: 'fields',
@@ -603,7 +605,7 @@ var __vue_render__ = function () {
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
   }, [_vm._l(_vm.fieldsSchema, function (schema, i) {
-    return [_vm.hasFields(schema) || _vm.isfield(schema) ? _c('div', {
+    return [_vm._t(_vm.SLOT.beforeRow), _vm._v(" "), _vm.hasFields(schema) || _vm.isfield(schema) ? _c('div', {
       key: i,
       class: [_vm.CLASS.row, _vm.classes.row]
     }, [_vm.UTILS.isArr(schema) ? [_vm._l(schema, function (s) {
@@ -644,7 +646,7 @@ var __vue_render__ = function () {
         },
         expression: "fields[schema.model]"
       }
-    }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))]], 2)]], 2) : _vm._e()];
+    }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))]], 2)]], 2) : _vm._e(), _vm._v(" "), _vm._t(_vm.SLOT.afterRow)];
   })], 2), _vm._v(" "), _c('div', {
     class: _vm.CLASS.footer
   }, [_vm._t(_vm.SLOT.footer)], 2)]);

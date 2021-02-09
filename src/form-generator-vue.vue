@@ -7,6 +7,7 @@
     <!-- body -->
     <div :class="[CLASS.body]">
       <template v-for="(schema, i) in fieldsSchema">
+        <slot :name="SLOT.beforeRow" />
         <!-- ROW -->
         <div
           v-if="hasFields(schema) || isfield(schema)"
@@ -70,6 +71,7 @@
             </div>
           </template>
         </div>
+        <slot :name="SLOT.afterRow" />
       </template>
     </div>
     <!-- footer -->

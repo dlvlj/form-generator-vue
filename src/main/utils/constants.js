@@ -13,6 +13,8 @@ export const SLOT = {
   footer: 'footer',
   beforeComponent: v => `${v}_before`,
   afterComponent:  v => `${v}_after`,
+  beforeRow: 'before-row',
+  afterRow: 'after-row'
 }
 
 export const SCHEMA = {
