@@ -333,6 +333,19 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       }, wait);
     };
   }
+};var slotProps = {
+  methods: {
+    getModelFromSchema: function getModelFromSchema(schema) {
+      if (UTILS.isArr()) {
+        return schema.map(function (_ref) {
+          var model = _ref.model;
+          return model;
+        });
+      }
+
+      return schema.model;
+    }
+  }
 };var FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
 var FIELD_IS_VALID = '';
 var SUCCESS = [true, FIELD_IS_VALID]; // VALIDATION ENGINE 
@@ -392,7 +405,9 @@ var SLOT = {
     return "".concat(v, "_after");
   },
   beforeRow: 'before-row',
-  afterRow: 'after-row'
+  afterRow: 'after-row',
+  beforeCol: 'before-col',
+  afterCol: 'after-col'
 };
 var SCHEMA = {
   fields: 'fields',
@@ -418,7 +433,7 @@ var FIELD = {
     disabled: 'disabled'
   }
 };var script = {
-  mixins: [props],
+  mixins: [props, slotProps],
   data: function data() {
     var _this = this;
 
@@ -591,11 +606,18 @@ var FIELD = {
     }
   },
   methods: {
-    hasFields: function hasFields(schema) {
-      return UTILS.isArr(schema) && schema.length;
+    showRow: function showRow(schema) {
+      return this.hasFieldsToRender(schema) || this.showCol(schema);
     },
-    isfield: function isfield(schema) {
-      return !this.fieldHidden(schema) && this.componentToRender(schema);
+    hasFieldsToRender: function hasFieldsToRender(schema) {
+      var _this4 = this;
+
+      return UTILS.isArr(schema) && schema.length && schema.some(function (s) {
+        return !_this4.fieldHidden(s);
+      });
+    },
+    showCol: function showCol(schema) {
+      return this.componentToRender(schema) && !this.fieldHidden(schema);
     },
     vModelValid: function vModelValid() {
       var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
@@ -691,17 +713,17 @@ var FIELD = {
       return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema) ? fieldRequired : !REQUIRED;
     },
     rmUnwantedModels: function rmUnwantedModels() {
-      var _this4 = this;
+      var _this5 = this;
 
       var uf = Object.keys(this.fields).filter(function (m) {
-        return !_this4.fieldsSchemaFlat.find(function (_ref3) {
+        return !_this5.fieldsSchemaFlat.find(function (_ref3) {
           var model = _ref3.model;
           return m === model;
         });
       });
       uf.forEach(function (model) {
-        delete _this4.fields[model];
-        delete _this4.errors[model];
+        delete _this5.fields[model];
+        delete _this5.errors[model];
       });
     },
     fieldHidden: function fieldHidden(schema) {
@@ -734,7 +756,7 @@ var FIELD = {
       return valid;
     },
     handleSubmit: function handleSubmit() {
-      var _this5 = this;
+      var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var formValidationStatus, submitFail;
@@ -742,20 +764,20 @@ var FIELD = {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this5.submit = true;
+                _this6.submit = true;
                 formValidationStatus = {};
 
-                _this5.rmUnwantedModels();
+                _this6.rmUnwantedModels();
 
-                Object.keys(_this5.fields).forEach(function (model) {
-                  formValidationStatus[model] = _this5.validateField(model) || !_this5.fieldRequired(model);
+                Object.keys(_this6.fields).forEach(function (model) {
+                  formValidationStatus[model] = _this6.validateField(model) || !_this6.fieldRequired(model);
                 });
                 submitFail = Object.keys(formValidationStatus).find(function (model) {
                   return !formValidationStatus[model];
                 });
 
-                if (_this5.logs) {
-                  console.log("form data:", _this5.fields);
+                if (_this6.logs) {
+                  console.log("form data:", _this6.fields);
                   console.log("form validations:", formValidationStatus);
                 }
 
@@ -764,18 +786,18 @@ var FIELD = {
                   break;
                 }
 
-                _this5.resetFormState();
+                _this6.resetFormState();
 
-                _this5.onSubmitFail(_this5.fields);
+                _this6.onSubmitFail(_this6.fields);
 
                 return _context.abrupt("return");
 
               case 10:
                 _context.next = 12;
-                return _this5.onSubmit(_this5.fields);
+                return _this6.onSubmit(_this6.fields);
 
               case 12:
-                _this5.resetFormState();
+                _this6.resetFormState();
 
               case 13:
               case "end":
@@ -879,22 +901,11 @@ var __vue_render__ = function __vue_render__() {
       }
     }
   }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.fieldsSchema, function (schema, i) {
-    return [_vm._t(_vm.SLOT.beforeRow), _vm._ssrNode(" "), _vm.hasFields(schema) || _vm.isfield(schema) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [_vm.UTILS.isArr(schema) ? [_vm._l(schema, function (s) {
-      return [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, s.model, _vm.classes.col]) + _vm._ssrStyle(null, null, {
-        display: _vm.isfield(s) ? '' : 'none'
-      }) + ">", "</div>", [[_vm._t(_vm.SLOT.beforeComponent(s.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(s), _vm._g(_vm._b({
-        tag: "component",
-        model: {
-          value: _vm.fields[s.model],
-          callback: function callback($$v) {
-            _vm.$set(_vm.fields, s.model, $$v);
-          },
-          expression: "fields[s.model]"
-        }
-      }, 'component', _vm.componentProps(s), false), _vm.componentEvents(s)), [_vm._t(s.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(s.model))]], 2)];
-    })] : [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, schema.model, _vm.classes.col]) + _vm._ssrStyle(null, null, {
-      display: _vm.isfield(schema) ? '' : 'none'
-    }) + ">", "</div>", [[_vm._t(_vm.SLOT.beforeComponent(schema.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(schema), _vm._g(_vm._b({
+    return [_vm.showRow(schema) ? _vm._t(_vm.SLOT.beforeRow, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(schema) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(schema) ? [_vm.showCol(schema) ? _vm._t(_vm.SLOT.beforeCol, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(schema) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, schema.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(schema.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(schema), _vm._g(_vm._b({
       tag: "component",
       model: {
         value: _vm.fields[schema.model],
@@ -903,7 +914,26 @@ var __vue_render__ = function __vue_render__() {
         },
         expression: "fields[schema.model]"
       }
-    }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))]], 2)]], 2) : _vm._e(), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterRow)];
+    }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(schema) ? _vm._t(_vm.SLOT.afterCol, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e()] : [_vm._l(schema, function (s) {
+      return [_vm.showCol(s) ? _vm._t(_vm.SLOT.beforeCol, null, {
+        "model": _vm.getModelFromSchema(s)
+      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(s) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, s.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(s.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(s), _vm._g(_vm._b({
+        tag: "component",
+        model: {
+          value: _vm.fields[s.model],
+          callback: function callback($$v) {
+            _vm.$set(_vm.fields, s.model, $$v);
+          },
+          expression: "fields[s.model]"
+        }
+      }, 'component', _vm.componentProps(s), false), _vm.componentEvents(s)), [_vm._t(s.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(s.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(s) ? _vm._t(_vm.SLOT.afterCol, null, {
+        "model": _vm.getModelFromSchema(s)
+      }) : _vm._e()];
+    })]], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(schema) ? _vm._t(_vm.SLOT.afterRow, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e()];
   })], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, _vm.CLASS.footer) + ">", "</div>", [_vm._t(_vm.SLOT.footer)], 2)], 2);
 };
 
@@ -916,7 +946,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-0ddd0b4c";
+var __vue_module_identifier__ = "data-v-559c2706";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

@@ -122,6 +122,21 @@ const UTILS = {
 
 };
 
+var slotProps = {
+  methods: {
+    getModelFromSchema(schema) {
+      if (UTILS.isArr()) {
+        return schema.map(({
+          model
+        }) => model);
+      }
+
+      return schema.model;
+    }
+
+  }
+};
+
 const FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
 const FIELD_IS_VALID = '';
 const SUCCESS = [true, FIELD_IS_VALID]; // VALIDATION ENGINE 
@@ -179,7 +194,9 @@ const SLOT = {
   beforeComponent: v => `${v}_before`,
   afterComponent: v => `${v}_after`,
   beforeRow: 'before-row',
-  afterRow: 'after-row'
+  afterRow: 'after-row',
+  beforeCol: 'before-col',
+  afterCol: 'after-col'
 };
 const SCHEMA = {
   fields: 'fields',
@@ -208,7 +225,7 @@ const FIELD = {
 
 //
 var script = {
-  mixins: [props],
+  mixins: [props, slotProps],
 
   data() {
     const INIT = true;
@@ -334,12 +351,16 @@ var script = {
   },
 
   methods: {
-    hasFields(schema) {
-      return UTILS.isArr(schema) && schema.length;
+    showRow(schema) {
+      return this.hasFieldsToRender(schema) || this.showCol(schema);
     },
 
-    isfield(schema) {
-      return !this.fieldHidden(schema) && this.componentToRender(schema);
+    hasFieldsToRender(schema) {
+      return UTILS.isArr(schema) && schema.length && schema.some(s => !this.fieldHidden(s));
+    },
+
+    showCol(schema) {
+      return this.componentToRender(schema) && !this.fieldHidden(schema);
     },
 
     vModelValid(init = false) {
@@ -605,39 +626,17 @@ var __vue_render__ = function () {
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
   }, [_vm._l(_vm.fieldsSchema, function (schema, i) {
-    return [_vm._t(_vm.SLOT.beforeRow), _vm._v(" "), _vm.hasFields(schema) || _vm.isfield(schema) ? _c('div', {
+    return [_vm.showRow(schema) ? _vm._t(_vm.SLOT.beforeRow, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e(), _vm._v(" "), _vm.showRow(schema) ? _c('div', {
       key: i,
       class: [_vm.CLASS.row, _vm.classes.row]
-    }, [_vm.UTILS.isArr(schema) ? [_vm._l(schema, function (s) {
-      return [_c('div', {
-        directives: [{
-          name: "show",
-          rawName: "v-show",
-          value: _vm.isfield(s),
-          expression: "isfield(s)"
-        }],
-        key: s.model,
-        class: [_vm.CLASS.col, s.model, _vm.classes.col]
-      }, [[_vm._t(_vm.SLOT.beforeComponent(s.model)), _vm._v(" "), _c(_vm.componentToRender(s), _vm._g(_vm._b({
-        tag: "component",
-        model: {
-          value: _vm.fields[s.model],
-          callback: function ($$v) {
-            _vm.$set(_vm.fields, s.model, $$v);
-          },
-          expression: "fields[s.model]"
-        }
-      }, 'component', _vm.componentProps(s), false), _vm.componentEvents(s)), [_vm._t(s.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(s.model))]], 2)];
-    })] : [_c('div', {
-      directives: [{
-        name: "show",
-        rawName: "v-show",
-        value: _vm.isfield(schema),
-        expression: "isfield(schema)"
-      }],
+    }, [!_vm.UTILS.isArr(schema) ? [_vm.showCol(schema) ? _vm._t(_vm.SLOT.beforeCol, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e(), _vm._v(" "), _vm.showCol(schema) ? _c('div', {
       key: schema.model,
       class: [_vm.CLASS.col, schema.model, _vm.classes.col]
-    }, [[_vm._t(_vm.SLOT.beforeComponent(schema.model)), _vm._v(" "), _c(_vm.componentToRender(schema), _vm._g(_vm._b({
+    }, [_vm._t(_vm.SLOT.beforeComponent(schema.model)), _vm._v(" "), _c(_vm.componentToRender(schema), _vm._g(_vm._b({
       tag: "component",
       model: {
         value: _vm.fields[schema.model],
@@ -646,7 +645,29 @@ var __vue_render__ = function () {
         },
         expression: "fields[schema.model]"
       }
-    }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))]], 2)]], 2) : _vm._e(), _vm._v(" "), _vm._t(_vm.SLOT.afterRow)];
+    }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(schema) ? _vm._t(_vm.SLOT.afterCol, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e()] : [_vm._l(schema, function (s) {
+      return [_vm.showCol(s) ? _vm._t(_vm.SLOT.beforeCol, null, {
+        "model": _vm.getModelFromSchema(s)
+      }) : _vm._e(), _vm._v(" "), _vm.showCol(s) ? _c('div', {
+        key: s.model,
+        class: [_vm.CLASS.col, s.model, _vm.classes.col]
+      }, [_vm._t(_vm.SLOT.beforeComponent(s.model)), _vm._v(" "), _c(_vm.componentToRender(s), _vm._g(_vm._b({
+        tag: "component",
+        model: {
+          value: _vm.fields[s.model],
+          callback: function ($$v) {
+            _vm.$set(_vm.fields, s.model, $$v);
+          },
+          expression: "fields[s.model]"
+        }
+      }, 'component', _vm.componentProps(s), false), _vm.componentEvents(s)), [_vm._t(s.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(s.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(s) ? _vm._t(_vm.SLOT.afterCol, null, {
+        "model": _vm.getModelFromSchema(s)
+      }) : _vm._e()];
+    })]], 2) : _vm._e(), _vm._v(" "), _vm.showRow(schema) ? _vm._t(_vm.SLOT.afterRow, null, {
+      "model": _vm.getModelFromSchema(schema)
+    }) : _vm._e()];
   })], 2), _vm._v(" "), _c('div', {
     class: _vm.CLASS.footer
   }, [_vm._t(_vm.SLOT.footer)], 2)]);

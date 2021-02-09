@@ -14,7 +14,9 @@ export const SLOT = {
   beforeComponent: v => `${v}_before`,
   afterComponent:  v => `${v}_after`,
   beforeRow: 'before-row',
-  afterRow: 'after-row'
+  afterRow: 'after-row',
+  beforeCol: 'before-col',
+  afterCol: 'after-col'
 }
 
 export const SCHEMA = {

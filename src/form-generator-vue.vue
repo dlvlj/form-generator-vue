@@ -7,57 +7,26 @@
     <!-- body -->
     <div :class="[CLASS.body]">
       <template v-for="(schema, i) in fieldsSchema">
-        <slot :name="SLOT.beforeRow" />
+        <slot v-if="showRow(schema)" :name="SLOT.beforeRow" :model="getModelFromSchema(schema)"/>
         <!-- ROW -->
         <div
-          v-if="hasFields(schema) || isfield(schema)"
+          v-if="showRow(schema)"
           :key="i"
           :class="[CLASS.row, classes.row]"
         >
-        
-          <!-- IF HAS FIELDS -->
-          <template v-if="UTILS.isArr(schema)">
-            <template v-for="s in schema">
+          <!-- COL -->
+          <template v-if="!UTILS.isArr(schema)">
+            <slot v-if="showCol(schema)" :name="SLOT.beforeCol" :model="getModelFromSchema(schema)"/>
               <div
-                :key="s.model"
-                v-show="isfield(s)"
+                :key="schema.model"
+                v-if="showCol(schema)"
                 :class="[
                   CLASS.col,
-                  s.model,
+                  schema.model,
                   classes.col,
                 ]"
               >
-                <template>
-                  <slot :name="SLOT.beforeComponent(s.model)" />
-                  <!-- COMPONENT -->
-                  <component
-                    :is="componentToRender(s)"
-                    v-model="fields[s.model]"
-                    v-bind="componentProps(s)"
-                    v-on="componentEvents(s)"
-                  >
-                    <slot :name="s.model" />
-                  </component>
-                  <slot :name="SLOT.afterComponent(s.model)" />
-                </template>
-              </div>
-            </template>
-          </template>
-
-          <!-- IF IS FIELD -->
-          <template v-else>
-            <div
-              :key="schema.model"
-              v-show="isfield(schema)"
-              :class="[
-                CLASS.col,
-                schema.model,
-                classes.col,
-              ]"
-            >
-              <template>
                 <slot :name="SLOT.beforeComponent(schema.model)" />
-                <!-- COMPONENT -->
                 <component
                   :is="componentToRender(schema)"
                   v-model="fields[schema.model]"
@@ -67,11 +36,39 @@
                   <slot :name="schema.model" />
                 </component>
                 <slot :name="SLOT.afterComponent(schema.model)" />
-              </template>
-            </div>
+              </div>
+            <slot v-if="showCol(schema)" :name="SLOT.afterCol" :model="getModelFromSchema(schema)"/>
+          </template>
+
+          <!-- MULTIPLE COLS -->
+          <template v-else>
+            <template v-for="s in schema">
+              <slot v-if="showCol(s)" :name="SLOT.beforeCol" :model="getModelFromSchema(s)"/>
+              <div
+                :key="s.model"
+                v-if="showCol(s)"
+                :class="[
+                  CLASS.col,
+                  s.model,
+                  classes.col,
+                ]"
+              >
+                <slot :name="SLOT.beforeComponent(s.model)" />
+                <component
+                  :is="componentToRender(s)"
+                  v-model="fields[s.model]"
+                  v-bind="componentProps(s)"
+                  v-on="componentEvents(s)"
+                >
+                  <slot :name="s.model" />
+                </component>
+                <slot :name="SLOT.afterComponent(s.model)" />
+              </div>
+              <slot v-if="showCol(s)" :name="SLOT.afterCol" :model="getModelFromSchema(s)"/>
+            </template>
           </template>
         </div>
-        <slot :name="SLOT.afterRow" />
+        <slot v-if="showRow(schema)" :name="SLOT.afterRow" :model="getModelFromSchema(schema)"/>
       </template>
     </div>
     <!-- footer -->
@@ -83,11 +80,12 @@
 
 <script>
 import props from './main/mixins/props';
+import slotProps from './main/mixins/slot-props';
 import VALIDATION_ENGINE from "./main/validation-engine";
 import UTILS from './main/utils';
 import {SLOT, CLASS, SCHEMA, VMODEL, FIELD} from './main/utils/constants';
 export default {
-  mixins: [props],
+  mixins: [props, slotProps],
   data() {
     const INIT = true; 
     let fields = {};
@@ -196,11 +194,14 @@ export default {
     }
   },
   methods: {
-    hasFields(schema) {
-      return UTILS.isArr(schema) && schema.length
+    showRow(schema) {
+      return this.hasFieldsToRender(schema) || this.showCol(schema);
     },
-    isfield(schema) {
-     return !this.fieldHidden(schema) && this.componentToRender(schema)
+    hasFieldsToRender(schema) {
+      return UTILS.isArr(schema) && schema.length && schema.some(s => !this.fieldHidden(s));
+    },
+    showCol(schema) {
+     return this.componentToRender(schema) && !this.fieldHidden(schema);
     },
     vModelValid(init = false) {
       const parentValid =  this.value && UTILS.isObjNotArr(this.value);
