@@ -16,7 +16,7 @@ export default function (
   let error = checkEmpty(fieldValue);
   const emptyErr = 'emptyErr' in fieldRule ? fieldRule.emptyErr : 'Required';
   const filterData = validationRules.FILTER;
-  const fieldValidator = fieldRule.validator || validationRules[fieldName];
+  const fieldValidator = fieldRule.validator || validationRules[fieldRule.type] || validationRules[fieldName];
 
   if (error !== FIELD_IS_EMPTY) {
     if(!UTILS.isFunc(filterData)) {

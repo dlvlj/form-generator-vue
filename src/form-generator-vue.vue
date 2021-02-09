@@ -217,8 +217,12 @@ export default {
         this.errors[model] = "";
       }
     },
-    setError(model, msg) {
-      this.errors[model] = msg;
+    setError(model, e) {
+      const oldErr = this.errors[model];
+      if(oldErr === e || (UTILS.isObj(e,oldErr) && JSON.stringify(e) === JSON.stringify(oldErr))) {
+        return;
+      }
+      this.errors[model] = e;
     },
     findComponentData(name) {
       return this.formComponents.find(

@@ -9,7 +9,10 @@ const UTILS = {
     return val.every( v => UTILS.isObj(v) && !UTILS.isArr(v));
   },
   isObj(val) {
-    return typeof val === 'object'
+    if(!UTILS.isArr(val)) {
+      return typeof val === 'object';
+    }
+    return val.every( v => typeof v === 'object');
   },
   isArr(val) {
     return Array.isArray(val);

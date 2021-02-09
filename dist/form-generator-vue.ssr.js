@@ -278,7 +278,13 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     });
   },
   isObj: function isObj(val) {
-    return _typeof(val) === 'object';
+    if (!UTILS.isArr(val)) {
+      return _typeof(val) === 'object';
+    }
+
+    return val.every(function (v) {
+      return _typeof(v) === 'object';
+    });
   },
   isArr: function isArr(val) {
     return Array.isArray(val);
@@ -335,7 +341,7 @@ function VALIDATION_ENGINE (fieldName, fieldValue, fieldRule, validationRules, a
   var error = checkEmpty(fieldValue);
   var emptyErr = 'emptyErr' in fieldRule ? fieldRule.emptyErr : 'Required';
   var filterData = validationRules.FILTER;
-  var fieldValidator = fieldRule.validator || validationRules[fieldName];
+  var fieldValidator = fieldRule.validator || validationRules[fieldRule.type] || validationRules[fieldName];
 
   if (error !== FIELD_IS_EMPTY) {
     if (!UTILS.isFunc(filterData)) {
@@ -612,8 +618,14 @@ var FIELD = {
         this.errors[model] = "";
       }
     },
-    setError: function setError(model, msg) {
-      this.errors[model] = msg;
+    setError: function setError(model, e) {
+      var oldErr = this.errors[model];
+
+      if (oldErr === e || UTILS.isObj(e, oldErr) && JSON.stringify(e) === JSON.stringify(oldErr)) {
+        return;
+      }
+
+      this.errors[model] = e;
     },
     findComponentData: function findComponentData(name) {
       return this.formComponents.find(function (c) {
@@ -902,7 +914,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-77bcd110";
+var __vue_module_identifier__ = "data-v-7dabc129";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

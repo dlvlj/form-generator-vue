@@ -60,7 +60,11 @@ const UTILS = {
   },
 
   isObj(val) {
-    return typeof val === 'object';
+    if (!UTILS.isArr(val)) {
+      return typeof val === 'object';
+    }
+
+    return val.every(v => typeof v === 'object');
   },
 
   isArr(val) {
@@ -126,7 +130,7 @@ function VALIDATION_ENGINE (fieldName, fieldValue, fieldRule, validationRules, a
   let error = checkEmpty(fieldValue);
   const emptyErr = 'emptyErr' in fieldRule ? fieldRule.emptyErr : 'Required';
   const filterData = validationRules.FILTER;
-  const fieldValidator = fieldRule.validator || validationRules[fieldName];
+  const fieldValidator = fieldRule.validator || validationRules[fieldRule.type] || validationRules[fieldName];
 
   if (error !== FIELD_IS_EMPTY) {
     if (!UTILS.isFunc(filterData)) {
@@ -358,8 +362,14 @@ var script = {
       }
     },
 
-    setError(model, msg) {
-      this.errors[model] = msg;
+    setError(model, e) {
+      const oldErr = this.errors[model];
+
+      if (oldErr === e || UTILS.isObj(e, oldErr) && JSON.stringify(e) === JSON.stringify(oldErr)) {
+        return;
+      }
+
+      this.errors[model] = e;
     },
 
     findComponentData(name) {
