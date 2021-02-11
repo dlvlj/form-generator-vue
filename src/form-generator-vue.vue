@@ -81,7 +81,6 @@
 <script>
 import props from './main/mixins/props';
 import slotProps from './main/mixins/slot-props';
-import VALIDATION_ENGINE from "./main/validation-engine";
 import UTILS from './main/utils';
 import {SLOT, CLASS, SCHEMA, VMODEL, FIELD} from './main/utils/constants';
 export default {
@@ -235,7 +234,7 @@ export default {
     componentProps(schema) {
       const componentName = this.componentToRender(schema);
       const component = this.findComponentData(componentName);
-      const errorPropName = schema.errorProp  || component && component.compData.errorProp ||  'error';
+      const errorPropName = schema && schema.rules && schema.rules.errorProp  || component && component.compData && component.compData.errorProp ||  'error';
       return {
         ...schema.props,
         [errorPropName]: this.errors[schema.model],
@@ -257,7 +256,7 @@ export default {
     },
     componentEvents(schema) {
       return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events])
-        ? schema[FIELD.events](this)
+        ? UTILS.handleFunc(schema[FIELD.events])
         : {};
     },
     componentToRender(schema) {
@@ -281,7 +280,7 @@ export default {
       const hasDisabledProp = schema && schema.props && FIELD.props.disabled in schema.props;
       const fieldDisabled =
         hasDisabledProp
-          ? UTILS.handlefuncOrBool(schema.props[FIELD.props.disabled])
+          ? UTILS.handleFuncOrBool(schema.props[FIELD.props.disabled])
           : !DISABLED;
       return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
@@ -292,7 +291,7 @@ export default {
       const hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
       const fieldRequired =
         hasRequiredProp
-          ? UTILS.handlefuncOrBool(schema.props[FIELD.props.required]) : REQUIRED;
+          ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : REQUIRED;
           // : !this.isHelperComponent(model);
       return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema)
         ? fieldRequired
@@ -309,29 +308,24 @@ export default {
       const HIDDEN = true;
       const fieldHidden =
         FIELD.hide in schema
-          ? UTILS.handlefuncOrBool(schema[FIELD.hide])
+          ? UTILS.handleFuncOrBool(schema[FIELD.hide])
           : !HIDDEN;
       // !fieldVisible && this.setDefaultFieldValue(schema);
       return fieldHidden;
     },
     validateField(model) {
-      const SUCCESS = [true, ""];
+      const VALID = true;
       const schema = this.findSchema(model);
       const fieldRequired = this.fieldRequired(null, schema);
-      const fieldRule = schema.rules || {};
+      const validator = schema.rules && schema.rules.validator;
       const fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
 
-      const [valid, error] =
+      const error =
         this.submit || fieldActiveValidation
-          ? VALIDATION_ENGINE(
-              model,
-              this.fields[model],
-              fieldRule,
-              this.validationRules,
-              { ...this.fields },
-              this.submit
-            )
-          : SUCCESS;
+          ? UTILS.handleFunc(validator) || ''
+          : VALID;
+      
+      const valid = !error ? VALID : Boolean(error);
 
       !fieldRequired
         ? !this.submit && this.setError(model, error)
@@ -356,7 +350,7 @@ export default {
         formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
       });
 
-      const submitFail = Object.keys(formValidationStatus).find(model => !formValidationStatus[model]);
+      const submitFail = Object.keys(formValidationStatus).find(model => !formValidationStatus[model]) || Object.values(this.errors).find(e => e);
       
       if(this.logs) {
         console.log("form data:", this.fields); 

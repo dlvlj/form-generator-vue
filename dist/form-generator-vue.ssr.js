@@ -99,41 +99,6 @@ function _objectSpread2(target) {
   return target;
 }
 
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-}
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
   if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -149,10 +114,6 @@ function _arrayLikeToArray(arr, len) {
   for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
 
   return arr2;
-}
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 function _createForOfIteratorHelper(o, allowArrayLike) {
@@ -313,7 +274,14 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       return child in parent;
     });
   },
-  handlefuncOrBool: function handlefuncOrBool(val) {
+  handleFunc: function handleFunc(func) {
+    var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+
+    if (UTILS.isFunc(func)) {
+      return func(params);
+    }
+  },
+  handleFuncOrBool: function handleFuncOrBool(val) {
     var funcParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
     var res = Boolean(val);
 
@@ -346,48 +314,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       return schema.model;
     }
   }
-};var FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
-var FIELD_IS_VALID = '';
-var SUCCESS = [true, FIELD_IS_VALID]; // VALIDATION ENGINE 
-
-function VALIDATION_ENGINE (fieldName, fieldValue, fieldRule, validationRules, allFields, submit) {
-  var error = checkEmpty(fieldValue);
-  var emptyErr = 'emptyErr' in fieldRule ? fieldRule.emptyErr : 'Required';
-  var filterData = validationRules.FILTER;
-  var fieldValidator = fieldRule.validator || validationRules[fieldRule.type] || validationRules[fieldName];
-
-  if (error !== FIELD_IS_EMPTY) {
-    if (!UTILS.isFunc(filterData)) {
-      !UTILS.isUndef(filterData) && console.error("filter ".concat(filterData, " is not a function."));
-    } else {
-      error = filterData(fieldValue, fieldRule, allFields);
-
-      if (error !== FIELD_IS_VALID) {
-        return result(error);
-      }
-    }
-
-    if (!UTILS.isFunc(fieldValidator)) {
-      !UTILS.isUndef(fieldValidator) && console.error("validator ".concat(fieldValidator, " is not a function."));
-      return result(error);
-    }
-
-    error = fieldValidator(fieldValue, fieldRule, allFields);
-    return result(error);
-  } else {
-    error = submit ? emptyErr : '';
-    return result(error);
-  }
-}
-
-function checkEmpty(value) {
-  return String(value).trim() === '' || ![false, 0].includes(value) && !value ? FIELD_IS_EMPTY : FIELD_IS_VALID;
-}
-
-function result(error) {
-  var fail = [false, error];
-  return error !== FIELD_IS_VALID ? fail : SUCCESS;
-}var CLASS = {
+};var CLASS = {
   form: 'fgv-form',
   header: "fgv-form__header",
   body: "fgv-form__body",
@@ -661,7 +588,7 @@ var FIELD = {
 
       var componentName = this.componentToRender(schema);
       var component = this.findComponentData(componentName);
-      var errorPropName = schema.errorProp || component && component.compData.errorProp || 'error';
+      var errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.compData && component.compData.errorProp || 'error';
       return _objectSpread2(_objectSpread2({}, schema.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[schema.model]), _defineProperty(_objectSpread2$1, "ref", schema.model), _defineProperty(_objectSpread2$1, "type", schema.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(schema)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(null, schema)), _objectSpread2$1));
     },
     typeCoercion: function typeCoercion(model) {
@@ -673,7 +600,7 @@ var FIELD = {
       schema && schema.type === FIELD.type.number && this.fields[model] && (this.fields[model] = Number(this.fields[model]));
     },
     componentEvents: function componentEvents(schema) {
-      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? schema[FIELD.events](this) : {};
+      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? UTILS.handleFunc(schema[FIELD.events]) : {};
     },
     componentToRender: function componentToRender(schema) {
       var fieldType = schema.type || FIELD.type.text;
@@ -699,7 +626,7 @@ var FIELD = {
     fieldDisabled: function fieldDisabled(schema) {
       var DISABLED = true;
       var hasDisabledProp = schema && schema.props && FIELD.props.disabled in schema.props;
-      var fieldDisabled = hasDisabledProp ? UTILS.handlefuncOrBool(schema.props[FIELD.props.disabled]) : !DISABLED;
+      var fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.disabled]) : !DISABLED;
       return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
     fieldRequired: function fieldRequired(m) {
@@ -708,7 +635,7 @@ var FIELD = {
       var model = m || s.model;
       var schema = s || this.findSchema(model);
       var hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
-      var fieldRequired = hasRequiredProp ? UTILS.handlefuncOrBool(schema.props[FIELD.props.required]) : REQUIRED; // : !this.isHelperComponent(model);
+      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : REQUIRED; // : !this.isHelperComponent(model);
 
       return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema) ? fieldRequired : !REQUIRED;
     },
@@ -728,22 +655,18 @@ var FIELD = {
     },
     fieldHidden: function fieldHidden(schema) {
       var HIDDEN = true;
-      var fieldHidden = FIELD.hide in schema ? UTILS.handlefuncOrBool(schema[FIELD.hide]) : !HIDDEN; // !fieldVisible && this.setDefaultFieldValue(schema);
+      var fieldHidden = FIELD.hide in schema ? UTILS.handleFuncOrBool(schema[FIELD.hide]) : !HIDDEN; // !fieldVisible && this.setDefaultFieldValue(schema);
 
       return fieldHidden;
     },
     validateField: function validateField(model) {
-      var SUCCESS = [true, ""];
+      var VALID = true;
       var schema = this.findSchema(model);
       var fieldRequired = this.fieldRequired(null, schema);
-      var fieldRule = schema.rules || {};
+      var validator = schema.rules && schema.rules.validator;
       var fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
-
-      var _ref4 = this.submit || fieldActiveValidation ? VALIDATION_ENGINE(model, this.fields[model], fieldRule, this.validationRules, _objectSpread2({}, this.fields), this.submit) : SUCCESS,
-          _ref5 = _slicedToArray(_ref4, 2),
-          valid = _ref5[0],
-          error = _ref5[1];
-
+      var error = this.submit || fieldActiveValidation ? UTILS.handleFunc(validator) || '' : VALID;
+      var valid = !error ? VALID : Boolean(error);
       !fieldRequired ? !this.submit && this.setError(model, error) : this.setError(model, error);
       this.logs && console.log({
         model: model,
@@ -774,6 +697,8 @@ var FIELD = {
                 });
                 submitFail = Object.keys(formValidationStatus).find(function (model) {
                   return !formValidationStatus[model];
+                }) || Object.values(_this6.errors).find(function (e) {
+                  return e;
                 });
 
                 if (_this6.logs) {
@@ -946,7 +871,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-559c2706";
+var __vue_module_identifier__ = "data-v-201f9916";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

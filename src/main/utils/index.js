@@ -38,7 +38,12 @@ const UTILS = {
     }
     return children.every(child => child in parent);
   },
-  handlefuncOrBool(val, funcParams = undefined) {
+  handleFunc(func, params = undefined) {
+    if(UTILS.isFunc(func)) {
+      return func(params);
+    }
+  },
+  handleFuncOrBool(val, funcParams = undefined) {
     let res = Boolean(val);
     if(UTILS.isFunc(val)) {
      res = val(funcParams);

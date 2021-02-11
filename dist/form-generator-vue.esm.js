@@ -99,7 +99,13 @@ const UTILS = {
     return children.every(child => child in parent);
   },
 
-  handlefuncOrBool(val, funcParams = undefined) {
+  handleFunc(func, params = undefined) {
+    if (UTILS.isFunc(func)) {
+      return func(params);
+    }
+  },
+
+  handleFuncOrBool(val, funcParams = undefined) {
     let res = Boolean(val);
 
     if (UTILS.isFunc(val)) {
@@ -136,49 +142,6 @@ var slotProps = {
 
   }
 };
-
-const FIELD_IS_EMPTY = 'FIELD_IS_EMPTY';
-const FIELD_IS_VALID = '';
-const SUCCESS = [true, FIELD_IS_VALID]; // VALIDATION ENGINE 
-
-function VALIDATION_ENGINE (fieldName, fieldValue, fieldRule, validationRules, allFields, submit) {
-  let error = checkEmpty(fieldValue);
-  const emptyErr = 'emptyErr' in fieldRule ? fieldRule.emptyErr : 'Required';
-  const filterData = validationRules.FILTER;
-  const fieldValidator = fieldRule.validator || validationRules[fieldRule.type] || validationRules[fieldName];
-
-  if (error !== FIELD_IS_EMPTY) {
-    if (!UTILS.isFunc(filterData)) {
-      !UTILS.isUndef(filterData) && console.error(`filter ${filterData} is not a function.`);
-    } else {
-      error = filterData(fieldValue, fieldRule, allFields);
-
-      if (error !== FIELD_IS_VALID) {
-        return result(error);
-      }
-    }
-
-    if (!UTILS.isFunc(fieldValidator)) {
-      !UTILS.isUndef(fieldValidator) && console.error(`validator ${fieldValidator} is not a function.`);
-      return result(error);
-    }
-
-    error = fieldValidator(fieldValue, fieldRule, allFields);
-    return result(error);
-  } else {
-    error = submit ? emptyErr : '';
-    return result(error);
-  }
-}
-
-function checkEmpty(value) {
-  return String(value).trim() === '' || ![false, 0].includes(value) && !value ? FIELD_IS_EMPTY : FIELD_IS_VALID;
-}
-
-function result(error) {
-  const fail = [false, error];
-  return error !== FIELD_IS_VALID ? fail : SUCCESS;
-}
 
 const CLASS = {
   form: 'fgv-form',
@@ -402,7 +365,7 @@ var script = {
     componentProps(schema) {
       const componentName = this.componentToRender(schema);
       const component = this.findComponentData(componentName);
-      const errorPropName = schema.errorProp || component && component.compData.errorProp || 'error';
+      const errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.compData && component.compData.errorProp || 'error';
       return { ...schema.props,
         [errorPropName]: this.errors[schema.model],
         ref: schema.model,
@@ -422,7 +385,7 @@ var script = {
     },
 
     componentEvents(schema) {
-      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? schema[FIELD.events](this) : {};
+      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? UTILS.handleFunc(schema[FIELD.events]) : {};
     },
 
     componentToRender(schema) {
@@ -449,7 +412,7 @@ var script = {
     fieldDisabled(schema) {
       const DISABLED = true;
       const hasDisabledProp = schema && schema.props && FIELD.props.disabled in schema.props;
-      const fieldDisabled = hasDisabledProp ? UTILS.handlefuncOrBool(schema.props[FIELD.props.disabled]) : !DISABLED;
+      const fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.disabled]) : !DISABLED;
       return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
 
@@ -458,7 +421,7 @@ var script = {
       const model = m || s.model;
       const schema = s || this.findSchema(model);
       const hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
-      const fieldRequired = hasRequiredProp ? UTILS.handlefuncOrBool(schema.props[FIELD.props.required]) : REQUIRED; // : !this.isHelperComponent(model);
+      const fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : REQUIRED; // : !this.isHelperComponent(model);
 
       return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema) ? fieldRequired : !REQUIRED;
     },
@@ -475,19 +438,19 @@ var script = {
 
     fieldHidden(schema) {
       const HIDDEN = true;
-      const fieldHidden = FIELD.hide in schema ? UTILS.handlefuncOrBool(schema[FIELD.hide]) : !HIDDEN; // !fieldVisible && this.setDefaultFieldValue(schema);
+      const fieldHidden = FIELD.hide in schema ? UTILS.handleFuncOrBool(schema[FIELD.hide]) : !HIDDEN; // !fieldVisible && this.setDefaultFieldValue(schema);
 
       return fieldHidden;
     },
 
     validateField(model) {
-      const SUCCESS = [true, ""];
+      const VALID = true;
       const schema = this.findSchema(model);
       const fieldRequired = this.fieldRequired(null, schema);
-      const fieldRule = schema.rules || {};
+      const validator = schema.rules && schema.rules.validator;
       const fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
-      const [valid, error] = this.submit || fieldActiveValidation ? VALIDATION_ENGINE(model, this.fields[model], fieldRule, this.validationRules, { ...this.fields
-      }, this.submit) : SUCCESS;
+      const error = this.submit || fieldActiveValidation ? UTILS.handleFunc(validator) || '' : VALID;
+      const valid = !error ? VALID : Boolean(error);
       !fieldRequired ? !this.submit && this.setError(model, error) : this.setError(model, error);
       this.logs && console.log({
         model,
@@ -507,7 +470,7 @@ var script = {
       Object.keys(this.fields).forEach(model => {
         formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
       });
-      const submitFail = Object.keys(formValidationStatus).find(model => !formValidationStatus[model]);
+      const submitFail = Object.keys(formValidationStatus).find(model => !formValidationStatus[model]) || Object.values(this.errors).find(e => e);
 
       if (this.logs) {
         console.log("form data:", this.fields);
