@@ -561,9 +561,10 @@ var FIELD = {
     var _this3 = this;
 
     var _loop = function _loop(model) {
-      _this3.$watch("fields.".concat(model), function (newVal, oldVal) {
-        var schema = this.findSchema(model); // for number type field.
+      var schema = _this3.findSchema(model);
 
+      _this3.$watch("fields.".concat(model), function (newVal, oldVal) {
+        // for number type field.
         this.typeCoercion(schema); // this.updateHelpers(model, newVal);
         // to prevent below calls when only type is changed and not value.
 
@@ -574,7 +575,8 @@ var FIELD = {
 
         this.validate(schema, true);
       }, {
-        deep: true
+        deep: true,
+        immediate: schema.rules && schema.rules.immediate
       });
     };
 
@@ -942,7 +944,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-7aebc9a2";
+var __vue_module_identifier__ = "data-v-3874bce3";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

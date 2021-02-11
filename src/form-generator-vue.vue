@@ -183,8 +183,8 @@ export default {
   },
   created() {
     for (const model in this.fields) {
+      const schema = this.findSchema(model);
       this.$watch(`fields.${model}`, function (newVal, oldVal) {
-        const schema = this.findSchema(model);
         // for number type field.
         this.typeCoercion(schema);
         // this.updateHelpers(model, newVal);
@@ -195,7 +195,7 @@ export default {
         }
         // validation ---------------------------
         this.validate(schema, true);
-      }, {deep:true});
+      }, {deep:true, immediate: schema.rules && schema.rules.immediate});
     }
   },
   methods: {
