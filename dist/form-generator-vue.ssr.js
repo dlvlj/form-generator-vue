@@ -427,8 +427,8 @@ var FIELD = {
       return SCHEMA.activeValidation in this.schema ? this.schema[SCHEMA.activeValidation] : false;
     },
     activeValidationDelay: function activeValidationDelay() {
-      var hasActiveValidationDelay = SCHEMA.activeValidationDelay in this.schema && this.schema[SCHEMA.activeValidationDelay] && !isNaN(this.schema[SCHEMA.activeValidationDelay]);
-      return this.activeValidation && hasActiveValidationDelay ? this.schema[SCHEMA.activeValidationDelay] : false;
+      var hasActiveValidationDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
+      return this.activeValidation && hasActiveValidationDelay ? this.schema[SCHEMA.avDelay] : false;
     },
     logs: function logs() {
       return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
@@ -871,7 +871,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-ef759900";
+var __vue_module_identifier__ = "data-v-3c4450d4";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

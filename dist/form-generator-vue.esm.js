@@ -230,8 +230,8 @@ var script = {
     },
 
     activeValidationDelay() {
-      const hasActiveValidationDelay = SCHEMA.activeValidationDelay in this.schema && this.schema[SCHEMA.activeValidationDelay] && !isNaN(this.schema[SCHEMA.activeValidationDelay]);
-      return this.activeValidation && hasActiveValidationDelay ? this.schema[SCHEMA.activeValidationDelay] : false;
+      const hasActiveValidationDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
+      return this.activeValidation && hasActiveValidationDelay ? this.schema[SCHEMA.avDelay] : false;
     },
 
     logs() {
