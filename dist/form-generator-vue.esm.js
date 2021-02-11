@@ -316,8 +316,7 @@ var script = {
         } // validation ---------------------------
 
 
-        const avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
-        avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
+        this.validate(schema, true);
       }, {
         deep: true
       });
@@ -325,6 +324,21 @@ var script = {
   },
 
   methods: {
+    validate(schema = undefined, watcher = false) {
+      if (schema && watcher) {
+        const avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
+        avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
+        return;
+      }
+
+      const status = {};
+      Object.values(this.fieldsSchemaMap).forEach(s => {
+        status[s.model] = this.validateField(s) || !this.fieldRequired(s);
+      });
+      const fail = Object.values(status).find(v => !v) || Object.values(this.errors).find(e => e);
+      return [status, fail];
+    },
+
     showRow(schema) {
       return this.hasFieldsToRender(schema) || this.showCol(schema);
     },
@@ -474,23 +488,25 @@ var script = {
     },
 
     async handleSubmit() {
-      this.submit = true;
-      const formValidationStatus = {};
+      this.submit = true; // const formValidationStatus = {};
+
       this.rmUnwantedModels(); // Object.keys(this.fields).forEach((model) => {
       //   formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
       // });
+      // Objec.keys(this.fieldsSchemaMap).forEach(schema => {
+      //   formValidationStatus[schema.model] = this.validateField(schema) || !this.fieldRequired(schema);
+      // })
+      // const formValidationStatus = this.validate;
+      // const submitFail = Object.values(formValidationStatus).find(v => !v) || Object.values(this.errors).find(e => e);
 
-      Objec.keys(this.fieldsSchemaMap).forEach(schema => {
-        formValidationStatus[schema.model] = this.validateField(schema) || !this.fieldRequired(schema);
-      });
-      const submitFail = Object.keys(formValidationStatus).find(model => !formValidationStatus[model]) || Object.values(this.errors).find(e => e);
+      const [status, fail] = this.validate();
 
       if (this.logs) {
         console.log("form data:", this.fields);
-        console.log("form validations:", formValidationStatus);
+        console.log("form validations:", status);
       }
 
-      if (submitFail) {
+      if (fail) {
         this.resetFormState();
         this.onSubmitFail(this.fields);
         return;

@@ -99,6 +99,41 @@ function _objectSpread2(target) {
   return target;
 }
 
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
   if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -114,6 +149,10 @@ function _arrayLikeToArray(arr, len) {
   for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
 
   return arr2;
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 function _createForOfIteratorHelper(o, allowArrayLike) {
@@ -533,8 +572,7 @@ var FIELD = {
         } // validation ---------------------------
 
 
-        var avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
-        avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
+        this.validate(schema, true);
       }, {
         deep: true
       });
@@ -545,14 +583,37 @@ var FIELD = {
     }
   },
   methods: {
+    validate: function validate() {
+      var _this4 = this;
+
+      var schema = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+      var watcher = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (schema && watcher) {
+        var avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
+        avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
+        return;
+      }
+
+      var status = {};
+      Object.values(this.fieldsSchemaMap).forEach(function (s) {
+        status[s.model] = _this4.validateField(s) || !_this4.fieldRequired(s);
+      });
+      var fail = Object.values(status).find(function (v) {
+        return !v;
+      }) || Object.values(this.errors).find(function (e) {
+        return e;
+      });
+      return [status, fail];
+    },
     showRow: function showRow(schema) {
       return this.hasFieldsToRender(schema) || this.showCol(schema);
     },
     hasFieldsToRender: function hasFieldsToRender(schema) {
-      var _this4 = this;
+      var _this5 = this;
 
       return UTILS.isArr(schema) && schema.length && schema.some(function (s) {
-        return !_this4.fieldHidden(s);
+        return !_this5.fieldHidden(s);
       });
     },
     showCol: function showCol(schema) {
@@ -649,17 +710,17 @@ var FIELD = {
       return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema) ? fieldRequired : !REQUIRED;
     },
     rmUnwantedModels: function rmUnwantedModels() {
-      var _this5 = this;
+      var _this6 = this;
 
       var uf = Object.keys(this.fields).filter(function (m) {
-        return !_this5.fieldsSchemaFlat.find(function (_ref2) {
+        return !_this6.fieldsSchemaFlat.find(function (_ref2) {
           var model = _ref2.model;
           return m === model;
         });
       });
       uf.forEach(function (model) {
-        delete _this5.fields[model];
-        delete _this5.errors[model];
+        delete _this6.fields[model];
+        delete _this6.errors[model];
       });
     },
     fieldHidden: function fieldHidden(schema) {
@@ -688,55 +749,53 @@ var FIELD = {
       return valid;
     },
     handleSubmit: function handleSubmit() {
-      var _this6 = this;
+      var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var formValidationStatus, submitFail;
+        var _this7$validate, _this7$validate2, status, fail;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this6.submit = true;
-                formValidationStatus = {};
+                _this7.submit = true; // const formValidationStatus = {};
 
-                _this6.rmUnwantedModels(); // Object.keys(this.fields).forEach((model) => {
+                _this7.rmUnwantedModels(); // Object.keys(this.fields).forEach((model) => {
                 //   formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
                 // });
+                // Objec.keys(this.fieldsSchemaMap).forEach(schema => {
+                //   formValidationStatus[schema.model] = this.validateField(schema) || !this.fieldRequired(schema);
+                // })
+                // const formValidationStatus = this.validate;
+                // const submitFail = Object.values(formValidationStatus).find(v => !v) || Object.values(this.errors).find(e => e);
 
 
-                Objec.keys(_this6.fieldsSchemaMap).forEach(function (schema) {
-                  formValidationStatus[schema.model] = _this6.validateField(schema) || !_this6.fieldRequired(schema);
-                });
-                submitFail = Object.keys(formValidationStatus).find(function (model) {
-                  return !formValidationStatus[model];
-                }) || Object.values(_this6.errors).find(function (e) {
-                  return e;
-                });
+                _this7$validate = _this7.validate(), _this7$validate2 = _slicedToArray(_this7$validate, 2), status = _this7$validate2[0], fail = _this7$validate2[1];
 
-                if (_this6.logs) {
-                  console.log("form data:", _this6.fields);
-                  console.log("form validations:", formValidationStatus);
+                if (_this7.logs) {
+                  console.log("form data:", _this7.fields);
+                  console.log("form validations:", status);
                 }
 
-                if (!submitFail) {
-                  _context.next = 10;
+                if (!fail) {
+                  _context.next = 8;
                   break;
                 }
 
-                _this6.resetFormState();
+                _this7.resetFormState();
 
-                _this6.onSubmitFail(_this6.fields);
+                _this7.onSubmitFail(_this7.fields);
 
                 return _context.abrupt("return");
 
+              case 8:
+                _context.next = 10;
+                return _this7.onSubmit(_this7.fields);
+
               case 10:
-                _context.next = 12;
-                return _this6.onSubmit(_this6.fields);
+                _this7.resetFormState();
 
-              case 12:
-                _this6.resetFormState();
-
-              case 13:
+              case 11:
               case "end":
                 return _context.stop();
             }
@@ -883,7 +942,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-bf203f26";
+var __vue_module_identifier__ = "data-v-7aebc9a2";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
