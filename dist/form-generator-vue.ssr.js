@@ -580,7 +580,7 @@ var FIELD = {
     },
     findComponentData: function findComponentData(name) {
       return this.formComponents.find(function (c) {
-        return c.compData && c.compData.name === name;
+        return c && c.name === name;
       });
     },
     componentProps: function componentProps(schema) {
@@ -588,7 +588,7 @@ var FIELD = {
 
       var componentName = this.componentToRender(schema);
       var component = this.findComponentData(componentName);
-      var errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.compData && component.compData.errorProp || 'error';
+      var errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.errorProp || 'error';
       return _objectSpread2(_objectSpread2({}, schema.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[schema.model]), _defineProperty(_objectSpread2$1, "ref", schema.model), _defineProperty(_objectSpread2$1, "type", schema.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(schema)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(null, schema)), _objectSpread2$1));
     },
     typeCoercion: function typeCoercion(model) {
@@ -613,7 +613,7 @@ var FIELD = {
         var type = _ref.type;
         return type.includes(fieldType);
       });
-      var componentName = component && component.compData ? component.compData.name : '';
+      var componentName = component && component.name;
       !componentName && console.error("Component cannot be rendered. Component for type \"".concat(fieldType, "\" is not found in form-components."));
       return componentName;
     },
@@ -871,7 +871,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-201f9916";
+var __vue_module_identifier__ = "data-v-ef759900";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

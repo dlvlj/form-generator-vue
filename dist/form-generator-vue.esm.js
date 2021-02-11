@@ -359,13 +359,13 @@ var script = {
     },
 
     findComponentData(name) {
-      return this.formComponents.find(c => c.compData && c.compData.name === name);
+      return this.formComponents.find(c => c && c.name === name);
     },
 
     componentProps(schema) {
       const componentName = this.componentToRender(schema);
       const component = this.findComponentData(componentName);
-      const errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.compData && component.compData.errorProp || 'error';
+      const errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.errorProp || 'error';
       return { ...schema.props,
         [errorPropName]: this.errors[schema.model],
         ref: schema.model,
@@ -398,7 +398,7 @@ var script = {
       const component = this.formComponents.find(({
         type
       }) => type.includes(fieldType));
-      const componentName = component && component.compData ? component.compData.name : '';
+      const componentName = component && component.name;
       !componentName && console.error(`Component cannot be rendered. Component for type "${fieldType}" is not found in form-components.`);
       return componentName;
     },
