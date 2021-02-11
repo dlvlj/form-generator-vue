@@ -33,6 +33,7 @@ export const VMODEL = {
 
 export const FIELD = {
   activeValidation: SCHEMA.activeValidation,
+  avDelay: SCHEMA.avDelay,
   events: 'events',
   component:'component',
   hide: 'hide',

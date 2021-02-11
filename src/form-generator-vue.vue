@@ -188,7 +188,10 @@ export default {
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         }
-        this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
+        // validation ---------------------------
+        const schema = this.findSchema(model);
+        const avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay 
+        avDelay ? this.deValidateField(avDelay)(model) : this.validateField(model);
       }, {deep:true});
     }
   },

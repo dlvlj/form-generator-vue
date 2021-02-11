@@ -51,13 +51,15 @@ const UTILS = {
     }
     return res;
   },
-  debounce(func, wait) {
-    return function executedFunction(param) {
-      clearTimeout(debounce_timeout);
-      debounce_timeout = setTimeout(function(){
+  debounce(func) {
+    return function (time) {
+      return function exeFunction(p) {
         clearTimeout(debounce_timeout);
-        func(param);
-      },wait);
+        debounce_timeout = setTimeout(function(){
+          clearTimeout(debounce_timeout);
+          func(p);
+        },time);
+      }
     }
   },
 };

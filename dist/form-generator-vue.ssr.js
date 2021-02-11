@@ -292,13 +292,15 @@ var UTILS = {
 
     return res;
   },
-  debounce: function debounce(func, wait) {
-    return function executedFunction(param) {
-      clearTimeout(debounce_timeout);
-      debounce_timeout = setTimeout(function () {
+  debounce: function debounce(func) {
+    return function (time) {
+      return function exeFunction(p) {
         clearTimeout(debounce_timeout);
-        func(param);
-      }, wait);
+        debounce_timeout = setTimeout(function () {
+          clearTimeout(debounce_timeout);
+          func(p);
+        }, time);
+      };
     };
   }
 };var slotProps = {
@@ -348,6 +350,7 @@ var VMODEL = {
 };
 var FIELD = {
   activeValidation: SCHEMA.activeValidation,
+  avDelay: SCHEMA.avDelay,
   events: 'events',
   component: 'component',
   hide: 'hide',
@@ -520,9 +523,12 @@ var FIELD = {
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
           return;
-        }
+        } // validation ---------------------------
 
-        this.activeValidationDelay ? this.deValidateField(model) : this.validateField(model);
+
+        var schema = this.findSchema(model);
+        var avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
+        avDelay ? this.deValidateField(avDelay)(model) : this.validateField(model);
       }, {
         deep: true
       });
@@ -871,7 +877,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-3c4450d4";
+var __vue_module_identifier__ = "data-v-481f4377";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
