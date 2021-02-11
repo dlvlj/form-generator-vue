@@ -475,6 +475,12 @@ var FIELD = {
 
       return flatSchema;
     },
+    fieldsSchemaMap: function fieldsSchemaMap() {
+      var map = this.fieldsSchemaFlat.map(function (s) {
+        return [s.model, s];
+      });
+      return Object.fromEntries(map);
+    },
     deValidateField: function deValidateField() {
       var _this2 = this;
 
@@ -517,8 +523,9 @@ var FIELD = {
 
     var _loop = function _loop(model) {
       _this3.$watch("fields.".concat(model), function (newVal, oldVal) {
-        // for number type field.
-        this.typeCoercion(model); // this.updateHelpers(model, newVal);
+        var schema = this.findSchema(model); // for number type field.
+
+        this.typeCoercion(schema); // this.updateHelpers(model, newVal);
         // to prevent below calls when only type is changed and not value.
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
@@ -526,9 +533,8 @@ var FIELD = {
         } // validation ---------------------------
 
 
-        var schema = this.findSchema(model);
         var avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
-        avDelay ? this.deValidateField(avDelay)(model) : this.validateField(model);
+        avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
       }, {
         deep: true
       });
@@ -597,13 +603,13 @@ var FIELD = {
       var errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.errorProp || 'error';
       return _objectSpread2(_objectSpread2({}, schema.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[schema.model]), _defineProperty(_objectSpread2$1, "ref", schema.model), _defineProperty(_objectSpread2$1, "type", schema.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(schema)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(null, schema)), _objectSpread2$1));
     },
-    typeCoercion: function typeCoercion(model) {
-      if (!isNaN(this.fields[model])) {
+    typeCoercion: function typeCoercion(schema) {
+      if (!isNaN(this.fields[schema.model])) {
         return;
-      }
+      } // const schema = this.findSchema(model);
 
-      var schema = this.findSchema(model);
-      schema && schema.type === FIELD.type.number && this.fields[model] && (this.fields[model] = Number(this.fields[model]));
+
+      schema && schema.type === FIELD.type.number && this.fields[schema.model] && (this.fields[schema.model] = Number(this.fields[schema.model]));
     },
     componentEvents: function componentEvents(schema) {
       return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? UTILS.handleFunc(schema[FIELD.events]) : {};
@@ -624,10 +630,8 @@ var FIELD = {
       return componentName;
     },
     findSchema: function findSchema(m) {
-      return this.fieldsSchemaFlat.find(function (_ref2) {
-        var model = _ref2.model;
-        return m === model;
-      });
+      // return this.fieldsSchemaFlat.find(({model}) => m === model);
+      return this.fieldsSchemaMap[m];
     },
     fieldDisabled: function fieldDisabled(schema) {
       var DISABLED = true;
@@ -635,11 +639,10 @@ var FIELD = {
       var fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.disabled]) : !DISABLED;
       return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
-    fieldRequired: function fieldRequired(m) {
-      var s = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var REQUIRED = true;
-      var model = m || s.model;
-      var schema = s || this.findSchema(model);
+    fieldRequired: function fieldRequired(schema) {
+      var REQUIRED = true; // const model = m || s.model;
+      // const schema = s || this.findSchema(model);
+
       var hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
       var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : REQUIRED; // : !this.isHelperComponent(model);
 
@@ -649,8 +652,8 @@ var FIELD = {
       var _this5 = this;
 
       var uf = Object.keys(this.fields).filter(function (m) {
-        return !_this5.fieldsSchemaFlat.find(function (_ref3) {
-          var model = _ref3.model;
+        return !_this5.fieldsSchemaFlat.find(function (_ref2) {
+          var model = _ref2.model;
           return m === model;
         });
       });
@@ -665,19 +668,19 @@ var FIELD = {
 
       return fieldHidden;
     },
-    validateField: function validateField(model) {
-      var VALID = true;
-      var schema = this.findSchema(model);
-      var fieldRequired = this.fieldRequired(null, schema);
+    validateField: function validateField(schema) {
+      var VALID = true; // const schema = this.findSchema(model);
+
+      var fieldRequired = this.fieldRequired(schema);
       var validator = schema.rules && schema.rules.validator;
       var fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
       var error = this.submit || fieldActiveValidation ? UTILS.handleFunc(validator) || '' : VALID;
       var valid = !error ? VALID : Boolean(error);
-      !fieldRequired ? !this.submit && this.setError(model, error) : this.setError(model, error);
+      !fieldRequired ? !this.submit && this.setError(schema.model, error) : this.setError(schema.model, error);
       this.logs && console.log({
-        model: model,
-        value: this.fields[model],
-        type: _typeof(this.fields[model]),
+        model: schema.model,
+        value: this.fields[schema.model],
+        type: _typeof(this.fields[schema.model]),
         valid: valid,
         required: fieldRequired,
         error: error
@@ -696,10 +699,13 @@ var FIELD = {
                 _this6.submit = true;
                 formValidationStatus = {};
 
-                _this6.rmUnwantedModels();
+                _this6.rmUnwantedModels(); // Object.keys(this.fields).forEach((model) => {
+                //   formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
+                // });
 
-                Object.keys(_this6.fields).forEach(function (model) {
-                  formValidationStatus[model] = _this6.validateField(model) || !_this6.fieldRequired(model);
+
+                Objec.keys(_this6.fieldsSchemaMap).forEach(function (schema) {
+                  formValidationStatus[schema.model] = _this6.validateField(schema) || !_this6.fieldRequired(schema);
                 });
                 submitFail = Object.keys(formValidationStatus).find(function (model) {
                   return !formValidationStatus[model];
@@ -877,7 +883,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-481f4377";
+var __vue_module_identifier__ = "data-v-bf203f26";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

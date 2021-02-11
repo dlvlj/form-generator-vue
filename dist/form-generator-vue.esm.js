@@ -261,6 +261,11 @@ var script = {
       return flatSchema;
     },
 
+    fieldsSchemaMap() {
+      const map = this.fieldsSchemaFlat.map(s => [s.model, s]);
+      return Object.fromEntries(map);
+    },
+
     deValidateField() {
       return UTILS.debounce(model => {
         this.validateField(model);
@@ -301,8 +306,9 @@ var script = {
   created() {
     for (const model in this.fields) {
       this.$watch(`fields.${model}`, function (newVal, oldVal) {
-        // for number type field.
-        this.typeCoercion(model); // this.updateHelpers(model, newVal);
+        const schema = this.findSchema(model); // for number type field.
+
+        this.typeCoercion(schema); // this.updateHelpers(model, newVal);
         // to prevent below calls when only type is changed and not value.
 
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
@@ -310,9 +316,8 @@ var script = {
         } // validation ---------------------------
 
 
-        const schema = this.findSchema(model);
         const avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
-        avDelay ? this.deValidateField(avDelay)(model) : this.validateField(model);
+        avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
       }, {
         deep: true
       });
@@ -381,13 +386,13 @@ var script = {
       };
     },
 
-    typeCoercion(model) {
-      if (!isNaN(this.fields[model])) {
+    typeCoercion(schema) {
+      if (!isNaN(this.fields[schema.model])) {
         return;
-      }
+      } // const schema = this.findSchema(model);
 
-      const schema = this.findSchema(model);
-      schema && schema.type === FIELD.type.number && this.fields[model] && (this.fields[model] = Number(this.fields[model]));
+
+      schema && schema.type === FIELD.type.number && this.fields[schema.model] && (this.fields[schema.model] = Number(this.fields[schema.model]));
     },
 
     componentEvents(schema) {
@@ -410,9 +415,8 @@ var script = {
     },
 
     findSchema(m) {
-      return this.fieldsSchemaFlat.find(({
-        model
-      }) => m === model);
+      // return this.fieldsSchemaFlat.find(({model}) => m === model);
+      return this.fieldsSchemaMap[m];
     },
 
     fieldDisabled(schema) {
@@ -422,10 +426,10 @@ var script = {
       return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
 
-    fieldRequired(m, s = null) {
-      const REQUIRED = true;
-      const model = m || s.model;
-      const schema = s || this.findSchema(model);
+    fieldRequired(schema) {
+      const REQUIRED = true; // const model = m || s.model;
+      // const schema = s || this.findSchema(model);
+
       const hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
       const fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : REQUIRED; // : !this.isHelperComponent(model);
 
@@ -449,19 +453,19 @@ var script = {
       return fieldHidden;
     },
 
-    validateField(model) {
-      const VALID = true;
-      const schema = this.findSchema(model);
-      const fieldRequired = this.fieldRequired(null, schema);
+    validateField(schema) {
+      const VALID = true; // const schema = this.findSchema(model);
+
+      const fieldRequired = this.fieldRequired(schema);
       const validator = schema.rules && schema.rules.validator;
       const fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
       const error = this.submit || fieldActiveValidation ? UTILS.handleFunc(validator) || '' : VALID;
       const valid = !error ? VALID : Boolean(error);
-      !fieldRequired ? !this.submit && this.setError(model, error) : this.setError(model, error);
+      !fieldRequired ? !this.submit && this.setError(schema.model, error) : this.setError(schema.model, error);
       this.logs && console.log({
-        model,
-        value: this.fields[model],
-        type: typeof this.fields[model],
+        model: schema.model,
+        value: this.fields[schema.model],
+        type: typeof this.fields[schema.model],
         valid,
         required: fieldRequired,
         error
@@ -472,9 +476,12 @@ var script = {
     async handleSubmit() {
       this.submit = true;
       const formValidationStatus = {};
-      this.rmUnwantedModels();
-      Object.keys(this.fields).forEach(model => {
-        formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
+      this.rmUnwantedModels(); // Object.keys(this.fields).forEach((model) => {
+      //   formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
+      // });
+
+      Objec.keys(this.fieldsSchemaMap).forEach(schema => {
+        formValidationStatus[schema.model] = this.validateField(schema) || !this.fieldRequired(schema);
       });
       const submitFail = Object.keys(formValidationStatus).find(model => !formValidationStatus[model]) || Object.values(this.errors).find(e => e);
 
