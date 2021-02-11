@@ -225,7 +225,8 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       }
     }
   }
-};var UTILS = {
+};var debounce_timeout;
+var UTILS = {
   isUndef: function isUndef(val) {
     return typeof val === "undefined";
   },
@@ -292,11 +293,10 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     return res;
   },
   debounce: function debounce(func, wait) {
-    var timeOut;
     return function executedFunction(param) {
-      clearTimeout(timeOut);
-      timeOut = setTimeout(function () {
-        clearTimeout(timeOut);
+      clearTimeout(debounce_timeout);
+      debounce_timeout = setTimeout(function () {
+        clearTimeout(debounce_timeout);
         func(param);
       }, wait);
     };

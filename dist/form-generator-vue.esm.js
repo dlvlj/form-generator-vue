@@ -46,6 +46,7 @@ var props = {
   }
 };
 
+let debounce_timeout;
 const UTILS = {
   isUndef(val) {
     return typeof val === "undefined";
@@ -116,11 +117,10 @@ const UTILS = {
   },
 
   debounce(func, wait) {
-    let timeOut;
     return function executedFunction(param) {
-      clearTimeout(timeOut);
-      timeOut = setTimeout(function () {
-        clearTimeout(timeOut);
+      clearTimeout(debounce_timeout);
+      debounce_timeout = setTimeout(function () {
+        clearTimeout(debounce_timeout);
         func(param);
       }, wait);
     };
