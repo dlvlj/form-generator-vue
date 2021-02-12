@@ -380,10 +380,10 @@ export default {
       }
       if (fail) {
         this.resetFormState();
-        this.onSubmitFail(this.fields);
+        this.onSubmitFail();
         return;
       }
-      await this.onSubmit(this.fields);
+      await this.onSubmit();
       this.resetFormState();
     }
   }
