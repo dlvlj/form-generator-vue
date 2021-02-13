@@ -379,7 +379,7 @@ var SLOT = {
 };
 var SCHEMA = {
   fields: 'fields',
-  activeValidation: 'activeValidation',
+  av: 'activeValidation',
   avDelay: 'activeValidationDelay',
   logs: 'logs'
 };
@@ -388,7 +388,7 @@ var VMODEL = {
   errors: 'errors'
 };
 var FIELD = {
-  activeValidation: SCHEMA.activeValidation,
+  av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
   events: 'events',
   component: 'component',
@@ -465,12 +465,12 @@ var FIELD = {
     UTILS: function UTILS$1() {
       return UTILS;
     },
-    activeValidation: function activeValidation() {
-      return SCHEMA.activeValidation in this.schema ? this.schema[SCHEMA.activeValidation] : false;
+    avGlobal: function avGlobal() {
+      return SCHEMA.av in this.schema ? this.schema[SCHEMA.av] : false;
     },
-    activeValidationDelay: function activeValidationDelay() {
-      var hasActiveValidationDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
-      return this.activeValidation && hasActiveValidationDelay ? this.schema[SCHEMA.avDelay] : false;
+    avDelayGlobal: function avDelayGlobal() {
+      var hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
+      return this.avGlobal && hasAvDelay ? this.schema[SCHEMA.avDelay] : false;
     },
     logs: function logs() {
       return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
@@ -525,7 +525,7 @@ var FIELD = {
 
       return UTILS.debounce(function (model) {
         _this2.validateField(model);
-      }, this.activeValidationDelay);
+      });
     }
   },
   watch: {
@@ -592,7 +592,7 @@ var FIELD = {
       var watcher = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       if (schema && watcher) {
-        var avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
+        var avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal;
         avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
         return;
       }
@@ -736,8 +736,8 @@ var FIELD = {
 
       var fieldRequired = this.fieldRequired(schema);
       var validator = schema.rules && schema.rules.validator;
-      var fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
-      var error = this.submit || fieldActiveValidation ? UTILS.handleFunc(validator) || '' : VALID;
+      var avField = FIELD.av in schema ? Boolean(schema[FIELD.av]) : this.avGlobal;
+      var error = this.submit || avField ? UTILS.handleFunc(validator) || '' : VALID;
       var valid = !error ? VALID : Boolean(error);
       !fieldRequired ? !this.submit && this.setError(schema.model, error) : this.setError(schema.model, error);
       this.logs && console.log({
@@ -786,13 +786,13 @@ var FIELD = {
 
                 _this7.resetFormState();
 
-                _this7.onSubmitFail(_this7.fields);
+                _this7.onSubmitFail();
 
                 return _context.abrupt("return");
 
               case 8:
                 _context.next = 10;
-                return _this7.onSubmit(_this7.fields);
+                return _this7.onSubmit();
 
               case 10:
                 _this7.resetFormState();
@@ -944,7 +944,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-3874bce3";
+var __vue_module_identifier__ = "data-v-5bdc260e";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

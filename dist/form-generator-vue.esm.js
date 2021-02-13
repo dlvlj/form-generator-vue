@@ -165,7 +165,7 @@ const SLOT = {
 };
 const SCHEMA = {
   fields: 'fields',
-  activeValidation: 'activeValidation',
+  av: 'activeValidation',
   avDelay: 'activeValidationDelay',
   logs: 'logs'
 };
@@ -174,7 +174,7 @@ const VMODEL = {
   errors: 'errors'
 };
 const FIELD = {
-  activeValidation: SCHEMA.activeValidation,
+  av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
   events: 'events',
   component: 'component',
@@ -228,13 +228,13 @@ var script = {
     CLASS: () => CLASS,
     UTILS: () => UTILS,
 
-    activeValidation() {
-      return SCHEMA.activeValidation in this.schema ? this.schema[SCHEMA.activeValidation] : false;
+    avGlobal() {
+      return SCHEMA.av in this.schema ? this.schema[SCHEMA.av] : false;
     },
 
-    activeValidationDelay() {
-      const hasActiveValidationDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
-      return this.activeValidation && hasActiveValidationDelay ? this.schema[SCHEMA.avDelay] : false;
+    avDelayGlobal() {
+      const hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
+      return this.avGlobal && hasAvDelay ? this.schema[SCHEMA.avDelay] : false;
     },
 
     logs() {
@@ -269,7 +269,7 @@ var script = {
     deValidateField() {
       return UTILS.debounce(model => {
         this.validateField(model);
-      }, this.activeValidationDelay);
+      });
     }
 
   },
@@ -327,7 +327,7 @@ var script = {
   methods: {
     validate(schema = undefined, watcher = false) {
       if (schema && watcher) {
-        const avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay;
+        const avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal;
         avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
         return;
       }
@@ -473,8 +473,8 @@ var script = {
 
       const fieldRequired = this.fieldRequired(schema);
       const validator = schema.rules && schema.rules.validator;
-      const fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
-      const error = this.submit || fieldActiveValidation ? UTILS.handleFunc(validator) || '' : VALID;
+      const avField = FIELD.av in schema ? Boolean(schema[FIELD.av]) : this.avGlobal;
+      const error = this.submit || avField ? UTILS.handleFunc(validator) || '' : VALID;
       const valid = !error ? VALID : Boolean(error);
       !fieldRequired ? !this.submit && this.setError(schema.model, error) : this.setError(schema.model, error);
       this.logs && console.log({
@@ -509,11 +509,11 @@ var script = {
 
       if (fail) {
         this.resetFormState();
-        this.onSubmitFail(this.fields);
+        this.onSubmitFail();
         return;
       }
 
-      await this.onSubmit(this.fields);
+      await this.onSubmit();
       this.resetFormState();
     }
 

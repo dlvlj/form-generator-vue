@@ -21,7 +21,7 @@ export const SLOT = {
 
 export const SCHEMA = {
   fields: 'fields',
-  activeValidation: 'activeValidation',
+  av: 'activeValidation',
   avDelay: 'activeValidationDelay',
   logs: 'logs'
 }
@@ -32,7 +32,7 @@ export const VMODEL = {
 }
 
 export const FIELD = {
-  activeValidation: SCHEMA.activeValidation,
+  av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
   events: 'events',
   component:'component',

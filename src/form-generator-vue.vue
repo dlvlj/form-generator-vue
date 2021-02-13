@@ -115,14 +115,14 @@ export default {
     SLOT: () => SLOT,
     CLASS: () => CLASS,
     UTILS: () => UTILS,
-    activeValidation() {
-      return SCHEMA.activeValidation in this.schema
-        ? this.schema[SCHEMA.activeValidation]
+    avGlobal() {
+      return SCHEMA.av in this.schema
+        ? this.schema[SCHEMA.av]
         : false;
     },
-    activeValidationDelay() {
-      const hasActiveValidationDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
-      return this.activeValidation && hasActiveValidationDelay? this.schema[SCHEMA.avDelay] : false;
+    avDelayGlobal() {
+      const hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
+      return this.avGlobal && hasAvDelay? this.schema[SCHEMA.avDelay] : false;
     },
     logs() {
       return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
@@ -152,7 +152,7 @@ export default {
     deValidateField() {
       return UTILS.debounce((model) => {
         this.validateField(model)
-      }, this.activeValidationDelay);
+      });
     },
   },
   watch: {
@@ -201,7 +201,7 @@ export default {
   methods: {
     validate(schema = undefined, watcher = false) {
       if(schema && watcher) {
-        const avDelay = schema && schema[FIELD.avDelay] || this.activeValidationDelay 
+        const avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal 
         avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
         return;
       }
@@ -338,10 +338,10 @@ export default {
       // const schema = this.findSchema(model);
       const fieldRequired = this.fieldRequired(schema);
       const validator = schema.rules && schema.rules.validator;
-      const fieldActiveValidation = FIELD.activeValidation in schema ? Boolean(schema[FIELD.activeValidation]) : this.activeValidation;
+      const avField = FIELD.av in schema ? Boolean(schema[FIELD.av]) : this.avGlobal;
 
       const error =
-        this.submit || fieldActiveValidation
+        this.submit || avField
           ? UTILS.handleFunc(validator) || ''
           : VALID;
       
