@@ -731,7 +731,7 @@ var FIELD = {
       var fieldRequired = this.fieldRequired(schema);
       var validator = schema.rules && schema.rules.validator;
       var avField = FIELD.av in schema ? Boolean(schema[FIELD.av]) : this.avGlobal;
-      var error = this.submit || avField ? UTILS.handleFunc(validator) || '' : VALID;
+      var error = this.submit || avField ? UTILS.handleFunc(validator) || VALID : VALID;
       var valid = !error ? VALID : Boolean(error);
       !fieldRequired ? !this.submit && this.setError(schema.model, error) : this.setError(schema.model, error);
       this.logs && console.log({
@@ -929,7 +929,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-0bebac00";
+var __vue_module_identifier__ = "data-v-84f8cb14";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

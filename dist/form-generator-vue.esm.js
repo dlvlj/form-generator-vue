@@ -471,7 +471,7 @@ var script = {
       const fieldRequired = this.fieldRequired(schema);
       const validator = schema.rules && schema.rules.validator;
       const avField = FIELD.av in schema ? Boolean(schema[FIELD.av]) : this.avGlobal;
-      const error = this.submit || avField ? UTILS.handleFunc(validator) || '' : VALID;
+      const error = this.submit || avField ? UTILS.handleFunc(validator) || VALID : VALID;
       const valid = !error ? VALID : Boolean(error);
       !fieldRequired ? !this.submit && this.setError(schema.model, error) : this.setError(schema.model, error);
       this.logs && console.log({

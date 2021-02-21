@@ -345,7 +345,7 @@ export default {
 
       const error =
         this.submit || avField
-          ? UTILS.handleFunc(validator) || ''
+          ? UTILS.handleFunc(validator) || VALID
           : VALID;
       
       const valid = !error ? VALID : Boolean(error);
