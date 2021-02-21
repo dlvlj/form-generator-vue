@@ -246,7 +246,7 @@ export default {
       this.errors[model] = e;
     },
     findComponentData(name) {
-      return this.formComponents.find(
+      return this.components.find(
         c => c && c.name === name
       );
     },
@@ -283,7 +283,7 @@ export default {
       if (FIELD.component in schema && schema[FIELD.component] && UTILS.isStr(schema[FIELD.component])) {
         return schema.component;
       }
-      const component = this.formComponents.find(({ type }) => type.includes(fieldType));
+      const component = this.components.find(({ type }) => type.includes(fieldType));
       const componentName = component && component.name;
       !componentName &&
         console.error(

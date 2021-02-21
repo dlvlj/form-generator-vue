@@ -12,12 +12,7 @@ export default {
         console.error("submit handler not present");
       },
     },
-    validationRules: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    formComponents: {
+    components: {
       type: Array,
       required: false,
       default: () => [],
