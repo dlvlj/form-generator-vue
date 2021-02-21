@@ -12,12 +12,7 @@ var props = {
         console.error("submit handler not present");
       }
     },
-    validationRules: {
-      type: Object,
-      required: false,
-      default: () => ({})
-    },
-    formComponents: {
+    components: {
       type: Array,
       required: false,
       default: () => []
@@ -385,7 +380,7 @@ var script = {
     },
 
     findComponentData(name) {
-      return this.formComponents.find(c => c && c.name === name);
+      return this.components.find(c => c && c.name === name);
     },
 
     componentProps(schema) {
@@ -421,7 +416,7 @@ var script = {
         return schema.component;
       }
 
-      const component = this.formComponents.find(({
+      const component = this.components.find(({
         type
       }) => type.includes(fieldType));
       const componentName = component && component.name;

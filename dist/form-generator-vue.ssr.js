@@ -224,14 +224,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
         console.error("submit handler not present");
       }
     },
-    validationRules: {
-      type: Object,
-      required: false,
-      default: function _default() {
-        return {};
-      }
-    },
-    formComponents: {
+    components: {
       type: Array,
       required: false,
       default: function _default() {
@@ -654,7 +647,7 @@ var FIELD = {
       this.errors[model] = e;
     },
     findComponentData: function findComponentData(name) {
-      return this.formComponents.find(function (c) {
+      return this.components.find(function (c) {
         return c && c.name === name;
       });
     },
@@ -684,7 +677,7 @@ var FIELD = {
         return schema.component;
       }
 
-      var component = this.formComponents.find(function (_ref) {
+      var component = this.components.find(function (_ref) {
         var type = _ref.type;
         return type.includes(fieldType);
       });
@@ -935,7 +928,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-fd45aaa4";
+var __vue_module_identifier__ = "data-v-00c240f6";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
