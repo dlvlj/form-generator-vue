@@ -195,21 +195,24 @@ export default {
         }
         // validation ---------------------------
         this.validate(schema, true);
-      }, {deep:true, immediate: schema.rules && schema.rules.immediate});
+      }, {deep:true});
     }
   },
   methods: {
     validate(schema = undefined, watcher = false) {
+      // watcher
       if(schema && watcher) {
         const avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal 
         avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
         return;
       }
+      // on submit
       const status = {};
       Object.values(this.fieldsSchemaMap).forEach(s => {
-        status[s.model] = this.validateField(s) || !this.fieldRequired(s);
+        const err = this.validateField(s);
+        status[s.model] = !err ? true : !this.fieldRequired(s);
       })
-      const fail = Object.values(status).find(v => !v) || Object.values(this.errors).find(e => e);
+      const fail = Object.keys(status).find(k => !status[k]);
       return [status, fail];
     },
     showRow(schema) {
@@ -334,7 +337,7 @@ export default {
       return fieldHidden;
     },
     validateField(schema) {
-      const VALID = true;
+      const VALID = '';
       // const schema = this.findSchema(model);
       const fieldRequired = this.fieldRequired(schema);
       const validator = schema.rules && schema.rules.validator;

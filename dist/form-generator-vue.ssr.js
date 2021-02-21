@@ -568,8 +568,7 @@ var FIELD = {
 
         this.validate(schema, true);
       }, {
-        deep: true,
-        immediate: schema.rules && schema.rules.immediate
+        deep: true
       });
     };
 
@@ -584,20 +583,22 @@ var FIELD = {
       var schema = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
       var watcher = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+      // watcher
       if (schema && watcher) {
         var avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal;
         avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
         return;
-      }
+      } // on submit
+
 
       var status = {};
       Object.values(this.fieldsSchemaMap).forEach(function (s) {
-        status[s.model] = _this4.validateField(s) || !_this4.fieldRequired(s);
+        var err = _this4.validateField(s);
+
+        status[s.model] = !err ? true : !_this4.fieldRequired(s);
       });
-      var fail = Object.values(status).find(function (v) {
-        return !v;
-      }) || Object.values(this.errors).find(function (e) {
-        return e;
+      var fail = Object.keys(status).find(function (k) {
+        return !status[k];
       });
       return [status, fail];
     },
@@ -725,7 +726,7 @@ var FIELD = {
       return fieldHidden;
     },
     validateField: function validateField(schema) {
-      var VALID = true; // const schema = this.findSchema(model);
+      var VALID = ''; // const schema = this.findSchema(model);
 
       var fieldRequired = this.fieldRequired(schema);
       var validator = schema.rules && schema.rules.validator;
@@ -928,7 +929,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-00c240f6";
+var __vue_module_identifier__ = "data-v-f6bfc664";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
