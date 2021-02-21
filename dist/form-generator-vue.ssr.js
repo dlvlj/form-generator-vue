@@ -463,7 +463,7 @@ var FIELD = {
     },
     avDelayGlobal: function avDelayGlobal() {
       var hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
-      return this.avGlobal && hasAvDelay ? this.schema[SCHEMA.avDelay] : false;
+      return hasAvDelay ? this.schema[SCHEMA.avDelay] : false;
     },
     logs: function logs() {
       return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
@@ -929,7 +929,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-f6bfc664";
+var __vue_module_identifier__ = "data-v-0bebac00";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

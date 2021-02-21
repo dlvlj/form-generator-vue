@@ -229,7 +229,7 @@ var script = {
 
     avDelayGlobal() {
       const hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
-      return this.avGlobal && hasAvDelay ? this.schema[SCHEMA.avDelay] : false;
+      return hasAvDelay ? this.schema[SCHEMA.avDelay] : false;
     },
 
     logs() {
