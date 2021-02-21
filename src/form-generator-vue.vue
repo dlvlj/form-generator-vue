@@ -363,19 +363,9 @@ export default {
     },
     async handleSubmit() {
       this.submit = true;
-      // const formValidationStatus = {};
       this.rmUnwantedModels();  
-      // Object.keys(this.fields).forEach((model) => {
-      //   formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
-      // });
-      // Objec.keys(this.fieldsSchemaMap).forEach(schema => {
-      //   formValidationStatus[schema.model] = this.validateField(schema) || !this.fieldRequired(schema);
-      // })
-      // const formValidationStatus = this.validate;
-      // const submitFail = Object.values(formValidationStatus).find(v => !v) || Object.values(this.errors).find(e => e);
       const [status, fail] = this.validate();
       if(this.logs) {
-        console.log("form data:", this.fields); 
         console.log("form validations:", status);
       }
       if (fail) {

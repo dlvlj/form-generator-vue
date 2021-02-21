@@ -760,22 +760,13 @@ var FIELD = {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this7.submit = true; // const formValidationStatus = {};
+                _this7.submit = true;
 
-                _this7.rmUnwantedModels(); // Object.keys(this.fields).forEach((model) => {
-                //   formValidationStatus[model] = this.validateField(model) || !this.fieldRequired(model);
-                // });
-                // Objec.keys(this.fieldsSchemaMap).forEach(schema => {
-                //   formValidationStatus[schema.model] = this.validateField(schema) || !this.fieldRequired(schema);
-                // })
-                // const formValidationStatus = this.validate;
-                // const submitFail = Object.values(formValidationStatus).find(v => !v) || Object.values(this.errors).find(e => e);
-
+                _this7.rmUnwantedModels();
 
                 _this7$validate = _this7.validate(), _this7$validate2 = _slicedToArray(_this7$validate, 2), status = _this7$validate2[0], fail = _this7$validate2[1];
 
                 if (_this7.logs) {
-                  console.log("form data:", _this7.fields);
                   console.log("form validations:", status);
                 }
 
@@ -944,7 +935,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5bdc260e";
+var __vue_module_identifier__ = "data-v-fd45aaa4";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
