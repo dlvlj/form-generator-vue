@@ -202,8 +202,9 @@ export default {
     validate(schema = undefined, watcher = false) {
       // watcher
       if(schema && watcher) {
+        const avField =  Boolean(schema[FIELD.av]) || this.avGlobal;
         const avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal 
-        avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
+        avField && avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
         return;
       }
       // on submit
@@ -341,7 +342,7 @@ export default {
       // const schema = this.findSchema(model);
       const fieldRequired = this.fieldRequired(schema);
       const validator = schema.rules && schema.rules.validator;
-      const avField = FIELD.av in schema ? Boolean(schema[FIELD.av]) : this.avGlobal;
+      const avField = Boolean(schema[FIELD.av]) || this.avGlobal;
 
       const error =
         this.submit || avField
