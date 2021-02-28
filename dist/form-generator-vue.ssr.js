@@ -359,8 +359,8 @@ var SLOT = {
 };
 var SCHEMA = {
   fields: 'fields',
-  av: 'activeValidation',
-  avDelay: 'activeValidationDelay',
+  av: 'av',
+  avDelay: 'avDelay',
   logs: 'logs'
 };
 var VMODEL = {
