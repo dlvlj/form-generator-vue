@@ -389,7 +389,7 @@ var script = {
     componentProps(schema) {
       const componentName = this.componentToRender(schema);
       const component = this.findComponentData(componentName);
-      const errorPropName = schema && schema.rules && schema.rules.errorProp || component && component.errorProp || 'error';
+      const errorPropName = schema && schema.errorProp || component && component.errorProp || 'errorMessages';
       return { ...schema.props,
         [errorPropName]: this.errors[schema.model],
         ref: schema.model,
@@ -470,7 +470,7 @@ var script = {
       const VALID = ''; // const schema = this.findSchema(model);
 
       const fieldRequired = this.fieldRequired(schema);
-      const validator = schema.rules && schema.rules.validator;
+      const validator = schema && schema.validator;
       const avField = Boolean(schema[FIELD.av]) || this.avGlobal;
       const error = this.submit || avField ? UTILS.handleFunc(validator) || VALID : VALID;
       const valid = !error ? VALID : Boolean(error);
