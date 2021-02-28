@@ -125,21 +125,6 @@ const UTILS = {
 
 };
 
-var slotProps = {
-  methods: {
-    getModelFromSchema(schema) {
-      if (UTILS.isArr()) {
-        return schema.map(({
-          model
-        }) => model);
-      }
-
-      return schema.model;
-    }
-
-  }
-};
-
 const CLASS = {
   form: 'fgv-form',
   header: `fgv-form__header`,
@@ -186,7 +171,7 @@ const FIELD = {
 
 //
 var script = {
-  mixins: [props, slotProps],
+  mixins: [props],
 
   data() {
     const INIT = true;
@@ -319,6 +304,16 @@ var script = {
   },
 
   methods: {
+    slotProps(schema) {
+      if (UTILS.isArr()) {
+        return schema.map(({
+          model
+        }) => model);
+      }
+
+      return schema.model;
+    },
+
     validate(schema = undefined, watcher = false) {
       // watcher
       if (schema && watcher) {
@@ -608,12 +603,12 @@ var __vue_render__ = function () {
     class: [_vm.CLASS.body]
   }, [_vm._l(_vm.fieldsSchema, function (schema, i) {
     return [_vm.showRow(schema) ? _vm._t(_vm.SLOT.beforeRow, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e(), _vm._v(" "), _vm.showRow(schema) ? _c('div', {
       key: i,
       class: [_vm.CLASS.row, _vm.classes.row]
     }, [!_vm.UTILS.isArr(schema) ? [_vm.showCol(schema) ? _vm._t(_vm.SLOT.beforeCol, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e(), _vm._v(" "), _vm.showCol(schema) ? _c('div', {
       key: schema.model,
       class: [_vm.CLASS.col, schema.model, _vm.classes.col]
@@ -627,10 +622,10 @@ var __vue_render__ = function () {
         expression: "fields[schema.model]"
       }
     }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(schema) ? _vm._t(_vm.SLOT.afterCol, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e()] : [_vm._l(schema, function (s) {
       return [_vm.showCol(s) ? _vm._t(_vm.SLOT.beforeCol, null, {
-        "model": _vm.getModelFromSchema(s)
+        "model": _vm.slotProps(s)
       }) : _vm._e(), _vm._v(" "), _vm.showCol(s) ? _c('div', {
         key: s.model,
         class: [_vm.CLASS.col, s.model, _vm.classes.col]
@@ -644,10 +639,10 @@ var __vue_render__ = function () {
           expression: "fields[s.model]"
         }
       }, 'component', _vm.componentProps(s), false), _vm.componentEvents(s)), [_vm._t(s.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(s.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(s) ? _vm._t(_vm.SLOT.afterCol, null, {
-        "model": _vm.getModelFromSchema(s)
+        "model": _vm.slotProps(s)
       }) : _vm._e()];
     })]], 2) : _vm._e(), _vm._v(" "), _vm.showRow(schema) ? _vm._t(_vm.SLOT.afterRow, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e()];
   })], 2), _vm._v(" "), _c('div', {
     class: _vm.CLASS.footer

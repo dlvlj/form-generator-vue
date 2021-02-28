@@ -335,19 +335,6 @@ var UTILS = {
       };
     };
   }
-};var slotProps = {
-  methods: {
-    getModelFromSchema: function getModelFromSchema(schema) {
-      if (UTILS.isArr()) {
-        return schema.map(function (_ref) {
-          var model = _ref.model;
-          return model;
-        });
-      }
-
-      return schema.model;
-    }
-  }
 };var CLASS = {
   form: 'fgv-form',
   header: "fgv-form__header",
@@ -395,7 +382,7 @@ var FIELD = {
     disabled: 'disabled'
   }
 };var script = {
-  mixins: [props, slotProps],
+  mixins: [props],
   data: function data() {
     var _this = this;
 
@@ -577,6 +564,16 @@ var FIELD = {
     }
   },
   methods: {
+    slotProps: function slotProps(schema) {
+      if (UTILS.isArr()) {
+        return schema.map(function (_ref) {
+          var model = _ref.model;
+          return model;
+        });
+      }
+
+      return schema.model;
+    },
     validate: function validate() {
       var _this4 = this;
 
@@ -679,8 +676,8 @@ var FIELD = {
         return schema.component;
       }
 
-      var component = this.components.find(function (_ref) {
-        var type = _ref.type;
+      var component = this.components.find(function (_ref2) {
+        var type = _ref2.type;
         return type.includes(fieldType);
       });
       var componentName = component && component.name;
@@ -710,8 +707,8 @@ var FIELD = {
       var _this6 = this;
 
       var uf = Object.keys(this.fields).filter(function (m) {
-        return !_this6.fieldsSchemaFlat.find(function (_ref2) {
-          var model = _ref2.model;
+        return !_this6.fieldsSchemaFlat.find(function (_ref3) {
+          var model = _ref3.model;
           return m === model;
         });
       });
@@ -886,9 +883,9 @@ var __vue_render__ = function __vue_render__() {
     }
   }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.fieldsSchema, function (schema, i) {
     return [_vm.showRow(schema) ? _vm._t(_vm.SLOT.beforeRow, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(schema) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(schema) ? [_vm.showCol(schema) ? _vm._t(_vm.SLOT.beforeCol, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(schema) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, schema.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(schema.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(schema), _vm._g(_vm._b({
       tag: "component",
       model: {
@@ -899,10 +896,10 @@ var __vue_render__ = function __vue_render__() {
         expression: "fields[schema.model]"
       }
     }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(schema) ? _vm._t(_vm.SLOT.afterCol, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e()] : [_vm._l(schema, function (s) {
       return [_vm.showCol(s) ? _vm._t(_vm.SLOT.beforeCol, null, {
-        "model": _vm.getModelFromSchema(s)
+        "model": _vm.slotProps(s)
       }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(s) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, s.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(s.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(s), _vm._g(_vm._b({
         tag: "component",
         model: {
@@ -913,10 +910,10 @@ var __vue_render__ = function __vue_render__() {
           expression: "fields[s.model]"
         }
       }, 'component', _vm.componentProps(s), false), _vm.componentEvents(s)), [_vm._t(s.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(s.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(s) ? _vm._t(_vm.SLOT.afterCol, null, {
-        "model": _vm.getModelFromSchema(s)
+        "model": _vm.slotProps(s)
       }) : _vm._e()];
     })]], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(schema) ? _vm._t(_vm.SLOT.afterRow, null, {
-      "model": _vm.getModelFromSchema(schema)
+      "model": _vm.slotProps(schema)
     }) : _vm._e()];
   })], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, _vm.CLASS.footer) + ">", "</div>", [_vm._t(_vm.SLOT.footer)], 2)], 2);
 };
@@ -930,7 +927,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5ec91c43";
+var __vue_module_identifier__ = "data-v-44dcd7a7";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

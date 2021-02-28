@@ -7,7 +7,7 @@
     <!-- body -->
     <div :class="[CLASS.body]">
       <template v-for="(schema, i) in fieldsSchema">
-        <slot v-if="showRow(schema)" :name="SLOT.beforeRow" :model="getModelFromSchema(schema)"/>
+        <slot v-if="showRow(schema)" :name="SLOT.beforeRow" :model="slotProps(schema)"/>
         <!-- ROW -->
         <div
           v-if="showRow(schema)"
@@ -16,7 +16,7 @@
         >
           <!-- COL -->
           <template v-if="!UTILS.isArr(schema)">
-            <slot v-if="showCol(schema)" :name="SLOT.beforeCol" :model="getModelFromSchema(schema)"/>
+            <slot v-if="showCol(schema)" :name="SLOT.beforeCol" :model="slotProps(schema)"/>
               <div
                 :key="schema.model"
                 v-if="showCol(schema)"
@@ -37,13 +37,13 @@
                 </component>
                 <slot :name="SLOT.afterComponent(schema.model)" />
               </div>
-            <slot v-if="showCol(schema)" :name="SLOT.afterCol" :model="getModelFromSchema(schema)"/>
+            <slot v-if="showCol(schema)" :name="SLOT.afterCol" :model="slotProps(schema)"/>
           </template>
 
           <!-- MULTIPLE COLS -->
           <template v-else>
             <template v-for="s in schema">
-              <slot v-if="showCol(s)" :name="SLOT.beforeCol" :model="getModelFromSchema(s)"/>
+              <slot v-if="showCol(s)" :name="SLOT.beforeCol" :model="slotProps(s)"/>
               <div
                 :key="s.model"
                 v-if="showCol(s)"
@@ -64,11 +64,11 @@
                 </component>
                 <slot :name="SLOT.afterComponent(s.model)" />
               </div>
-              <slot v-if="showCol(s)" :name="SLOT.afterCol" :model="getModelFromSchema(s)"/>
+              <slot v-if="showCol(s)" :name="SLOT.afterCol" :model="slotProps(s)"/>
             </template>
           </template>
         </div>
-        <slot v-if="showRow(schema)" :name="SLOT.afterRow" :model="getModelFromSchema(schema)"/>
+        <slot v-if="showRow(schema)" :name="SLOT.afterRow" :model="slotProps(schema)"/>
       </template>
     </div>
     <!-- footer -->
@@ -80,11 +80,10 @@
 
 <script>
 import props from './main/mixins/props';
-import slotProps from './main/mixins/slot-props';
 import UTILS from './main/utils';
 import {SLOT, CLASS, SCHEMA, VMODEL, FIELD} from './main/utils/constants';
 export default {
-  mixins: [props, slotProps],
+  mixins: [props],
   data() {
     const INIT = true; 
     let fields = {};
@@ -199,6 +198,12 @@ export default {
     }
   },
   methods: {
+    slotProps(schema) {
+      if(UTILS.isArr()) {
+        return schema.map( ({model}) => model );
+      }
+      return schema.model;
+    },
     validate(schema = undefined, watcher = false) {
       // watcher
       if(schema && watcher) {
