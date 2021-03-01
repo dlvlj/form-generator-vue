@@ -718,7 +718,7 @@ var FIELD = {
       // const schema = s || this.findSchema(model);
 
       var hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
-      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : REQUIRED; // : !this.isHelperComponent(model);
+      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : 'validator' in schema ? REQUIRED : !REQUIRED; // : !this.isHelperComponent(model);
 
       return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema) ? fieldRequired : !REQUIRED;
     },
@@ -948,7 +948,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-32e67a2a";
+var __vue_module_identifier__ = "data-v-0cfbca88";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

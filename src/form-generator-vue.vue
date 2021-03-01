@@ -322,7 +322,7 @@ export default {
       const hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
       const fieldRequired =
         hasRequiredProp
-          ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : REQUIRED;
+          ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : 'validator' in schema? REQUIRED : !REQUIRED;
           // : !this.isHelperComponent(model);
       return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema)
         ? fieldRequired
