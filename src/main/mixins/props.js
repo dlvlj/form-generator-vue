@@ -44,9 +44,14 @@ export default {
       default: false
     },
     activeValidationDelay: {
-      type: Boolean,
+      type: Number,
       required: false,
       default: 0
+    },
+    logs: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   }
 }

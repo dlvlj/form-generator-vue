@@ -262,9 +262,14 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       default: false
     },
     activeValidationDelay: {
-      type: Boolean,
+      type: Number,
       required: false,
       default: 0
+    },
+    logs: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   }
 };var debounce_timeout;
@@ -466,9 +471,9 @@ var FIELD = {
       // return hasAvDelay? this.schema[SCHEMA.avDelay] : false;
       return this.activeValidationDelay || 0;
     },
-    logs: function logs() {
-      return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
-    },
+    // logs() {
+    //   return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
+    // },
     fieldsSchema: function fieldsSchema() {
       return SCHEMA.fields in this.schema && UTILS.isArr(this.schema[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
     },
@@ -943,7 +948,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-722a9705";
+var __vue_module_identifier__ = "data-v-5571b505";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

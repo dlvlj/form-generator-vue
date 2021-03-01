@@ -44,9 +44,14 @@ var props = {
       default: false
     },
     activeValidationDelay: {
-      type: Boolean,
+      type: Number,
       required: false,
       default: 0
+    },
+    logs: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   }
 };
@@ -231,10 +236,9 @@ var script = {
       return this.activeValidationDelay || 0;
     },
 
-    logs() {
-      return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
-    },
-
+    // logs() {
+    //   return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
+    // },
     fieldsSchema() {
       return SCHEMA.fields in this.schema && UTILS.isArr(this.schema[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
     },

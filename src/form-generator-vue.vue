@@ -125,9 +125,9 @@ export default {
       // return hasAvDelay? this.schema[SCHEMA.avDelay] : false;
       return this.activeValidationDelay || 0;
     },
-    logs() {
-      return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
-    },
+    // logs() {
+    //   return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
+    // },
     fieldsSchema() {
       return SCHEMA.fields in this.schema && UTILS.isArr(this.schema[SCHEMA.fields])
         ? this.schema[SCHEMA.fields]
