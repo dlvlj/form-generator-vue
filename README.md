@@ -124,8 +124,8 @@ fields: [   // 1 row 1 column -------
 ## Slots
 * #### header
 * #### footer
-* #### before-<model>
-* #### after-<model>
+* #### `before-<model>`
+* #### `after-<model>`
 * #### before-row
 * #### after-row
 * #### before-col
