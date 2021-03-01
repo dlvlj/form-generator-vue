@@ -675,7 +675,7 @@ var FIELD = {
       var componentName = this.componentToRender(schema);
       var component = this.findComponentData(componentName);
       var errorPropName = schema && schema.errorProp || component && component.errorProp || 'errorMessages';
-      return _objectSpread2(_objectSpread2({}, schema.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[schema.model]), _defineProperty(_objectSpread2$1, "ref", schema.model), _defineProperty(_objectSpread2$1, "type", schema.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(schema)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(null, schema)), _objectSpread2$1));
+      return _objectSpread2(_objectSpread2({}, schema.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[schema.model]), _defineProperty(_objectSpread2$1, "ref", schema.model), _defineProperty(_objectSpread2$1, "type", schema.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(schema)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(schema)), _objectSpread2$1));
     },
     typeCoercion: function typeCoercion(schema) {
       if (!isNaN(this.fields[schema.model])) {
@@ -948,7 +948,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-1fcbbd4a";
+var __vue_module_identifier__ = "data-v-32e67a2a";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

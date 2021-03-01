@@ -408,7 +408,7 @@ var script = {
         ref: schema.model,
         type: schema.type || FIELD.type.text,
         disabled: this.fieldDisabled(schema),
-        required: this.fieldRequired(null, schema)
+        required: this.fieldRequired(schema)
       };
     },
 
