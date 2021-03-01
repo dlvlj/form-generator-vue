@@ -37,9 +37,9 @@ export default {
                 type: ['text', 'password', 'email', 'number'],
                 errorProp: 'errorMessages'
             },
-            {
-                type: ['radio'],
-                name: 'v-radio-group'
+            {   
+                name: 'v-radio-group',
+                type: ['radio']
             }
         ],
         schema() {
