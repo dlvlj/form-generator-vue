@@ -36,6 +36,10 @@ export default {
                 name: 'v-text-field',
                 type: ['text', 'password', 'email', 'number'],
                 errorProp: 'errorMessages'
+            },
+            {
+                type: ['radio'],
+                name: 'v-radio-group'
             }
         ],
         schema() {
@@ -122,13 +126,13 @@ fields: [   // 1 row 1 column -------
 ```
 
 ## Slots
-* #### header
-* #### footer
+* #### `header`
+* #### `footer`
 * #### `before-<model>`
 * #### `after-<model>`
-* #### before-row
-* #### after-row
-* #### before-col
+* #### `before-row`
+* #### `after-row`
+* #### `before-col`
 * #### after-col
 slot prop `model` is passed to all slots except for slots header and footer.
 #### classes used
@@ -136,7 +140,7 @@ slot prop `model` is passed to all slots except for slots header and footer.
     * header - **"fgv-form__header"**
     * body - **"fgv-form__body"**
         * row - **"fgv-form__body__row"**
-            * col - **"fgv-form__body__row__col <model>"**
+            * col - **"fgv-form__body__row__col `<model>`"**
     * footer - **"fgv-form__footer"**
 
 ## Contributors
