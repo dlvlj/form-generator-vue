@@ -422,7 +422,7 @@ var script = {
     },
 
     componentEvents(schema) {
-      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? schema[FIELD.events] : {};
+      return FIELD.events in schema && UTILS.isObj(schema[FIELD.events]) ? schema[FIELD.events] : {};
     },
 
     componentToRender(schema) {

@@ -88,11 +88,8 @@ export default {
 |props| obj | false | Component props |
 | hide | bool/() => bool | false | show/hide field. Not required when hidden |
 | v-on | obj | optional | Assigned to component `v-on` |
-|props.required|bool/(ctx) => bool|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
-|props.disabled|bool/(ctx) => bool|optional| To disable or enable field.|
-|rules|obj|optional| For validations.|
-|component|String|optional| For rendering component which is not in `form-components`.|
-|errorProp|String|optional|Error prop that component will use to show error message.|
+| component | String | optional | for using any component |
+| errorProp | String | optional | name of error prop consumed by component to show error|
 
 ## Slots
 #### [Slots Arrangement](https://drive.google.com/file/d/1vq3KcNKR0CAHy8BYKi0FsNeieAwoSGpl/view?usp=sharing)

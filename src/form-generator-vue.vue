@@ -285,7 +285,7 @@ export default {
         (this.fields[schema.model] = Number(this.fields[schema.model]));
     },
     componentEvents(schema) {
-      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events])
+      return FIELD.events in schema && UTILS.isObj(schema[FIELD.events])
         ? schema[FIELD.events]
         : {};
     },
