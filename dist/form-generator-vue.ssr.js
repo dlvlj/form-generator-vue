@@ -686,7 +686,7 @@ var FIELD = {
       schema && schema.type === FIELD.type.number && this.fields[schema.model] && (this.fields[schema.model] = Number(this.fields[schema.model]));
     },
     componentEvents: function componentEvents(schema) {
-      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? UTILS.handleFunc(schema[FIELD.events]) : {};
+      return FIELD.events in schema && UTILS.isFunc(schema[FIELD.events]) ? schema[FIELD.events] : {};
     },
     componentToRender: function componentToRender(schema) {
       var fieldType = schema.type || FIELD.type.text;
@@ -948,7 +948,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5571b505";
+var __vue_module_identifier__ = "data-v-ab66b4b2";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
