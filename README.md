@@ -73,61 +73,30 @@ export default {
 | components | obj | component map to render component for specific type of field |
 | onSubmit | async/sync function | submit success function |
 | onSubmitFail | async/sync function | submit fail function.|
-| disabled | Bool | disable all fields |
+| disabled | Bool | toggle disable all fields |
 | activeValidation | bool | toggle validation on input for all fields. Default is `false` |
 | activeValidationDelay | milliseconds | debounced validation for given time for all fields|
 | logs | bool | toggle validation and submit logs |
 | classes | obj | To add classes to all the rows and columns inside form body |
 
-#### `field-config` Options
+#### field schema Options
 
-| options | type | required | purpose |
+| options | type | default | purpose |
 | ------ | ------ | ------ | ----- |
-| model | String | true | v-model with component.|
-| type | String | false | Input type. Component for it is loaded from `components`. Default is 'text' |
-|props| obj | false | Component props |
+| model | String |  | v-model with component.|
+| type | String | 'text' | Input type. Component for it is loaded from `components`. |
+| props| obj | {} | Component props |
 | hide | bool/() => bool | false | show/hide field. Not required when hidden |
-| v-on | obj | optional | Assigned to component `v-on` |
-| component | String | optional | for using any component |
-| errorProp | String | optional | name of error prop consumed by component to show error|
+| v-on | obj | {} | Assigned to component `v-on`. |
+|validator | () => //return error data | | function returning error data(string, array etc) on validation fail. |
+| component | String |  | for using any component |
+| errorProp | String | 'errorMessages' | name of error prop consumed by component to show error |
+| activeValidation | Boolean | false | toggle validation on input |
+| activeValidationDelay | milliseconds | 0 | debounced validation for given time |
 
 ## Slots
-#### [Slots Arrangement](https://drive.google.com/file/d/1vq3KcNKR0CAHy8BYKi0FsNeieAwoSGpl/view?usp=sharing)
-
-#### v-slot:`header`
-For form header information.
-
-#### v-slot:`sectionLabel`
-Single label for multiple components.
-**slot props** `fieldConfig`, `fieldsConfigFlat`.
-
-#### Sub component slot
-`v-slot:<model>` for adding sub components to the parent component.
-
-#### Slots `before` and `after` a component
-For adding support components or ui elements before or after a component.
-* v-slot:`<model>_before`
-* v-slot:`<model>_after`
-(replace **<model>** with the **model** property of **field-config**)
-
-#### v-slot:`disabled`
-This slot is only visible when the `form-editable` prop of `form-generator-vue` is enabled. When enabled the form body(containing all the components/fields) hides from view and only this slot is visible.
-This slot can be used to show disabled state of the form however you want.
-**slot prop:** `fieldsConfigFlat`.
-
-#### v-slot:`agreement`
-To show terms and condition checkbox, policy checkbox, etc.
-
-#### v-slot:`actions`
-For form actions like submit and cancel etc.
-
-### v-slot:`footer`
-For footer notes, etc.
-
-## Styling
-No default CSS is present in form generator. **BEM** methodology is used to enure no class conflicts with third party component library.
-
-#### Classes
+#### header
+#### Classes used
 * form - **"generated-form"**
     * header - **"generated-form__header"**
     * body - **"generated-form__body"**

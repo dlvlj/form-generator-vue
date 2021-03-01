@@ -151,8 +151,8 @@ const CLASS = {
 const SLOT = {
   header: 'header',
   footer: 'footer',
-  beforeComponent: v => `${v}_before`,
-  afterComponent: v => `${v}_after`,
+  beforeComponent: v => `${v}-before`,
+  afterComponent: v => `${v}-after`,
   beforeRow: 'before-row',
   afterRow: 'after-row',
   beforeCol: 'before-col',

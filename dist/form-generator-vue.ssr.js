@@ -362,10 +362,10 @@ var SLOT = {
   header: 'header',
   footer: 'footer',
   beforeComponent: function beforeComponent(v) {
-    return "".concat(v, "_before");
+    return "".concat(v, "-before");
   },
   afterComponent: function afterComponent(v) {
-    return "".concat(v, "_after");
+    return "".concat(v, "-after");
   },
   beforeRow: 'before-row',
   afterRow: 'after-row',
