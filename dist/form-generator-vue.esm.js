@@ -145,8 +145,8 @@ const SLOT = {
 };
 const SCHEMA = {
   fields: 'fields',
-  av: 'av',
-  avDelay: 'avDelay',
+  av: 'activeValidation',
+  avDelay: 'activeValidationDelay',
   logs: 'logs'
 };
 const VMODEL = {
