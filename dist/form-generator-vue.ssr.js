@@ -763,24 +763,26 @@ var FIELD = {
                 }
 
                 if (!fail) {
-                  _context.next = 8;
+                  _context.next = 9;
                   break;
                 }
 
                 _this7.resetFormState();
 
-                _this7.onSubmitFail();
-
-                return _context.abrupt("return");
+                _context.next = 8;
+                return _this7.onSubmitFail();
 
               case 8:
-                _context.next = 10;
+                return _context.abrupt("return");
+
+              case 9:
+                _context.next = 11;
                 return _this7.onSubmit();
 
-              case 10:
+              case 11:
                 _this7.resetFormState();
 
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -927,7 +929,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-44dcd7a7";
+var __vue_module_identifier__ = "data-v-259749f1";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

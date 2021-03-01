@@ -492,7 +492,7 @@ var script = {
 
       if (fail) {
         this.resetFormState();
-        this.onSubmitFail();
+        await this.onSubmitFail();
         return;
       }
 

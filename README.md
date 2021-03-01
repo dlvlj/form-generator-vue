@@ -1,21 +1,22 @@
 Create beautiful forms using any component library for vue.
 ## Features
 * reactive schema based form.
-* compatible with third party component libraries and custom components.
-* comes with a validation engine.
-* customizable styles.
-
-## Demo
-[https://divijbhardwaj.github.io/form-generator-vue-demo/](https://divijbhardwaj.github.io/form-generator-vue-demo/)
-
-### Install
+* compatible with third party component libraries like vuetify, element etc and custom components.
+* customizable form layout.
+## [Demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
+### Installation
 ```
 npm install form-generator-vue
 ```
 ## How to use
 ```vue
 <template>
-    <form-generator-vue v-model="fields"/>
+    <form-generator-vue 
+        v-model="fields"
+        :components="components"
+        :schema="schema"
+        :on-submit="handleSubmit"
+    />
 </template>
 
 <script>
@@ -28,6 +29,39 @@ export default {
     },
     components: {
         FormGeneratorVue
+    },
+    computed: {
+        components: () => [
+            {   
+                name: 'v-text-field',
+                type: ['text', 'password', 'email', 'number'],
+                errorProp: 'errorMessages'
+            }
+        ],
+        schema() {
+          return {
+            fields: [
+              {
+                model: 'email',
+                type: 'email'
+              },
+              {
+                model: 'mobile',
+                type: 'number'
+              },
+              {
+                model: 'password',
+                type: 'password'
+              }
+            ]
+          }
+        }
+    },
+    methods: {
+        async handleSubmit() {
+            // await network call ---------;
+            console.log('form submitted', this.fields)
+        }
     }
 }
 </script>
@@ -35,44 +69,11 @@ export default {
 ## Props
 |props|type|description|
 |----|---|----|
-|form-config| obj | Form schema |
-|form-components| obj |Fom Components map|
-|submit-handler| (values) => {} |submit success `function`, can be async/sync.|
-|handle-submit-fail|(values) => {}| handle submit fail `function`.|
-|form-rules| obj | For user defined validations|
-|form-editable|bool |Sets the editable state of the form. `Default is true`, if `disabled` then form body containing all the fields will be hidden from view. `v-slot:disabled` can be used to show the disabled state.|
-|classes|obj |Used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
-
-## Min Required Props
-It needs **two essential props** `form-components` and `form-config` to render a form.
-```vue
-    <template>
-        <form-generator-vue
-            v-model="fields"
-            :form-components="formComponents"
-            :form-config="formConfig"
-        />
-    </template>
-```
-##### **form-components:**
-This prop requires a map of components to know which component will be used for which input type or types.
-**IMPORTANT - The components that you want to use must be globally registered. Follow [Official Doc](https://vuejs.org/v2/guide/components-registration.html) to learn how to register component.**.
-```js
-const formComponents = [
-  {
-    type: ['number', 'password', 'text', 'email'],
-    component: { name: 'v-text-field', errorProp: 'errorMessages' }
-  },
-  {
-    type: 'select',
-    component: { name: 'v-select', errorProp: 'errorMessages' }
-  },
-  {
-    type: 'checkbox',
-    component: { name: 'v-checkbox', errorProp: 'errorMessages' }
-  },
-];
-```
+| schema | obj | json schema to create form |
+| components | obj | component map to render component for specific type of field |
+| onSubmit | async/sync function | submit success function |
+| onSubmitFail | function | submit fail function.|
+| classes|obj |Used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
 
 ##### **form-config**
 | options | type | required | description |

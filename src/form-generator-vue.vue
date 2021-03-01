@@ -379,7 +379,7 @@ export default {
       }
       if (fail) {
         this.resetFormState();
-        this.onSubmitFail();
+        await this.onSubmitFail();
         return;
       }
       await this.onSubmit();
