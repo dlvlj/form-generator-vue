@@ -171,7 +171,7 @@ const VMODEL = {
 const FIELD = {
   av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
-  events: 'events',
+  events: 'v-on',
   component: 'component',
   hide: 'hide',
   type: {

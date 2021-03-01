@@ -87,7 +87,7 @@ export default {
 | type | String | false | Input type. Component for it is loaded from `components`. Default is 'text' |
 |props| obj | false | Component props |
 | hide | bool/() => bool | false | show/hide field. Not required when hidden |
-|events| obj | optional | Assigned to component `v-on` |
+| v-on | obj | optional | Assigned to component `v-on` |
 |props.required|bool/(ctx) => bool|optional|Field is not validated if false, validations will run if `activeValidation` is enabled and `rules` are  provided but will not validate onSubmit|
 |props.disabled|bool/(ctx) => bool|optional| To disable or enable field.|
 |rules|obj|optional| For validations.|
