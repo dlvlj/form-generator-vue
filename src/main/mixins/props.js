@@ -38,5 +38,15 @@ export default {
         console.warn("Form submit fail");
       },
     },
+    activeValidation: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    activeValidationDelay: {
+      type: Boolean,
+      required: false,
+      default: 0
+    }
   }
 }

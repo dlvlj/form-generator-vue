@@ -115,13 +115,15 @@ export default {
     CLASS: () => CLASS,
     UTILS: () => UTILS,
     avGlobal() {
-      return SCHEMA.av in this.schema
-        ? this.schema[SCHEMA.av]
-        : false;
+      // return SCHEMA.av in this.schema
+      //   ? this.schema[SCHEMA.av]
+      //   : false;
+      return this.activeValidation || false;
     },
     avDelayGlobal() {
-      const hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
-      return hasAvDelay? this.schema[SCHEMA.avDelay] : false;
+      // const hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
+      // return hasAvDelay? this.schema[SCHEMA.avDelay] : false;
+      return this.activeValidationDelay || 0;
     },
     logs() {
       return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
@@ -208,8 +210,8 @@ export default {
       // watcher
       if(schema && watcher) {
         const avField =  Boolean(schema[FIELD.av]) || this.avGlobal;
-        const avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal 
-        avField && avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
+        const avDelayField = schema && schema[FIELD.avDelay] || this.avDelayGlobal 
+        avField && avDelayField ? this.deValidateField(avDelayField)(schema) : this.validateField(schema);
         return;
       }
       // on submit

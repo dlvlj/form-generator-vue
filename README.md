@@ -72,15 +72,17 @@ export default {
 | schema | obj | json schema to create form |
 | components | obj | component map to render component for specific type of field |
 | onSubmit | async/sync function | submit success function |
-| onSubmitFail | function | submit fail function.|
-| classes|obj |Used to add classes to all the rows and columns inside form body. Eg - `{row: 'className', col: 'className'}`  |
+| onSubmitFail | async/sync function | submit fail function.|
+| disabled | Bool | disable all fields |
+| activeValidation | bool | toggle validation on input for all fields. Default is `false` |
+| activeValidationDelay | milliseconds | debounced validation for given time for all fields|
+| logs | bool | toggle validation and submit logs |
+| classes | obj | To add classes to all the rows and columns inside form body |
 
 ##### **form-config**
 | options | type | required | description |
 | ------ | ------ | ------ | ---- |
 | fields | Array | yes | contains `field-config` for every field |
-| activeValidation | bool | Optional | enable/disable validations on input. Default is `false` |
-| logs | bool | Optional | console logs for easy debugging |
 
 ```js
 computed: {

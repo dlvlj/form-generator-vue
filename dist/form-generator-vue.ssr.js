@@ -255,6 +255,16 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       default: function _default() {
         console.warn("Form submit fail");
       }
+    },
+    activeValidation: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    activeValidationDelay: {
+      type: Boolean,
+      required: false,
+      default: 0
     }
   }
 };var debounce_timeout;
@@ -446,11 +456,15 @@ var FIELD = {
       return UTILS;
     },
     avGlobal: function avGlobal() {
-      return SCHEMA.av in this.schema ? this.schema[SCHEMA.av] : false;
+      // return SCHEMA.av in this.schema
+      //   ? this.schema[SCHEMA.av]
+      //   : false;
+      return this.activeValidation || false;
     },
     avDelayGlobal: function avDelayGlobal() {
-      var hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
-      return hasAvDelay ? this.schema[SCHEMA.avDelay] : false;
+      // const hasAvDelay = SCHEMA.avDelay in this.schema && this.schema[SCHEMA.avDelay] && !isNaN(this.schema[SCHEMA.avDelay]);
+      // return hasAvDelay? this.schema[SCHEMA.avDelay] : false;
+      return this.activeValidationDelay || 0;
     },
     logs: function logs() {
       return SCHEMA.logs in this.schema ? this.schema[SCHEMA.logs] : false;
@@ -583,8 +597,8 @@ var FIELD = {
       // watcher
       if (schema && watcher) {
         var avField = Boolean(schema[FIELD.av]) || this.avGlobal;
-        var avDelay = schema && schema[FIELD.avDelay] || this.avDelayGlobal;
-        avField && avDelay ? this.deValidateField(avDelay)(schema) : this.validateField(schema);
+        var avDelayField = schema && schema[FIELD.avDelay] || this.avDelayGlobal;
+        avField && avDelayField ? this.deValidateField(avDelayField)(schema) : this.validateField(schema);
         return;
       } // on submit
 
@@ -929,7 +943,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-259749f1";
+var __vue_module_identifier__ = "data-v-722a9705";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
