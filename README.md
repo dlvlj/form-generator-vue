@@ -4,7 +4,7 @@ Create beautiful forms using any component library for vue.
 * compatible with third party component libraries like vuetify, element etc and custom components.
 * customizable form layout.
 ## [Demo](https://divijbhardwaj.github.io/form-generator-vue-demo/)
-### Installation
+## Installation
 ```
 npm install form-generator-vue
 ```
@@ -79,8 +79,7 @@ export default {
 | logs | bool | toggle validation and submit logs |
 | classes | obj | To add classes to all the rows and columns inside form body |
 
-#### field schema Options
-
+## field schema Options
 | options | type | default | purpose |
 | ------ | ------ | ------ | ----- |
 | model | String |  | v-model with component.|
@@ -94,6 +93,34 @@ export default {
 | activeValidation | Boolean | false | toggle validation on input |
 | activeValidationDelay | milliseconds | 0 | debounced validation for given time |
 
+#### row column layout
+Row is a div containing column div containing the component. A row can have multiple cols. Nested rows are not supported.
+```js
+fields: [   // 1 row 1 column -------
+            {
+                model: 'name',
+                type: 'text'
+            },
+            // 1 row 1 column -------
+            {
+                model: 'email',
+                type: 'email'
+            },
+            
+            // 1 row 2 columns -------   
+            [
+                {
+                    model: 'mobile',
+                    type: 'number'
+                },
+                {
+                    model: 'password',
+                    type: 'password'
+                }  
+            ]
+        ]
+```
+
 ## Slots
 * #### header
 * #### footer
@@ -103,14 +130,14 @@ export default {
 * #### after-row
 * #### before-col
 * #### after-col
-#### Classes used
-* form - **"generated-form"**
-    * header - **"generated-form__header"**
-    * body - **"generated-form__body"**
-        * row - **"generated-form__body__row"**
-            * col - **"generated-form__body__row__col**
-            * col - **"col-`<model>`"** (dynamic class, to precisely identify col in which component is rendered).
-    * footer - **"generated-form__footer"**
+slot prop `model` is passed to all slots except for slots header and footer.
+#### classes used
+* form - **"fgv-form"**
+    * header - **"fgv-form__header"**
+    * body - **"fgv-form__body"**
+        * row - **"fgv-form__body__row"**
+            * col - **"fgv-form__body__row__col <model>"**
+    * footer - **"fgv-form__footer"**
 
 ## Contributors
 This project exists thanks to all the people who contribute. [Contribute](https://github.com/divijhardwaj/form-generator-vue).
