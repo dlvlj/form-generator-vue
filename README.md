@@ -13,7 +13,7 @@ npm install form-generator-vue
 <template>
     <form-generator-vue 
         v-model="fields"
-        :components="components"
+        :components="formComponents"
         :schema="schema"
         :on-submit="handleSubmit"
     />
@@ -31,9 +31,9 @@ export default {
         FormGeneratorVue
     },
     computed: {
-        components: () => [
+        formComponents: () => [
             {   
-                name: 'v-text-field',
+                name: 'v-text-field', //should be a globally registered component.
                 type: ['text', 'password', 'email', 'number'],
                 errorProp: 'errorMessages'
             },
