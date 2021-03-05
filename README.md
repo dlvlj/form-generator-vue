@@ -147,3 +147,5 @@ slot prop `model` is passed to all slots except for slots header and footer.
 This project exists thanks to all the people who contribute. [Contribute](https://github.com/divijhardwaj/form-generator-vue).
 
 * [Carlos Noguera](https://github.com/kaysersoze)
+
+### [Changelog](https://github.com/divijbhardwaj/form-generator-vue/blob/master/changelog.md)

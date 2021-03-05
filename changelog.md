@@ -1,4 +1,3 @@
-## Versions
  2.0.0
 breaking changes.
 * prop names changed.
