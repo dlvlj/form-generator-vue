@@ -16,7 +16,11 @@ npm install form-generator-vue
         :components="formComponents"
         :schema="schema"
         :on-submit="handleSubmit"
-    />
+    >
+        <template v-slot:footer>
+            <button type="submit">submit</button>
+        </template>
+    </form-generator-vue>
 </template>
 
 <script>
@@ -78,8 +82,8 @@ export default {
 | onSubmit | async/sync function | submit success function |
 | onSubmitFail | async/sync function | submit fail function.|
 | disabled | Bool | toggle disable all fields |
-| activeValidation | bool | toggle validation on input for all fields. Default is `false` |
-| activeValidationDelay | milliseconds | debounced validation for given time for all fields|
+| activeValidation | bool | toggle validation on input for all fields. Default is **false** |
+| activeValidationDelay | Number | debounced validation for all fields|
 | logs | bool | toggle validation and submit logs |
 | classes | obj | To add classes to all the rows and columns inside form body |
 
@@ -95,9 +99,9 @@ export default {
 | component | String |  | for using any component |
 | errorProp | String | 'errorMessages' | name of error prop consumed by component to show error |
 | activeValidation | Boolean | false | toggle validation on input |
-| activeValidationDelay | milliseconds | 0 | debounced validation for given time |
+| activeValidationDelay | Number | 0 | debounced validation |
 
-#### row column layout
+## Layout
 Row is a div containing column div containing the component. A row can have multiple cols. Nested rows are not supported.
 ```js
 fields: [   // 1 row 1 column -------
@@ -126,16 +130,18 @@ fields: [   // 1 row 1 column -------
 ```
 
 ## Slots
-* #### `header`
-* #### `footer`
-* #### `before-<model>`
-* #### `after-<model>`
-* #### `before-row`
-* #### `after-row`
-* #### `before-col`
-* #### after-col
+* header
+* before-row
+* after-row`
+* before-col
+* after-col
+* `<model>` **(for using the component slot)**
+* before-`<model>`
+* after-`<model>`
+* footer
+
 slot prop `model` is passed to all slots except for slots header and footer.
-#### classes used
+## classes used
 * form - **"fgv-form"**
     * header - **"fgv-form__header"**
     * body - **"fgv-form__body"**
@@ -148,4 +154,4 @@ This project exists thanks to all the people who contribute. [Contribute](https:
 
 * [Carlos Noguera](https://github.com/kaysersoze)
 
-### [Changelog](https://github.com/divijbhardwaj/form-generator-vue/blob/master/changelog.md)
+## [Changelog](https://github.com/divijbhardwaj/form-generator-vue/blob/master/changelog.md)
