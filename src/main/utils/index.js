@@ -39,9 +39,9 @@ const UTILS = {
     }
     return children.every((child) => child in parent);
   },
-  handleFunc(func, params = undefined) {
+  handleFunc(func) {
     if (UTILS.isFunc(func)) {
-      return func(params);
+      return func();
     }
   },
   handleFuncOrBool(val, funcParams = undefined) {
@@ -52,14 +52,12 @@ const UTILS = {
     return res;
   },
   debounce(func) {
-    return function (time) {
-      return function exeFunction(p) {
+    return (time) => (data) => {
+      clearTimeout(debounce_timeout);
+      debounce_timeout = setTimeout(() => {
         clearTimeout(debounce_timeout);
-        debounce_timeout = setTimeout(() => {
-          clearTimeout(debounce_timeout);
-          func(p);
-        }, time);
-      };
+        func(data);
+      }, time);
     };
   },
 };

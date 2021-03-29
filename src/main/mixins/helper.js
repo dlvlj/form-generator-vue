@@ -8,8 +8,8 @@ export default {
       // for helper field
       if (this.isHelperComponent(fieldName)) {
         const [fieldBeingHelped] = fieldName.split(HELPER_COMPONENT);
-        fieldBeingHelped in this.fields &&
-          (this.fields[fieldBeingHelped] = VAL);
+        fieldBeingHelped in this.fields
+          && (this.fields[fieldBeingHelped] = VAL);
         return;
       }
       // for field being helped
@@ -19,8 +19,7 @@ export default {
       }
     },
     setDefaultFieldValue(fieldConfig) {
-      this.fields[fieldConfig.model] =
-        fieldConfig.model in this.value.values ? this.value.values[fieldConfig.model] : '';
+      this.fields[fieldConfig.model] = fieldConfig.model in this.value.values ? this.value.values[fieldConfig.model] : '';
     },
   }
-}
+};

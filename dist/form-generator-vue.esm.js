@@ -9,7 +9,7 @@ var props = {
       type: Function,
       required: false,
       default: () => {
-        console.error("submit handler not present");
+        console.error('submit handler not present');
       }
     },
     components: {
@@ -35,7 +35,7 @@ var props = {
       type: Function,
       required: false,
       default: () => {
-        console.warn("Form submit fail");
+        console.warn('Form submit fail');
       }
     },
     activeValidation: {
@@ -110,9 +110,9 @@ const UTILS = {
     return children.every(child => child in parent);
   },
 
-  handleFunc(func, params = undefined) {
+  handleFunc(func) {
     if (UTILS.isFunc(func)) {
-      return func(params);
+      return func();
     }
   },
 
@@ -127,14 +127,12 @@ const UTILS = {
   },
 
   debounce(func) {
-    return function (time) {
-      return function exeFunction(p) {
+    return time => data => {
+      clearTimeout(debounce_timeout);
+      debounce_timeout = setTimeout(() => {
         clearTimeout(debounce_timeout);
-        debounce_timeout = setTimeout(() => {
-          clearTimeout(debounce_timeout);
-          func(p);
-        }, time);
-      };
+        func(data);
+      }, time);
     };
   }
 
@@ -495,14 +493,10 @@ var script = {
       const avField = (schema === null || schema === void 0 ? void 0 : schema[FIELD.av]) || this.avGlobal;
       const error = this.submit || avField ? UTILS.handleFunc(validator) : NO_ERROR;
       const valid = !error ? !NO_ERROR : Boolean(error);
-      console.log(schema.model, error);
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(schema.model, error);
-      } else this.setError(schema.model, error); // !fieldRequired
-      //   ? !this.submit && this.setError(schema.model, error)
-      //   : this.setError(schema.model, error);
-
+      } else this.setError(schema.model, error);
 
       if (this.logs) {
         console.log({

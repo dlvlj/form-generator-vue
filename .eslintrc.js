@@ -22,10 +22,9 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-underscore-dangle': 'off',
     'no-await-in-loop': 'off',
-    // 'no-restricted-syntax': ['error', 'ForInStatement'],
     'guard-for-in': 'off',
     eqeqeq: 'off',
     'consistent-return': 'off',
-    'no-console': 'off'
+    // 'no-console': 'off'
   },
 };

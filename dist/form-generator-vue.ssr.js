@@ -108,7 +108,7 @@ function _objectSpread2(target) {
       type: Function,
       required: false,
       default: function _default() {
-        console.error("submit handler not present");
+        console.error('submit handler not present');
       }
     },
     components: {
@@ -140,7 +140,7 @@ function _objectSpread2(target) {
       type: Function,
       required: false,
       default: function _default() {
-        console.warn("Form submit fail");
+        console.warn('Form submit fail');
       }
     },
     activeValidation: {
@@ -210,10 +210,8 @@ var UTILS = {
     });
   },
   handleFunc: function handleFunc(func) {
-    var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
-
     if (UTILS.isFunc(func)) {
-      return func(params);
+      return func();
     }
   },
   handleFuncOrBool: function handleFuncOrBool(val) {
@@ -228,11 +226,11 @@ var UTILS = {
   },
   debounce: function debounce(func) {
     return function (time) {
-      return function exeFunction(p) {
+      return function (data) {
         clearTimeout(debounce_timeout);
         debounce_timeout = setTimeout(function () {
           clearTimeout(debounce_timeout);
-          func(p);
+          func(data);
         }, time);
       };
     };
@@ -600,14 +598,10 @@ var FIELD = {
       var avField = (schema === null || schema === void 0 ? void 0 : schema[FIELD.av]) || this.avGlobal;
       var error = this.submit || avField ? UTILS.handleFunc(validator) : NO_ERROR;
       var valid = !error ? !NO_ERROR : Boolean(error);
-      console.log(schema.model, error);
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(schema.model, error);
-      } else this.setError(schema.model, error); // !fieldRequired
-      //   ? !this.submit && this.setError(schema.model, error)
-      //   : this.setError(schema.model, error);
-
+      } else this.setError(schema.model, error);
 
       if (this.logs) {
         console.log({
@@ -809,7 +803,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-49571dbb";
+var __vue_module_identifier__ = "data-v-b4bf172e";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
