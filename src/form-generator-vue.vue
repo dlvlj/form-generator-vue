@@ -380,9 +380,6 @@ export default {
       if (!fieldRequired) {
         if (!this.submit) this.setError(schema.model, error);
       } else this.setError(schema.model, error);
-      // !fieldRequired
-      //   ? !this.submit && this.setError(schema.model, error)
-      //   : this.setError(schema.model, error);
 
       if (this.logs) {
         console.log({
