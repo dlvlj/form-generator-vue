@@ -1,28 +1,28 @@
 let debounce_timeout;
 const UTILS = {
   isUndef(val) {
-    return typeof val === "undefined";
+    return typeof val === 'undefined';
   },
   isObjNotArr(val) {
-    if(!UTILS.isArr(val)) {
+    if (!UTILS.isArr(val)) {
       return UTILS.isObj(val) && !UTILS.isArr(val);
     }
-    return val.every( v => UTILS.isObj(v) && !UTILS.isArr(v));
+    return val.every((v) => UTILS.isObj(v) && !UTILS.isArr(v));
   },
   isObj(val) {
-    if(!UTILS.isArr(val)) {
+    if (!UTILS.isArr(val)) {
       return typeof val === 'object';
     }
-    return val.every( v => typeof v === 'object');
+    return val.every((v) => typeof v === 'object');
   },
   isArr(val) {
     return Array.isArray(val);
   },
   isFunc(val) {
-    return typeof val === "function";
+    return typeof val === 'function';
   },
   isBool(val) {
-    return typeof val === "boolean";
+    return typeof val === 'boolean';
   },
   isStr(val) {
     return typeof val === 'string';
@@ -34,20 +34,20 @@ const UTILS = {
     console.warn(msg);
   },
   hasProperty(children, parent) {
-    if(!UTILS.isArr(children)) {
+    if (!UTILS.isArr(children)) {
       return children in parent;
     }
-    return children.every(child => child in parent);
+    return children.every((child) => child in parent);
   },
   handleFunc(func, params = undefined) {
-    if(UTILS.isFunc(func)) {
+    if (UTILS.isFunc(func)) {
       return func(params);
     }
   },
   handleFuncOrBool(val, funcParams = undefined) {
     let res = Boolean(val);
-    if(UTILS.isFunc(val)) {
-     res = val(funcParams);
+    if (UTILS.isFunc(val)) {
+      res = val(funcParams);
     }
     return res;
   },
@@ -55,12 +55,12 @@ const UTILS = {
     return function (time) {
       return function exeFunction(p) {
         clearTimeout(debounce_timeout);
-        debounce_timeout = setTimeout(function(){
+        debounce_timeout = setTimeout(() => {
           clearTimeout(debounce_timeout);
           func(p);
-        },time);
-      }
-    }
+        }, time);
+      };
+    };
   },
 };
 export default UTILS;
