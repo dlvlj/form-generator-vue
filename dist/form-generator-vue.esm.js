@@ -491,7 +491,7 @@ var script = {
       const fieldRequired = this.fieldRequired(schema);
       const validator = schema === null || schema === void 0 ? void 0 : schema.validator;
       const avField = (schema === null || schema === void 0 ? void 0 : schema[FIELD.av]) || this.avGlobal;
-      const error = this.submit || avField ? UTILS.handleFunc(validator) : NO_ERROR;
+      const error = this.submit || avField ? UTILS.handleFunc(validator) || NO_ERROR : NO_ERROR;
       const valid = !error ? !NO_ERROR : Boolean(error);
 
       if (!fieldRequired) {

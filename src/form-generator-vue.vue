@@ -373,7 +373,7 @@ export default {
       const validator = schema?.validator;
       const avField = schema?.[FIELD.av] || this.avGlobal;
       const error = this.submit || avField
-        ? UTILS.handleFunc(validator)
+        ? UTILS.handleFunc(validator) || NO_ERROR
         : NO_ERROR;
       const valid = !error ? !NO_ERROR : Boolean(error);
 
