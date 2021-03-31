@@ -775,7 +775,7 @@ var __vue_render__ = function __vue_render__() {
     }) : _vm._e()] : [_vm._l(fieldConf, function (subFieldConf) {
       return [_vm.showCol(subFieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
         "model": _vm.slotProps(subFieldConf)
-      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(_vm.s) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(subFieldConf), _vm._g(_vm._b({
+      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subFieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(subFieldConf), _vm._g(_vm._b({
         tag: "component",
         model: {
           value: _vm.fields[subFieldConf.model],
@@ -802,7 +802,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-b5bcbdcc";
+var __vue_module_identifier__ = "data-v-521c28c6";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

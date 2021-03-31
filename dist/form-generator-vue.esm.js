@@ -659,7 +659,7 @@ var __vue_render__ = function () {
     }) : _vm._e()] : [_vm._l(fieldConf, function (subFieldConf) {
       return [_vm.showCol(subFieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
         "model": _vm.slotProps(subFieldConf)
-      }) : _vm._e(), _vm._v(" "), _vm.showCol(_vm.s) ? _c('div', {
+      }) : _vm._e(), _vm._v(" "), _vm.showCol(subFieldConf) ? _c('div', {
         key: subFieldConf.model,
         class: [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]
       }, [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._v(" "), _c(_vm.componentToRender(subFieldConf), _vm._g(_vm._b({

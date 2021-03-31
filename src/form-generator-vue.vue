@@ -64,7 +64,7 @@
                 :model="slotProps(subFieldConf)"
               />
               <div
-                v-if="showCol(s)"
+                v-if="showCol(subFieldConf)"
                 :key="subFieldConf.model"
                 :class="[
                   CLASS.col,
