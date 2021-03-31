@@ -276,6 +276,7 @@ var script = {
     value: {
       handler() {
         if (this.vModelValid()) {
+          // this.filterFields();
           Object.keys(this.value[VMODEL.fields]).forEach(model => {
             this.fields[model] = this.value[VMODEL.fields][model];
             this.errors[model] = this.value[VMODEL.errors][model];
@@ -287,7 +288,6 @@ var script = {
     },
     fields: {
       handler() {
-        this.filterFields();
         this.$emit('input', {
           [VMODEL.fields]: this.fields,
           [VMODEL.errors]: this.errors
@@ -467,12 +467,15 @@ var script = {
     },
 
     filterFields() {
-      const unwantedFields = Object.keys(this.fields).filter(m => !this.allFieldsFlatArray.find(({
+      const {
+        value
+      } = this;
+      const unwantedFields = Object.keys(value[VMODEL.fields]).filter(m => !this.allFieldsFlatArray.find(({
         model
       }) => m === model));
       unwantedFields.forEach(model => {
-        delete this.fields[model];
-        delete this.errors[model];
+        delete value[VMODEL.fields][model];
+        delete value[VMODEL.errors][model];
       });
     },
 
@@ -513,7 +516,6 @@ var script = {
 
     async handleSubmit() {
       this.submit = true;
-      this.filterFields();
       const {
         validationsStatus,
         submitFail

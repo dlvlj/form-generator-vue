@@ -378,6 +378,7 @@ var FIELD = {
         var _this3 = this;
 
         if (this.vModelValid()) {
+          // this.filterFields();
           Object.keys(this.value[VMODEL.fields]).forEach(function (model) {
             _this3.fields[model] = _this3.value[VMODEL.fields][model];
             _this3.errors[model] = _this3.value[VMODEL.errors][model];
@@ -390,7 +391,6 @@ var FIELD = {
       handler: function handler() {
         var _this$$emit;
 
-        this.filterFields();
         this.$emit('input', (_this$$emit = {}, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
       },
       deep: true,
@@ -572,15 +572,16 @@ var FIELD = {
     filterFields: function filterFields() {
       var _this8 = this;
 
-      var unwantedFields = Object.keys(this.fields).filter(function (m) {
+      var value = this.value;
+      var unwantedFields = Object.keys(value[VMODEL.fields]).filter(function (m) {
         return !_this8.allFieldsFlatArray.find(function (_ref3) {
           var model = _ref3.model;
           return m === model;
         });
       });
       unwantedFields.forEach(function (model) {
-        delete _this8.fields[model];
-        delete _this8.errors[model];
+        delete value[VMODEL.fields][model];
+        delete value[VMODEL.errors][model];
       });
     },
     fieldHidden: function fieldHidden(fieldConf) {
@@ -626,9 +627,6 @@ var FIELD = {
             switch (_context.prev = _context.next) {
               case 0:
                 _this9.submit = true;
-
-                _this9.filterFields();
-
                 _this9$validate = _this9.validate(), validationsStatus = _this9$validate.validationsStatus, submitFail = _this9$validate.submitFail;
 
                 if (_this9.logs) {
@@ -636,26 +634,26 @@ var FIELD = {
                 }
 
                 if (!submitFail) {
-                  _context.next = 9;
+                  _context.next = 8;
                   break;
                 }
 
                 _this9.resetForm();
 
-                _context.next = 8;
+                _context.next = 7;
                 return _this9.onSubmitFail();
 
-              case 8:
+              case 7:
                 return _context.abrupt("return");
 
-              case 9:
-                _context.next = 11;
+              case 8:
+                _context.next = 10;
                 return _this9.onSubmit();
 
-              case 11:
+              case 10:
                 _this9.resetForm();
 
-              case 12:
+              case 11:
               case "end":
                 return _context.stop();
             }
@@ -802,7 +800,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-521c28c6";
+var __vue_module_identifier__ = "data-v-e2dd67cc";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
