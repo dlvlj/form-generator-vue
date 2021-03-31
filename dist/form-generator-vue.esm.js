@@ -430,9 +430,7 @@ var script = {
     },
 
     componentToRender(fieldConf) {
-      // const fieldType = fieldConf.type || FIELD.type.text;
-      console.log(fieldConf);
-      const fieldType = FIELD.type.text;
+      const fieldType = fieldConf.type || FIELD.type.text;
 
       if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component]) && UTILS.isStr(fieldConf[FIELD.component])) {
         return fieldConf.component;
@@ -641,7 +639,7 @@ var __vue_render__ = function () {
       "model": _vm.slotProps(fieldConf)
     }) : _vm._e(), _vm._v(" "), _vm.showRow(fieldConf) ? _c('div', {
       key: i,
-      class: [_vm.CLASS.row, fieldConf.row]
+      class: [_vm.CLASS.row, _vm.classes.row]
     }, [!_vm.UTILS.isArr(fieldConf) ? [_vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
       "model": _vm.slotProps(fieldConf)
     }) : _vm._e(), _vm._v(" "), _vm.showCol(fieldConf) ? _c('div', {

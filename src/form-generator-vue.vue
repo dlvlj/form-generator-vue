@@ -19,7 +19,7 @@
         <div
           v-if="showRow(fieldConf)"
           :key="i"
-          :class="[CLASS.row, fieldConf.row]"
+          :class="[CLASS.row, classes.row]"
         >
           <!-- COL -->
           <template v-if="!UTILS.isArr(fieldConf)">

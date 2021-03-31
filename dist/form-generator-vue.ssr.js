@@ -536,9 +536,7 @@ var FIELD = {
       return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf[FIELD.events] : {};
     },
     componentToRender: function componentToRender(fieldConf) {
-      // const fieldType = fieldConf.type || FIELD.type.text;
-      console.log(fieldConf);
-      var fieldType = FIELD.type.text;
+      var fieldType = fieldConf.type || FIELD.type.text;
 
       if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component]) && UTILS.isStr(fieldConf[FIELD.component])) {
         return fieldConf.component;
@@ -761,7 +759,7 @@ var __vue_render__ = function __vue_render__() {
   }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.allFieldsArray, function (fieldConf, i) {
     return [_vm.showRow(fieldConf) ? _vm._t(_vm.SLOT.beforeRow, null, {
       "model": _vm.slotProps(fieldConf)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, fieldConf.row]) + ">", "</div>", [!_vm.UTILS.isArr(fieldConf) ? [_vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(fieldConf) ? [_vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
       "model": _vm.slotProps(fieldConf)
     }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, fieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(fieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(fieldConf), _vm._g(_vm._b({
       tag: "component",
@@ -804,7 +802,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-56530fba";
+var __vue_module_identifier__ = "data-v-b5bcbdcc";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
