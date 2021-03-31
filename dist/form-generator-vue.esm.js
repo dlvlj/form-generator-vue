@@ -492,7 +492,6 @@ var script = {
       const validator = schema === null || schema === void 0 ? void 0 : schema.validator;
       const avField = (schema === null || schema === void 0 ? void 0 : schema[FIELD.av]) || this.avGlobal;
       const error = this.submit || avField ? UTILS.handleFunc(validator) || NO_ERROR : NO_ERROR;
-      const valid = !error ? !NO_ERROR : Boolean(error);
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(schema.model, error);
@@ -503,13 +502,13 @@ var script = {
           model: schema.model,
           value: this.fields[schema.model],
           type: typeof this.fields[schema.model],
-          valid,
+          valid: !error,
           required: fieldRequired,
           error
         });
       }
 
-      return valid;
+      return error;
     },
 
     async handleSubmit() {

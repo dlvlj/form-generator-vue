@@ -375,7 +375,6 @@ export default {
       const error = this.submit || avField
         ? UTILS.handleFunc(validator) || NO_ERROR
         : NO_ERROR;
-      const valid = !error ? !NO_ERROR : Boolean(error);
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(schema.model, error);
@@ -386,12 +385,12 @@ export default {
           model: schema.model,
           value: this.fields[schema.model],
           type: typeof this.fields[schema.model],
-          valid,
+          valid: !error,
           required: fieldRequired,
           error,
         });
       }
-      return valid;
+      return error;
     },
     async handleSubmit() {
       this.submit = true;
