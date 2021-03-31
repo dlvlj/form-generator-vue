@@ -276,7 +276,7 @@ var script = {
     value: {
       handler() {
         if (this.vModelValid()) {
-          // this.filterFields();
+          this.filterFields();
           Object.keys(this.value[VMODEL.fields]).forEach(model => {
             this.fields[model] = this.value[VMODEL.fields][model];
             this.errors[model] = this.value[VMODEL.errors][model];

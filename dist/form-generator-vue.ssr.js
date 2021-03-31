@@ -378,7 +378,7 @@ var FIELD = {
         var _this3 = this;
 
         if (this.vModelValid()) {
-          // this.filterFields();
+          this.filterFields();
           Object.keys(this.value[VMODEL.fields]).forEach(function (model) {
             _this3.fields[model] = _this3.value[VMODEL.fields][model];
             _this3.errors[model] = _this3.value[VMODEL.errors][model];
@@ -800,7 +800,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-e2dd67cc";
+var __vue_module_identifier__ = "data-v-8fd7c11c";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
