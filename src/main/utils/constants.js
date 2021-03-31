@@ -27,7 +27,7 @@ export const SCHEMA = {
 };
 
 export const VMODEL = {
-  values: 'values',
+  fields: 'fields',
   errors: 'errors',
 };
 

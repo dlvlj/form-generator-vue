@@ -264,7 +264,7 @@ var SCHEMA = {
   logs: 'logs'
 };
 var VMODEL = {
-  values: 'values',
+  fields: 'fields',
   errors: 'errors'
 };
 var FIELD = {
@@ -286,30 +286,29 @@ var FIELD = {
   mixins: [props],
   emits: ['input'],
   data: function data() {
-    var _this$schema,
-        _this = this;
+    var _this = this;
 
     var init = true;
     var fields = {};
     var errors = {};
     var vModelValid = this.vModelValid(init);
-    var schemaValid = UTILS.isArr((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : _this$schema[SCHEMA.fields]) && this.schema[SCHEMA.fields].length;
+    var schemaValid = this.schemaValid();
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
-      var _this$value$VMODEL$va, _this$value$VMODEL$er;
+      var _this$value$VMODEL$fi, _this$value$VMODEL$er;
 
-      fields[model] = vModelValid && ((_this$value$VMODEL$va = _this.value[VMODEL.values]) === null || _this$value$VMODEL$va === void 0 ? void 0 : _this$value$VMODEL$va[model]) || '';
+      fields[model] = vModelValid && ((_this$value$VMODEL$fi = _this.value[VMODEL.fields]) === null || _this$value$VMODEL$fi === void 0 ? void 0 : _this$value$VMODEL$fi[model]) || '';
       errors[model] = vModelValid && ((_this$value$VMODEL$er = _this.value[VMODEL.errors]) === null || _this$value$VMODEL$er === void 0 ? void 0 : _this$value$VMODEL$er[model]) || '';
     };
 
     if (schemaValid) {
-      this.schema[SCHEMA.fields].forEach(function (fieldsSchema) {
-        if (UTILS.isArr(fieldsSchema)) {
-          fieldsSchema.forEach(function (schema) {
-            addFieldsAndErrors(schema.model);
+      this.schema[SCHEMA.fields].forEach(function (fieldConf) {
+        if (UTILS.isArr(fieldConf)) {
+          fieldConf.forEach(function (subFieldConf) {
+            addFieldsAndErrors(subFieldConf.model);
           });
         } else {
-          addFieldsAndErrors(fieldsSchema.model);
+          addFieldsAndErrors(fieldConf.model);
         }
       });
     }
@@ -330,37 +329,37 @@ var FIELD = {
     UTILS: function UTILS$1() {
       return UTILS;
     },
-    avGlobal: function avGlobal() {
+    globalAv: function globalAv() {
       return this.activeValidation || false;
     },
-    avDelayGlobal: function avDelayGlobal() {
+    globalAvDelay: function globalAvDelay() {
       return this.activeValidationDelay || 0;
     },
-    fieldsSchema: function fieldsSchema() {
-      var _this$schema2;
+    allFieldsArray: function allFieldsArray() {
+      var _this$schema;
 
-      return UTILS.isArr((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : _this$schema2[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
+      return UTILS.isArr((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : _this$schema[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
     },
-    fieldsSchemaFlat: function fieldsSchemaFlat() {
-      var flatSchema = [];
-      this.fieldsSchema.forEach(function (schema) {
-        if (UTILS.isArr(schema)) {
-          schema.forEach(function (s) {
-            flatSchema.push(s);
+    allFieldsFlatArray: function allFieldsFlatArray() {
+      var arr = [];
+      this.allFieldsArray.forEach(function (fieldConf) {
+        if (UTILS.isArr(fieldConf)) {
+          fieldConf.forEach(function (subFieldConf) {
+            arr.push(subFieldConf);
           });
         } else {
-          flatSchema.push(schema);
+          arr.push(fieldConf);
         }
       });
-      return flatSchema;
+      return arr;
     },
-    fieldsSchemaMap: function fieldsSchemaMap() {
-      var schemaMap = this.fieldsSchemaFlat.map(function (s) {
-        return [s.model, s];
+    allFieldsFlatObj: function allFieldsFlatObj() {
+      var obj = this.allFieldsFlatArray.map(function (fieldConf) {
+        return [fieldConf.model, fieldConf];
       });
-      return Object.fromEntries(schemaMap);
+      return Object.fromEntries(obj);
     },
-    debValidateField: function debValidateField() {
+    debounceValidateField: function debounceValidateField() {
       var _this2 = this;
 
       return UTILS.debounce(function (model) {
@@ -379,8 +378,8 @@ var FIELD = {
         var _this3 = this;
 
         if (this.vModelValid()) {
-          Object.keys(this.value[VMODEL.values]).forEach(function (model) {
-            _this3.fields[model] = _this3.value[VMODEL.values][model];
+          Object.keys(this.value[VMODEL.fields]).forEach(function (model) {
+            _this3.fields[model] = _this3.value[VMODEL.fields][model];
             _this3.errors[model] = _this3.value[VMODEL.errors][model];
           });
         }
@@ -389,11 +388,10 @@ var FIELD = {
     },
     fields: {
       handler: function handler() {
-        this.rmUnwantedModels();
-        this.$emit('input', {
-          values: this.fields,
-          errors: this.errors
-        });
+        var _this$$emit;
+
+        this.filterFields();
+        this.$emit('input', (_this$$emit = {}, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
       },
       deep: true,
       immediate: true
@@ -403,96 +401,95 @@ var FIELD = {
     var _this4 = this;
 
     Object.keys(this.fields).forEach(function (model) {
-      var schema = _this4.findSchema(model);
+      var fieldConf = _this4.getFieldConf(model);
 
       _this4.$watch("fields.".concat(model), function (newVal, oldVal) {
-        _this4.typeCoercion(schema); // when only data type is changed.
+        _this4.typeCoercion(fieldConf); // when only data type is changed.
 
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
           return;
-        } // validation ---------------------------
+        }
 
-
-        _this4.validate(schema, true);
+        _this4.validate(fieldConf, true);
       }, {
         deep: true
       });
     });
   },
   methods: {
-    slotProps: function slotProps(schema) {
+    slotProps: function slotProps(fieldConf) {
       if (UTILS.isArr()) {
-        return schema.map(function (_ref) {
+        return fieldConf.map(function (_ref) {
           var model = _ref.model;
           return model;
         });
       }
 
-      return schema.model;
+      return fieldConf.model;
     },
     validate: function validate() {
       var _this5 = this;
 
-      var schema = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-      var watcher = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var fieldConf = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+      var isWatcher = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       // for watcher
-      if (schema && watcher) {
-        var avField = schema[FIELD.av] || this.avGlobal;
-        var avDelayField = schema[FIELD.avDelay] || this.avDelayGlobal;
+      if (fieldConf && isWatcher) {
+        var fieldAv = fieldConf[FIELD.av] || this.globalAv;
+        var fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
 
-        if (avField && avDelayField) {
-          this.debValidateField(avDelayField)(schema);
-        } else this.validateField(schema);
+        if (fieldAv && fieldAvDelay) {
+          this.debounceValidateField(fieldAvDelay)(fieldConf);
+        } else this.validateField(fieldConf);
 
         return;
       } // for submit
 
 
-      var valStatus = {};
-      Object.values(this.fieldsSchemaMap).forEach(function (s) {
-        var err = _this5.validateField(s);
+      var validationsStatus = {};
+      Object.values(this.allFieldsFlatObj).forEach(function (conf) {
+        var err = _this5.validateField(conf);
 
-        valStatus[s.model] = !err ? true : !_this5.fieldRequired(s);
+        validationsStatus[conf.model] = !err ? true : !_this5.fieldRequired(conf);
       });
-      var submitFail = Object.keys(valStatus).find(function (k) {
-        return !valStatus[k];
+      var submitFail = Object.keys(validationsStatus).find(function (model) {
+        return !validationsStatus[model];
       });
       return {
-        valStatus: valStatus,
+        validationsStatus: validationsStatus,
         submitFail: submitFail
       };
     },
-    showRow: function showRow(schema) {
-      return this.hasFieldsToRender(schema) || this.showCol(schema);
+    showRow: function showRow(fieldConf) {
+      return this.hasFieldsToRender(fieldConf) || this.showCol(fieldConf);
     },
-    hasFieldsToRender: function hasFieldsToRender(schema) {
+    hasFieldsToRender: function hasFieldsToRender(fieldConf) {
       var _this6 = this;
 
-      return UTILS.isArr(schema) && schema.length && schema.some(function (s) {
-        return !_this6.fieldHidden(s);
+      return UTILS.isArr(fieldConf) && fieldConf.length && fieldConf.some(function (conf) {
+        return !_this6.fieldHidden(conf);
       });
     },
-    showCol: function showCol(schema) {
-      return this.componentToRender(schema) && !this.fieldHidden(schema);
+    showCol: function showCol(fieldConf) {
+      return this.componentToRender(fieldConf) && !this.fieldHidden(fieldConf);
     },
     vModelValid: function vModelValid() {
       var _this$value, _this$value2;
 
       var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-      var parentValid = this.value && UTILS.isObjNotArr(this.value);
+      var isObj = this.value && UTILS.isObjNotArr(this.value);
 
-      var valValid = UTILS.isObjNotArr((_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.values]);
+      var hasFields = UTILS.isObjNotArr((_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields]);
 
-      var errValid = UTILS.isObjNotArr((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : _this$value2[VMODEL.errors]);
+      var hasErrors = UTILS.isObjNotArr((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : _this$value2[VMODEL.errors]);
 
       if (init) {
-        return parentValid && valValid;
+        return isObj && hasFields;
       }
 
-      return parentValid && valValid && errValid;
+      return isObj && hasFields && hasErrors;
     },
     resetForm: function resetForm() {
       this.submit = false;
@@ -514,35 +511,37 @@ var FIELD = {
       this.errors[model] = err;
     },
     findComponentData: function findComponentData(name) {
-      return this.components.find(function (c) {
-        return c && c.name === name;
+      return this.components.find(function (component) {
+        return (component === null || component === void 0 ? void 0 : component.name) === name;
       });
     },
-    componentProps: function componentProps(schema) {
+    componentProps: function componentProps(fieldConf) {
       var _objectSpread2$1;
 
-      var componentName = this.componentToRender(schema);
+      var componentName = this.componentToRender(fieldConf);
       var component = this.findComponentData(componentName);
-      var errorPropName = (schema === null || schema === void 0 ? void 0 : schema.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
-      return _objectSpread2(_objectSpread2({}, schema.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[schema.model]), _defineProperty(_objectSpread2$1, "ref", schema.model), _defineProperty(_objectSpread2$1, "type", schema.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(schema)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(schema)), _objectSpread2$1));
+      var errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
+      return _objectSpread2(_objectSpread2({}, fieldConf.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[fieldConf.model]), _defineProperty(_objectSpread2$1, "type", fieldConf.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(fieldConf)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(fieldConf)), _objectSpread2$1));
     },
-    typeCoercion: function typeCoercion(schema) {
-      if (!Number.isNaN(Number(this.fields[schema.model]))) {
+    typeCoercion: function typeCoercion(fieldConf) {
+      if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
         return;
       }
 
-      if ((schema === null || schema === void 0 ? void 0 : schema.type) === FIELD.type.number && this.fields[schema.model]) {
-        this.fields[schema.model] = Number(this.fields[schema.model]);
+      if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) === FIELD.type.number && this.fields[fieldConf.model]) {
+        this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
-    componentEvents: function componentEvents(schema) {
-      return UTILS.isObj(schema === null || schema === void 0 ? void 0 : schema[FIELD.events]) ? schema[FIELD.events] : {};
+    componentEvents: function componentEvents(fieldConf) {
+      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf[FIELD.events] : {};
     },
-    componentToRender: function componentToRender(schema) {
-      var fieldType = schema.type || FIELD.type.text;
+    componentToRender: function componentToRender(fieldConf) {
+      // const fieldType = fieldConf.type || FIELD.type.text;
+      console.log(fieldConf);
+      var fieldType = FIELD.type.text;
 
-      if ((schema === null || schema === void 0 ? void 0 : schema[FIELD.component]) && UTILS.isStr(schema[FIELD.component])) {
-        return schema.component;
+      if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component]) && UTILS.isStr(fieldConf[FIELD.component])) {
+        return fieldConf.component;
       }
 
       var component = this.components.find(function (_ref2) {
@@ -557,56 +556,54 @@ var FIELD = {
 
       return componentName;
     },
-    findSchema: function findSchema(m) {
-      return this.fieldsSchemaMap[m];
+    getFieldConf: function getFieldConf(m) {
+      return this.allFieldsFlatObj[m];
     },
-    fieldDisabled: function fieldDisabled(schema) {
+    fieldDisabled: function fieldDisabled(fieldConf) {
       var DISABLED = true;
-      var hasDisabledProp = UTILS.isObj(schema === null || schema === void 0 ? void 0 : schema.props) && FIELD.props.disabled in schema.props;
-      var fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.disabled]) : !DISABLED;
+      var hasDisabledProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.disabled in fieldConf.props;
+      var fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.disabled]) : !DISABLED;
       return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
     },
-    fieldRequired: function fieldRequired(schema) {
+    fieldRequired: function fieldRequired(fieldConf) {
       var REQUIRED = true;
-      var hasRequiredProp = schema && schema.props && FIELD.props.required in schema.props;
-      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(schema.props[FIELD.props.required]) : !REQUIRED;
-      return schema && !this.fieldDisabled(schema) && !this.fieldHidden(schema) ? fieldRequired : !REQUIRED;
+      var hasRequiredProp = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.required in fieldConf.props;
+      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.required]) : !REQUIRED;
+      return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf) ? fieldRequired : !REQUIRED;
     },
-    rmUnwantedModels: function rmUnwantedModels() {
+    filterFields: function filterFields() {
       var _this8 = this;
 
-      var um = Object.keys(this.fields).filter(function (m) {
-        return !_this8.fieldsSchemaFlat.find(function (_ref3) {
+      var unwantedFields = Object.keys(this.fields).filter(function (m) {
+        return !_this8.allFieldsFlatArray.find(function (_ref3) {
           var model = _ref3.model;
           return m === model;
         });
       });
-      um.forEach(function (model) {
+      unwantedFields.forEach(function (model) {
         delete _this8.fields[model];
         delete _this8.errors[model];
       });
     },
-    fieldHidden: function fieldHidden(schema) {
+    fieldHidden: function fieldHidden(fieldConf) {
       var HIDDEN = true;
-      var fieldHidden = FIELD.hide in schema ? UTILS.handleFuncOrBool(schema[FIELD.hide]) : !HIDDEN;
+      var fieldHidden = FIELD.hide in fieldConf ? UTILS.handleFuncOrBool(fieldConf[FIELD.hide]) : !HIDDEN;
       return fieldHidden;
     },
-    validateField: function validateField(schema) {
+    validateField: function validateField(fieldConf) {
       var NO_ERROR = '';
-      var fieldRequired = this.fieldRequired(schema);
-      var validator = schema === null || schema === void 0 ? void 0 : schema.validator;
-      var avField = (schema === null || schema === void 0 ? void 0 : schema[FIELD.av]) || this.avGlobal;
+      var fieldRequired = this.fieldRequired(fieldConf);
+      var validator = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.validator;
+      var avField = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv;
       var error = this.submit || avField ? UTILS.handleFunc(validator) || NO_ERROR : NO_ERROR;
 
       if (!fieldRequired) {
-        if (!this.submit) this.setError(schema.model, error);
-      } else this.setError(schema.model, error);
+        if (!this.submit) this.setError(fieldConf.model, error);
+      } else this.setError(fieldConf.model, error);
 
       if (this.logs) {
-        console.log({
-          model: schema.model,
-          value: this.fields[schema.model],
-          type: _typeof(this.fields[schema.model]),
+        console.log(fieldConf.model, {
+          value: this.fields[fieldConf.model],
           valid: !error,
           required: fieldRequired,
           error: error
@@ -615,11 +612,16 @@ var FIELD = {
 
       return error;
     },
+    schemaValid: function schemaValid() {
+      var _this$schema2;
+
+      return UTILS.isArr((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : _this$schema2[SCHEMA.fields]) && this.schema[SCHEMA.fields].length;
+    },
     handleSubmit: function handleSubmit() {
       var _this9 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this9$validate, valStatus, submitFail;
+        var _this9$validate, validationsStatus, submitFail;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -627,12 +629,12 @@ var FIELD = {
               case 0:
                 _this9.submit = true;
 
-                _this9.rmUnwantedModels();
+                _this9.filterFields();
 
-                _this9$validate = _this9.validate(), valStatus = _this9$validate.valStatus, submitFail = _this9$validate.submitFail;
+                _this9$validate = _this9.validate(), validationsStatus = _this9$validate.validationsStatus, submitFail = _this9$validate.submitFail;
 
                 if (_this9.logs) {
-                  console.log('form validations:', valStatus);
+                  console.log('form validations:', validationsStatus);
                 }
 
                 if (!submitFail) {
@@ -756,39 +758,39 @@ var __vue_render__ = function __vue_render__() {
         return _vm.handleSubmit($event);
       }
     }
-  }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.fieldsSchema, function (schema, i) {
-    return [_vm.showRow(schema) ? _vm._t(_vm.SLOT.beforeRow, null, {
-      "model": _vm.slotProps(schema)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(schema) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(schema) ? [_vm.showCol(schema) ? _vm._t(_vm.SLOT.beforeCol, null, {
-      "model": _vm.slotProps(schema)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(schema) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, schema.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(schema.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(schema), _vm._g(_vm._b({
+  }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.allFieldsArray, function (fieldConf, i) {
+    return [_vm.showRow(fieldConf) ? _vm._t(_vm.SLOT.beforeRow, null, {
+      "model": _vm.slotProps(fieldConf)
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, fieldConf.row]) + ">", "</div>", [!_vm.UTILS.isArr(fieldConf) ? [_vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+      "model": _vm.slotProps(fieldConf)
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, fieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(fieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(fieldConf), _vm._g(_vm._b({
       tag: "component",
       model: {
-        value: _vm.fields[schema.model],
+        value: _vm.fields[fieldConf.model],
         callback: function callback($$v) {
-          _vm.$set(_vm.fields, schema.model, $$v);
+          _vm.$set(_vm.fields, fieldConf.model, $$v);
         },
-        expression: "fields[schema.model]"
+        expression: "fields[fieldConf.model]"
       }
-    }, 'component', _vm.componentProps(schema), false), _vm.componentEvents(schema)), [_vm._t(schema.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(schema.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(schema) ? _vm._t(_vm.SLOT.afterCol, null, {
-      "model": _vm.slotProps(schema)
-    }) : _vm._e()] : [_vm._l(schema, function (s) {
-      return [_vm.showCol(s) ? _vm._t(_vm.SLOT.beforeCol, null, {
-        "model": _vm.slotProps(s)
-      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(s) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, s.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(s.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(s), _vm._g(_vm._b({
+    }, 'component', _vm.componentProps(fieldConf), false), _vm.componentEvents(fieldConf)), [_vm._t(fieldConf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(fieldConf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.afterCol, null, {
+      "model": _vm.slotProps(fieldConf)
+    }) : _vm._e()] : [_vm._l(fieldConf, function (subFieldConf) {
+      return [_vm.showCol(subFieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+        "model": _vm.slotProps(subFieldConf)
+      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(_vm.s) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(subFieldConf), _vm._g(_vm._b({
         tag: "component",
         model: {
-          value: _vm.fields[s.model],
+          value: _vm.fields[subFieldConf.model],
           callback: function callback($$v) {
-            _vm.$set(_vm.fields, s.model, $$v);
+            _vm.$set(_vm.fields, subFieldConf.model, $$v);
           },
-          expression: "fields[s.model]"
+          expression: "fields[subFieldConf.model]"
         }
-      }, 'component', _vm.componentProps(s), false), _vm.componentEvents(s)), [_vm._t(s.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(s.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(s) ? _vm._t(_vm.SLOT.afterCol, null, {
-        "model": _vm.slotProps(s)
+      }, 'component', _vm.componentProps(subFieldConf), false), _vm.componentEvents(subFieldConf)), [_vm._t(subFieldConf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(subFieldConf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subFieldConf) ? _vm._t(_vm.SLOT.afterCol, null, {
+        "model": _vm.slotProps(subFieldConf)
       }) : _vm._e()];
-    })]], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(schema) ? _vm._t(_vm.SLOT.afterRow, null, {
-      "model": _vm.slotProps(schema)
+    })]], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(fieldConf) ? _vm._t(_vm.SLOT.afterRow, null, {
+      "model": _vm.slotProps(fieldConf)
     }) : _vm._e()];
   })], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, _vm.CLASS.footer) + ">", "</div>", [_vm._t(_vm.SLOT.footer)], 2)], 2);
 };
@@ -802,7 +804,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-6951e3f6";
+var __vue_module_identifier__ = "data-v-56530fba";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
