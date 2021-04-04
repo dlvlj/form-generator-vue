@@ -39,7 +39,7 @@
             >
               <slot :name="SLOT.beforeComponent(fieldConf.model)" />
               <component
-                :is="componentToRender(fieldConf)"
+                :is="componentName(fieldConf)"
                 v-model="fields[fieldConf.model]"
                 v-bind="componentProps(fieldConf)"
                 v-on="componentEvents(fieldConf)"
@@ -74,7 +74,7 @@
               >
                 <slot :name="SLOT.beforeComponent(subFieldConf.model)" />
                 <component
-                  :is="componentToRender(subFieldConf)"
+                  :is="componentName(subFieldConf)"
                   v-model="fields[subFieldConf.model]"
                   v-bind="componentProps(subFieldConf)"
                   v-on="componentEvents(subFieldConf)"
@@ -120,8 +120,8 @@ export default {
     const errors = {};
     const schemaValid = this.schemaValid();
     const addFieldsAndErrors = (model) => {
-      fields[model] = this.value[VMODEL.fields]?.[model] || '';
-      errors[model] = this.value[VMODEL.errors]?.[model] || '';
+      fields[model] = this.value?.[VMODEL.fields][model] || '';
+      errors[model] = this.value?.[VMODEL.errors][model] || '';
     };
 
     if (schemaValid) {
@@ -175,7 +175,7 @@ export default {
     },
     debounceValidateField() {
       return UTILS.debounce((model) => {
-        this.validateField(model);
+        this.fieldValidation(model);
       });
     },
   },
@@ -188,8 +188,8 @@ export default {
     value: {
       handler() {
         Object.keys(this.value?.[VMODEL.fields] || {}).forEach((model) => {
-          this.fields[model] = this.value[VMODEL.fields]?.[model];
-          this.errors[model] = this.value[VMODEL.errors]?.[model];
+          this.fields[model] = this.value?.[VMODEL.fields][model];
+          this.errors[model] = this.value?.[VMODEL.errors][model];
         });
       },
       deep: true,
@@ -204,7 +204,7 @@ export default {
   },
   created() {
     Object.keys(this.fields).forEach((model) => {
-      const fieldConf = this.getFieldConf(model);
+      const fieldConf = this.fieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
         this.typeCoercion(fieldConf);
         // when only data type is changed.
@@ -229,7 +229,7 @@ export default {
       return fieldConf.length && fieldConf.some((conf) => this.showCol(conf));
     },
     showCol(fieldConf) {
-      return this.componentToRender(fieldConf) && !this.fieldHidden(fieldConf);
+      return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
     },
     slotProps(fieldConf) {
       if (UTILS.isArr()) {
@@ -238,8 +238,8 @@ export default {
       return fieldConf.model;
     },
     componentProps(fieldConf) {
-      const componentName = this.componentToRender(fieldConf);
-      const component = this.findComponentData(componentName);
+      const componentName = this.componentName(fieldConf);
+      const component = this.componentData(componentName);
       const errorPropName = fieldConf?.errorProp || component?.errorProp || 'errorMessages';
       return {
         ...fieldConf.props,
@@ -261,7 +261,7 @@ export default {
       }
       this.errors[model] = err;
     },
-    findComponentData(name) {
+    componentData(name) {
       return this.components.find(
         (component) => component?.name === name,
       );
@@ -279,21 +279,21 @@ export default {
         ? fieldConf[FIELD.events]
         : {};
     },
-    componentToRender(fieldConf) {
-      const fieldType = fieldConf.type || FIELD.type.text;
+    componentName(fieldConf) {
+      const fieldType = fieldConf?.type || FIELD.type.text;
       if (fieldConf?.[FIELD.component] && UTILS.isStr(fieldConf[FIELD.component])) {
-        return fieldConf.component;
+        return fieldConf[FIELD.component];
       }
       const component = this.components.find(({ type }) => type.includes(fieldType));
       const componentName = component?.name;
       if (!componentName) {
         console.error(
-          `Component cannot be rendered. Component for type "${fieldType}" is not found in form-components.`,
+          `Component cannot be rendered. Component for type "${fieldType}" is not found in components prop.`,
         );
       }
       return componentName;
     },
-    getFieldConf(model) {
+    fieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
     fieldDisabled(fieldConf) {
@@ -333,7 +333,7 @@ export default {
         : !HIDDEN;
       return fieldHidden;
     },
-    validateField(fieldConf) {
+    fieldValidation(fieldConf) {
       const NO_ERROR = '';
       const fieldRequired = this.fieldRequired(fieldConf);
       const validator = fieldConf?.validator;
@@ -364,14 +364,14 @@ export default {
 
         if (fieldAv && fieldAvDelay) {
           this.debounceValidateField(fieldAvDelay)(fieldConf);
-        } else this.validateField(fieldConf);
+        } else this.fieldValidation(fieldConf);
 
         return;
       }
       // for submit
       const validationsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach((conf) => {
-        const err = this.validateField(conf);
+        const err = this.fieldValidation(conf);
         validationsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
       });
       const submitFail = Object.keys(validationsStatus).find((model) => !validationsStatus[model]);

@@ -194,10 +194,10 @@ var script = {
     const schemaValid = this.schemaValid();
 
     const addFieldsAndErrors = model => {
-      var _this$value$VMODEL$fi, _this$value$VMODEL$er;
+      var _this$value, _this$value2;
 
-      fields[model] = ((_this$value$VMODEL$fi = this.value[VMODEL.fields]) === null || _this$value$VMODEL$fi === void 0 ? void 0 : _this$value$VMODEL$fi[model]) || '';
-      errors[model] = ((_this$value$VMODEL$er = this.value[VMODEL.errors]) === null || _this$value$VMODEL$er === void 0 ? void 0 : _this$value$VMODEL$er[model]) || '';
+      fields[model] = ((_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields][model]) || '';
+      errors[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : _this$value2[VMODEL.errors][model]) || '';
     };
 
     if (schemaValid) {
@@ -259,7 +259,7 @@ var script = {
 
     debounceValidateField() {
       return UTILS.debounce(model => {
-        this.validateField(model);
+        this.fieldValidation(model);
       });
     }
 
@@ -273,13 +273,13 @@ var script = {
     },
     value: {
       handler() {
-        var _this$value;
+        var _this$value3;
 
-        Object.keys(((_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields]) || {}).forEach(model => {
-          var _this$value$VMODEL$fi2, _this$value$VMODEL$er2;
+        Object.keys(((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) || {}).forEach(model => {
+          var _this$value4, _this$value5;
 
-          this.fields[model] = (_this$value$VMODEL$fi2 = this.value[VMODEL.fields]) === null || _this$value$VMODEL$fi2 === void 0 ? void 0 : _this$value$VMODEL$fi2[model];
-          this.errors[model] = (_this$value$VMODEL$er2 = this.value[VMODEL.errors]) === null || _this$value$VMODEL$er2 === void 0 ? void 0 : _this$value$VMODEL$er2[model];
+          this.fields[model] = (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields][model];
+          this.errors[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : _this$value5[VMODEL.errors][model];
         });
       },
 
@@ -300,7 +300,7 @@ var script = {
 
   created() {
     Object.keys(this.fields).forEach(model => {
-      const fieldConf = this.getFieldConf(model);
+      const fieldConf = this.fieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
         this.typeCoercion(fieldConf); // when only data type is changed.
 
@@ -335,7 +335,7 @@ var script = {
     },
 
     showCol(fieldConf) {
-      return this.componentToRender(fieldConf) && !this.fieldHidden(fieldConf);
+      return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
     },
 
     slotProps(fieldConf) {
@@ -349,8 +349,8 @@ var script = {
     },
 
     componentProps(fieldConf) {
-      const componentName = this.componentToRender(fieldConf);
-      const component = this.findComponentData(componentName);
+      const componentName = this.componentName(fieldConf);
+      const component = this.componentData(componentName);
       const errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
       return { ...fieldConf.props,
         type: fieldConf.type || FIELD.type.text,
@@ -374,7 +374,7 @@ var script = {
       this.errors[model] = err;
     },
 
-    findComponentData(name) {
+    componentData(name) {
       return this.components.find(component => (component === null || component === void 0 ? void 0 : component.name) === name);
     },
 
@@ -392,11 +392,11 @@ var script = {
       return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf[FIELD.events] : {};
     },
 
-    componentToRender(fieldConf) {
-      const fieldType = fieldConf.type || FIELD.type.text;
+    componentName(fieldConf) {
+      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) || FIELD.type.text;
 
       if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component]) && UTILS.isStr(fieldConf[FIELD.component])) {
-        return fieldConf.component;
+        return fieldConf[FIELD.component];
       }
 
       const component = this.components.find(({
@@ -405,13 +405,13 @@ var script = {
       const componentName = component === null || component === void 0 ? void 0 : component.name;
 
       if (!componentName) {
-        console.error(`Component cannot be rendered. Component for type "${fieldType}" is not found in form-components.`);
+        console.error(`Component cannot be rendered. Component for type "${fieldType}" is not found in components prop.`);
       }
 
       return componentName;
     },
 
-    getFieldConf(model) {
+    fieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
 
@@ -448,7 +448,7 @@ var script = {
       return fieldHidden;
     },
 
-    validateField(fieldConf) {
+    fieldValidation(fieldConf) {
       const NO_ERROR = '';
       const fieldRequired = this.fieldRequired(fieldConf);
       const validator = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.validator;
@@ -479,7 +479,7 @@ var script = {
 
         if (fieldAv && fieldAvDelay) {
           this.debounceValidateField(fieldAvDelay)(fieldConf);
-        } else this.validateField(fieldConf);
+        } else this.fieldValidation(fieldConf);
 
         return;
       } // for submit
@@ -487,7 +487,7 @@ var script = {
 
       const validationsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach(conf => {
-        const err = this.validateField(conf);
+        const err = this.fieldValidation(conf);
         validationsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
       });
       const submitFail = Object.keys(validationsStatus).find(model => !validationsStatus[model]);
@@ -630,7 +630,7 @@ var __vue_render__ = function () {
     }) : _vm._e(), _vm._v(" "), _vm.showCol(fieldConf) ? _c('div', {
       key: fieldConf.model,
       class: [_vm.CLASS.col, fieldConf.model, _vm.classes.col]
-    }, [_vm._t(_vm.SLOT.beforeComponent(fieldConf.model)), _vm._v(" "), _c(_vm.componentToRender(fieldConf), _vm._g(_vm._b({
+    }, [_vm._t(_vm.SLOT.beforeComponent(fieldConf.model)), _vm._v(" "), _c(_vm.componentName(fieldConf), _vm._g(_vm._b({
       tag: "component",
       model: {
         value: _vm.fields[fieldConf.model],
@@ -647,7 +647,7 @@ var __vue_render__ = function () {
       }) : _vm._e(), _vm._v(" "), _vm.showCol(subFieldConf) ? _c('div', {
         key: subFieldConf.model,
         class: [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]
-      }, [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._v(" "), _c(_vm.componentToRender(subFieldConf), _vm._g(_vm._b({
+      }, [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._v(" "), _c(_vm.componentName(subFieldConf), _vm._g(_vm._b({
         tag: "component",
         model: {
           value: _vm.fields[subFieldConf.model],

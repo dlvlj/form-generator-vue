@@ -293,10 +293,10 @@ var FIELD = {
     var schemaValid = this.schemaValid();
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
-      var _this$value$VMODEL$fi, _this$value$VMODEL$er;
+      var _this$value, _this$value2;
 
-      fields[model] = ((_this$value$VMODEL$fi = _this.value[VMODEL.fields]) === null || _this$value$VMODEL$fi === void 0 ? void 0 : _this$value$VMODEL$fi[model]) || '';
-      errors[model] = ((_this$value$VMODEL$er = _this.value[VMODEL.errors]) === null || _this$value$VMODEL$er === void 0 ? void 0 : _this$value$VMODEL$er[model]) || '';
+      fields[model] = ((_this$value = _this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields][model]) || '';
+      errors[model] = ((_this$value2 = _this.value) === null || _this$value2 === void 0 ? void 0 : _this$value2[VMODEL.errors][model]) || '';
     };
 
     if (schemaValid) {
@@ -361,7 +361,7 @@ var FIELD = {
       var _this2 = this;
 
       return UTILS.debounce(function (model) {
-        _this2.validateField(model);
+        _this2.fieldValidation(model);
       });
     }
   },
@@ -373,14 +373,14 @@ var FIELD = {
     },
     value: {
       handler: function handler() {
-        var _this$value,
+        var _this$value3,
             _this3 = this;
 
-        Object.keys(((_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields]) || {}).forEach(function (model) {
-          var _this3$value$VMODEL$f, _this3$value$VMODEL$e;
+        Object.keys(((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) || {}).forEach(function (model) {
+          var _this3$value, _this3$value2;
 
-          _this3.fields[model] = (_this3$value$VMODEL$f = _this3.value[VMODEL.fields]) === null || _this3$value$VMODEL$f === void 0 ? void 0 : _this3$value$VMODEL$f[model];
-          _this3.errors[model] = (_this3$value$VMODEL$e = _this3.value[VMODEL.errors]) === null || _this3$value$VMODEL$e === void 0 ? void 0 : _this3$value$VMODEL$e[model];
+          _this3.fields[model] = (_this3$value = _this3.value) === null || _this3$value === void 0 ? void 0 : _this3$value[VMODEL.fields][model];
+          _this3.errors[model] = (_this3$value2 = _this3.value) === null || _this3$value2 === void 0 ? void 0 : _this3$value2[VMODEL.errors][model];
         });
       },
       deep: true
@@ -399,7 +399,7 @@ var FIELD = {
     var _this4 = this;
 
     Object.keys(this.fields).forEach(function (model) {
-      var fieldConf = _this4.getFieldConf(model);
+      var fieldConf = _this4.fieldConf(model);
 
       _this4.$watch("fields.".concat(model), function (newVal, oldVal) {
         _this4.typeCoercion(fieldConf); // when only data type is changed.
@@ -435,7 +435,7 @@ var FIELD = {
       });
     },
     showCol: function showCol(fieldConf) {
-      return this.componentToRender(fieldConf) && !this.fieldHidden(fieldConf);
+      return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
     },
     slotProps: function slotProps(fieldConf) {
       if (UTILS.isArr()) {
@@ -448,8 +448,8 @@ var FIELD = {
       return fieldConf.model;
     },
     componentProps: function componentProps(fieldConf) {
-      var componentName = this.componentToRender(fieldConf);
-      var component = this.findComponentData(componentName);
+      var componentName = this.componentName(fieldConf);
+      var component = this.componentData(componentName);
       var errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
       return _objectSpread2(_objectSpread2({}, fieldConf.props), {}, _defineProperty({
         type: fieldConf.type || FIELD.type.text
@@ -471,7 +471,7 @@ var FIELD = {
 
       this.errors[model] = err;
     },
-    findComponentData: function findComponentData(name) {
+    componentData: function componentData(name) {
       return this.components.find(function (component) {
         return (component === null || component === void 0 ? void 0 : component.name) === name;
       });
@@ -488,11 +488,11 @@ var FIELD = {
     componentEvents: function componentEvents(fieldConf) {
       return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf[FIELD.events] : {};
     },
-    componentToRender: function componentToRender(fieldConf) {
-      var fieldType = fieldConf.type || FIELD.type.text;
+    componentName: function componentName(fieldConf) {
+      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) || FIELD.type.text;
 
       if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component]) && UTILS.isStr(fieldConf[FIELD.component])) {
-        return fieldConf.component;
+        return fieldConf[FIELD.component];
       }
 
       var component = this.components.find(function (_ref2) {
@@ -502,12 +502,12 @@ var FIELD = {
       var componentName = component === null || component === void 0 ? void 0 : component.name;
 
       if (!componentName) {
-        console.error("Component cannot be rendered. Component for type \"".concat(fieldType, "\" is not found in form-components."));
+        console.error("Component cannot be rendered. Component for type \"".concat(fieldType, "\" is not found in components prop."));
       }
 
       return componentName;
     },
-    getFieldConf: function getFieldConf(model) {
+    fieldConf: function fieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
     fieldDisabled: function fieldDisabled(fieldConf) {
@@ -542,7 +542,7 @@ var FIELD = {
       var fieldHidden = FIELD.hide in fieldConf ? UTILS.handleFuncOrBool(fieldConf[FIELD.hide]) : !HIDDEN;
       return fieldHidden;
     },
-    validateField: function validateField(fieldConf) {
+    fieldValidation: function fieldValidation(fieldConf) {
       var NO_ERROR = '';
       var fieldRequired = this.fieldRequired(fieldConf);
       var validator = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.validator;
@@ -577,7 +577,7 @@ var FIELD = {
 
         if (fieldAv && fieldAvDelay) {
           this.debounceValidateField(fieldAvDelay)(fieldConf);
-        } else this.validateField(fieldConf);
+        } else this.fieldValidation(fieldConf);
 
         return;
       } // for submit
@@ -585,7 +585,7 @@ var FIELD = {
 
       var validationsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach(function (conf) {
-        var err = _this8.validateField(conf);
+        var err = _this8.fieldValidation(conf);
 
         validationsStatus[conf.model] = !err ? true : !_this8.fieldRequired(conf);
       });
@@ -740,7 +740,7 @@ var __vue_render__ = function __vue_render__() {
       "model": _vm.slotProps(fieldConf)
     }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(fieldConf) ? [_vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
       "model": _vm.slotProps(fieldConf)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, fieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(fieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(fieldConf), _vm._g(_vm._b({
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, fieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(fieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentName(fieldConf), _vm._g(_vm._b({
       tag: "component",
       model: {
         value: _vm.fields[fieldConf.model],
@@ -754,7 +754,7 @@ var __vue_render__ = function __vue_render__() {
     }) : _vm._e()] : [_vm._l(fieldConf, function (subFieldConf) {
       return [_vm.showCol(subFieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
         "model": _vm.slotProps(subFieldConf)
-      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subFieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentToRender(subFieldConf), _vm._g(_vm._b({
+      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subFieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentName(subFieldConf), _vm._g(_vm._b({
         tag: "component",
         model: {
           value: _vm.fields[subFieldConf.model],
@@ -781,7 +781,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-fff42a24";
+var __vue_module_identifier__ = "data-v-45f0641b";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
