@@ -116,14 +116,12 @@ export default {
   mixins: [props],
   emits: ['input'],
   data() {
-    const init = true;
     const fields = {};
     const errors = {};
-    const vModelValid = this.vModelValid(init);
     const schemaValid = this.schemaValid();
     const addFieldsAndErrors = (model) => {
-      fields[model] = (vModelValid && this.value[VMODEL.fields]?.[model]) || '';
-      errors[model] = (vModelValid && this.value[VMODEL.errors]?.[model]) || '';
+      fields[model] = this.value[VMODEL.fields]?.[model] || '';
+      errors[model] = this.value[VMODEL.errors]?.[model] || '';
     };
 
     if (schemaValid) {
@@ -189,13 +187,10 @@ export default {
     },
     value: {
       handler() {
-        if (this.vModelValid()) {
-          this.filterFields();
-          Object.keys(this.value[VMODEL.fields]).forEach((model) => {
-            this.fields[model] = this.value[VMODEL.fields][model];
-            this.errors[model] = this.value[VMODEL.errors][model];
-          });
-        }
+        Object.keys(this.value?.[VMODEL.fields] || {}).forEach((model) => {
+          this.fields[model] = this.value[VMODEL.fields]?.[model];
+          this.errors[model] = this.value[VMODEL.errors]?.[model];
+        });
       },
       deep: true,
     },
@@ -221,54 +216,36 @@ export default {
     });
   },
   methods: {
+    resetForm() {
+      this.submit = false;
+    },
+    schemaValid() {
+      return UTILS.isArr(this.schema?.[SCHEMA.fields]) && this.schema[SCHEMA.fields].length;
+    },
+    showRow(fieldConf) {
+      return UTILS.isArr(fieldConf) ? this.showCols(fieldConf) : this.showCol(fieldConf);
+    },
+    showCols(fieldConf) {
+      return fieldConf.length && fieldConf.some((conf) => this.showCol(conf));
+    },
+    showCol(fieldConf) {
+      return this.componentToRender(fieldConf) && !this.fieldHidden(fieldConf);
+    },
     slotProps(fieldConf) {
       if (UTILS.isArr()) {
         return fieldConf.map(({ model }) => model);
       }
       return fieldConf.model;
     },
-    validate(fieldConf = undefined, isWatcher = false) {
-      // for watcher
-      if (fieldConf && isWatcher) {
-        const fieldAv = fieldConf[FIELD.av] || this.globalAv;
-        const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
-
-        if (fieldAv && fieldAvDelay) {
-          this.debounceValidateField(fieldAvDelay)(fieldConf);
-        } else this.validateField(fieldConf);
-
-        return;
-      }
-      // for submit
-      const validationsStatus = {};
-      Object.values(this.allFieldsFlatObj).forEach((conf) => {
-        const err = this.validateField(conf);
-        validationsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
-      });
-      const submitFail = Object.keys(validationsStatus).find((model) => !validationsStatus[model]);
-      return { validationsStatus, submitFail };
-    },
-    showRow(fieldConf) {
-      return UTILS.isArr(fieldConf) ? this.showCols(fieldConf) : this.showCol(fieldConf);
-    },
-    showCols(fieldConf) {
-      return fieldConf.length
-      && fieldConf.some((conf) => this.showCol(conf));
-    },
-    showCol(fieldConf) {
-      return this.componentToRender(fieldConf) && !this.fieldHidden(fieldConf);
-    },
-    vModelValid(init = false) {
-      const isObj = this.value && UTILS.isObjNotArr(this.value);
-      const hasFields = UTILS.isObjNotArr(this.value?.[VMODEL.fields]);
-      const hasErrors = UTILS.isObjNotArr(this.value?.[VMODEL.errors]);
-      if (init) {
-        return isObj && hasFields;
-      }
-      return isObj && hasFields && hasErrors;
-    },
-    resetForm() {
-      this.submit = false;
+    componentProps(fieldConf) {
+      const componentName = this.componentToRender(fieldConf);
+      const component = this.findComponentData(componentName);
+      const errorPropName = fieldConf?.errorProp || component?.errorProp || 'errorMessages';
+      return {
+        ...fieldConf.props,
+        type: fieldConf.type || FIELD.type.text,
+        [errorPropName]: this.errors[fieldConf.model]
+      };
     },
     removeAllErrors() {
       Object.keys(this.errors).forEach((model) => {
@@ -288,16 +265,6 @@ export default {
       return this.components.find(
         (component) => component?.name === name,
       );
-    },
-    componentProps(fieldConf) {
-      const componentName = this.componentToRender(fieldConf);
-      const component = this.findComponentData(componentName);
-      const errorPropName = fieldConf?.errorProp || component?.errorProp || 'errorMessages';
-      return {
-        ...fieldConf.props,
-        type: fieldConf.type || FIELD.type.text,
-        [errorPropName]: this.errors[fieldConf.model]
-      };
     },
     typeCoercion(fieldConf) {
       if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
@@ -389,8 +356,26 @@ export default {
       }
       return error;
     },
-    schemaValid() {
-      return UTILS.isArr(this.schema?.[SCHEMA.fields]) && this.schema[SCHEMA.fields].length;
+    validate(fieldConf = undefined, isWatcher = false) {
+      // for watcher
+      if (fieldConf && isWatcher) {
+        const fieldAv = fieldConf[FIELD.av] || this.globalAv;
+        const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
+
+        if (fieldAv && fieldAvDelay) {
+          this.debounceValidateField(fieldAvDelay)(fieldConf);
+        } else this.validateField(fieldConf);
+
+        return;
+      }
+      // for submit
+      const validationsStatus = {};
+      Object.values(this.allFieldsFlatObj).forEach((conf) => {
+        const err = this.validateField(conf);
+        validationsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
+      });
+      const submitFail = Object.keys(validationsStatus).find((model) => !validationsStatus[model]);
+      return { validationsStatus, submitFail };
     },
     async handleSubmit() {
       this.submit = true;
