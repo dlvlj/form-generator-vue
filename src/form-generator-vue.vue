@@ -249,11 +249,11 @@ export default {
       return { validationsStatus, submitFail };
     },
     showRow(fieldConf) {
-      return this.hasFieldsToRender(fieldConf) || this.showCol(fieldConf);
+      return UTILS.isArr(fieldConf) ? this.showCols(fieldConf) : this.showCol(fieldConf);
     },
-    hasFieldsToRender(fieldConf) {
-      return UTILS.isArr(fieldConf)
-      && fieldConf.length && fieldConf.some((conf) => !this.fieldHidden(conf));
+    showCols(fieldConf) {
+      return fieldConf.length
+      && fieldConf.some((conf) => this.showCol(conf));
     },
     showCol(fieldConf) {
       return this.componentToRender(fieldConf) && !this.fieldHidden(fieldConf);
@@ -295,10 +295,8 @@ export default {
       const errorPropName = fieldConf?.errorProp || component?.errorProp || 'errorMessages';
       return {
         ...fieldConf.props,
-        [errorPropName]: this.errors[fieldConf.model],
         type: fieldConf.type || FIELD.type.text,
-        disabled: this.fieldDisabled(fieldConf),
-        required: this.fieldRequired(fieldConf),
+        [errorPropName]: this.errors[fieldConf.model]
       };
     },
     typeCoercion(fieldConf) {
@@ -328,8 +326,8 @@ export default {
       }
       return componentName;
     },
-    getFieldConf(m) {
-      return this.allFieldsFlatObj[m];
+    getFieldConf(model) {
+      return this.allFieldsFlatObj[model];
     },
     fieldDisabled(fieldConf) {
       const DISABLED = true;

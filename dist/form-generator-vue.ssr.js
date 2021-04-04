@@ -462,13 +462,13 @@ var FIELD = {
       };
     },
     showRow: function showRow(fieldConf) {
-      return this.hasFieldsToRender(fieldConf) || this.showCol(fieldConf);
+      return UTILS.isArr(fieldConf) ? this.showCols(fieldConf) : this.showCol(fieldConf);
     },
-    hasFieldsToRender: function hasFieldsToRender(fieldConf) {
+    showCols: function showCols(fieldConf) {
       var _this6 = this;
 
-      return UTILS.isArr(fieldConf) && fieldConf.length && fieldConf.some(function (conf) {
-        return !_this6.fieldHidden(conf);
+      return fieldConf.length && fieldConf.some(function (conf) {
+        return _this6.showCol(conf);
       });
     },
     showCol: function showCol(fieldConf) {
@@ -516,12 +516,12 @@ var FIELD = {
       });
     },
     componentProps: function componentProps(fieldConf) {
-      var _objectSpread2$1;
-
       var componentName = this.componentToRender(fieldConf);
       var component = this.findComponentData(componentName);
       var errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
-      return _objectSpread2(_objectSpread2({}, fieldConf.props), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, errorPropName, this.errors[fieldConf.model]), _defineProperty(_objectSpread2$1, "type", fieldConf.type || FIELD.type.text), _defineProperty(_objectSpread2$1, "disabled", this.fieldDisabled(fieldConf)), _defineProperty(_objectSpread2$1, "required", this.fieldRequired(fieldConf)), _objectSpread2$1));
+      return _objectSpread2(_objectSpread2({}, fieldConf.props), {}, _defineProperty({
+        type: fieldConf.type || FIELD.type.text
+      }, errorPropName, this.errors[fieldConf.model]));
     },
     typeCoercion: function typeCoercion(fieldConf) {
       if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
@@ -554,8 +554,8 @@ var FIELD = {
 
       return componentName;
     },
-    getFieldConf: function getFieldConf(m) {
-      return this.allFieldsFlatObj[m];
+    getFieldConf: function getFieldConf(model) {
+      return this.allFieldsFlatObj[model];
     },
     fieldDisabled: function fieldDisabled(fieldConf) {
       var DISABLED = true;
@@ -800,7 +800,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-8fd7c11c";
+var __vue_module_identifier__ = "data-v-6e78a5e7";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
