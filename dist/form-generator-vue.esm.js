@@ -171,14 +171,14 @@ const FIELD = {
   avDelay: SCHEMA.avDelay,
   events: 'v-on',
   component: 'component',
-  hide: 'hide',
   type: {
     text: 'text',
     number: 'number'
   },
   props: {
     required: 'required',
-    disabled: 'disabled'
+    disabled: 'disabled',
+    hidden: 'hidden'
   },
   validator: 'validator'
 };
@@ -194,10 +194,10 @@ var script = {
     const schemaValid = this.schemaValid();
 
     const addFieldsAndErrors = model => {
-      var _this$value, _this$value2;
+      var _this$value, _this$value$VMODEL$fi, _this$value2, _this$value2$VMODEL$e;
 
-      fields[model] = ((_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields][model]) || '';
-      errors[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : _this$value2[VMODEL.errors][model]) || '';
+      fields[model] = ((_this$value = this.value) === null || _this$value === void 0 ? void 0 : (_this$value$VMODEL$fi = _this$value[VMODEL.fields]) === null || _this$value$VMODEL$fi === void 0 ? void 0 : _this$value$VMODEL$fi[model]) || '';
+      errors[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$e = _this$value2[VMODEL.errors]) === null || _this$value2$VMODEL$e === void 0 ? void 0 : _this$value2$VMODEL$e[model]) || '';
     };
 
     if (schemaValid) {
@@ -276,10 +276,10 @@ var script = {
         var _this$value3;
 
         Object.keys(((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) || {}).forEach(model => {
-          var _this$value4, _this$value5;
+          var _this$value4, _this$value4$VMODEL$f, _this$value5, _this$value5$VMODEL$e;
 
-          this.fields[model] = (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields][model];
-          this.errors[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : _this$value5[VMODEL.errors][model];
+          this.fields[model] = (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : (_this$value4$VMODEL$f = _this$value4[VMODEL.fields]) === null || _this$value4$VMODEL$f === void 0 ? void 0 : _this$value4$VMODEL$f[model];
+          this.errors[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$e = _this$value5[VMODEL.errors]) === null || _this$value5$VMODEL$e === void 0 ? void 0 : _this$value5$VMODEL$e[model];
         });
       },
 
@@ -321,9 +321,9 @@ var script = {
     },
 
     schemaValid() {
-      var _this$schema2;
+      var _this$schema2, _this$schema3, _this$schema3$SCHEMA$;
 
-      return UTILS.isArr((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : _this$schema2[SCHEMA.fields]) && this.schema[SCHEMA.fields].length;
+      return UTILS.isArr((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : _this$schema2[SCHEMA.fields]) && ((_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$SCHEMA$ = _this$schema3[SCHEMA.fields]) === null || _this$schema3$SCHEMA$ === void 0 ? void 0 : _this$schema3$SCHEMA$.length);
     },
 
     showRow(fieldConf) {
@@ -389,14 +389,14 @@ var script = {
     },
 
     componentEvents(fieldConf) {
-      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf[FIELD.events] : {};
+      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events] : {};
     },
 
     componentName(fieldConf) {
       const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) || FIELD.type.text;
 
-      if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component]) && UTILS.isStr(fieldConf[FIELD.component])) {
-        return fieldConf[FIELD.component];
+      if (UTILS.isStr(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component])) {
+        return fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component];
       }
 
       const component = this.components.find(({
@@ -419,32 +419,23 @@ var script = {
       const DISABLED = true;
       const hasDisabledProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.disabled in fieldConf.props;
       const fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.disabled]) : !DISABLED;
-      return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
+      return this.disabled || fieldDisabled;
     },
 
     fieldRequired(fieldConf) {
       const REQUIRED = true;
       const hasRequiredProp = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.required in fieldConf.props;
-      const fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.required]) : !REQUIRED;
-      return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf) ? fieldRequired : !REQUIRED;
-    },
+      const fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.required]) : !REQUIRED; // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
+      //   ? fieldRequired
+      //   : !REQUIRED;
 
-    filterFields() {
-      const {
-        value
-      } = this;
-      const unwantedFields = Object.keys(value[VMODEL.fields]).filter(m => !this.allFieldsFlatArray.find(({
-        model
-      }) => m === model));
-      unwantedFields.forEach(model => {
-        delete value[VMODEL.fields][model];
-        delete value[VMODEL.errors][model];
-      });
+      return fieldRequired;
     },
 
     fieldHidden(fieldConf) {
       const HIDDEN = true;
-      const fieldHidden = FIELD.hide in fieldConf ? UTILS.handleFuncOrBool(fieldConf[FIELD.hide]) : !HIDDEN;
+      const hasHiddenProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.hidden in fieldConf.props;
+      const fieldHidden = hasHiddenProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.hidden]) : !HIDDEN;
       return fieldHidden;
     },
 

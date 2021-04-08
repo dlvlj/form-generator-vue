@@ -36,7 +36,6 @@ export const FIELD = {
   avDelay: SCHEMA.avDelay,
   events: 'v-on',
   component: 'component',
-  hide: 'hide',
   type: {
     text: 'text',
     number: 'number',
@@ -44,6 +43,7 @@ export const FIELD = {
   props: {
     required: 'required',
     disabled: 'disabled',
+    hidden: 'hidden'
   },
   validator: 'validator'
 };

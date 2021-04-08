@@ -303,33 +303,24 @@ export default {
       const fieldDisabled = hasDisabledProp
         ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.disabled])
         : !DISABLED;
-
-      return this.disabled || fieldDisabled ? DISABLED : !DISABLED;
+      return this.disabled || fieldDisabled;
     },
     fieldRequired(fieldConf) {
       const REQUIRED = true;
       const hasRequiredProp = fieldConf?.props && FIELD.props.required in fieldConf.props;
       const fieldRequired = hasRequiredProp
         ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.required]) : !REQUIRED;
-
-      return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
-        ? fieldRequired
-        : !REQUIRED;
-    },
-    filterFields() {
-      const { value } = this;
-      const unwantedFields = Object.keys(value[VMODEL.fields])
-        .filter((m) => !this.allFieldsFlatArray.find(({ model }) => m === model));
-
-      unwantedFields.forEach((model) => {
-        delete value[VMODEL.fields][model];
-        delete value[VMODEL.errors][model];
-      });
+      // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
+      //   ? fieldRequired
+      //   : !REQUIRED;
+      return fieldRequired;
     },
     fieldHidden(fieldConf) {
       const HIDDEN = true;
-      const fieldHidden = FIELD.hide in fieldConf
-        ? UTILS.handleFuncOrBool(fieldConf[FIELD.hide])
+      const hasHiddenProp = UTILS.isObj(fieldConf?.props)
+       && FIELD.props.hidden in fieldConf.props;
+      const fieldHidden = hasHiddenProp
+        ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.hidden])
         : !HIDDEN;
       return fieldHidden;
     },
