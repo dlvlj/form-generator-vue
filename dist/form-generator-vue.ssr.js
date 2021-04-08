@@ -166,7 +166,7 @@ var UTILS = {
   },
   isObjNotArr: function isObjNotArr(val) {
     if (!UTILS.isArr(val)) {
-      return UTILS.isObj(val) && !UTILS.isArr(val);
+      return UTILS.isObj(val);
     }
 
     return val.every(function (v) {

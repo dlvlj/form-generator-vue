@@ -5,7 +5,7 @@ const UTILS = {
   },
   isObjNotArr(val) {
     if (!UTILS.isArr(val)) {
-      return UTILS.isObj(val) && !UTILS.isArr(val);
+      return UTILS.isObj(val);
     }
     return val.every((v) => UTILS.isObj(v) && !UTILS.isArr(v));
   },
