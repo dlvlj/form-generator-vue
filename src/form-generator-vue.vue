@@ -120,8 +120,8 @@ export default {
     const errors = {};
     const schemaValid = this.schemaValid();
     const addFieldsAndErrors = (model) => {
-      fields[model] = this.value?.[VMODEL.fields][model] || '';
-      errors[model] = this.value?.[VMODEL.errors][model] || '';
+      fields[model] = this.value?.[VMODEL.fields]?.[model] || '';
+      errors[model] = this.value?.[VMODEL.errors]?.[model] || '';
     };
 
     if (schemaValid) {
@@ -188,8 +188,8 @@ export default {
     value: {
       handler() {
         Object.keys(this.value?.[VMODEL.fields] || {}).forEach((model) => {
-          this.fields[model] = this.value?.[VMODEL.fields][model];
-          this.errors[model] = this.value?.[VMODEL.errors][model];
+          this.fields[model] = this.value?.[VMODEL.fields]?.[model];
+          this.errors[model] = this.value?.[VMODEL.errors]?.[model];
         });
       },
       deep: true,
@@ -220,7 +220,7 @@ export default {
       this.submit = false;
     },
     schemaValid() {
-      return UTILS.isArr(this.schema?.[SCHEMA.fields]) && this.schema[SCHEMA.fields].length;
+      return UTILS.isArr(this.schema?.[SCHEMA.fields]) && this.schema?.[SCHEMA.fields]?.length;
     },
     showRow(fieldConf) {
       return UTILS.isArr(fieldConf) ? this.showCols(fieldConf) : this.showCol(fieldConf);
@@ -276,13 +276,13 @@ export default {
     },
     componentEvents(fieldConf) {
       return UTILS.isObj(fieldConf?.[FIELD.events])
-        ? fieldConf[FIELD.events]
+        ? fieldConf?.[FIELD.events]
         : {};
     },
     componentName(fieldConf) {
       const fieldType = fieldConf?.type || FIELD.type.text;
-      if (fieldConf?.[FIELD.component] && UTILS.isStr(fieldConf[FIELD.component])) {
-        return fieldConf[FIELD.component];
+      if (UTILS.isStr(fieldConf?.[FIELD.component])) {
+        return fieldConf?.[FIELD.component];
       }
       const component = this.components.find(({ type }) => type.includes(fieldType));
       const componentName = component?.name;
