@@ -9,92 +9,92 @@
     </div>
     <!-- body -->
     <div :class="[CLASS.body]">
-      <template v-for="(fieldConf, i) in allFieldsArray">
+      <template v-for="(conf, i) in allFieldsArray">
         <slot
-          v-if="showRow(fieldConf)"
+          v-if="showRow(conf)"
           :name="SLOT.beforeRow"
-          :model="slotProps(fieldConf)"
+          :model="slotProps(conf)"
         />
         <!-- ROW -->
         <div
-          v-if="showRow(fieldConf)"
+          v-if="showRow(conf)"
           :key="i"
           :class="[CLASS.row, classes.row]"
         >
           <!-- COL -->
-          <template v-if="!UTILS.isArr(fieldConf)">
+          <template v-if="!UTILS.isArr(conf)">
             <slot
-              v-if="showCol(fieldConf)"
+              v-if="showCol(conf)"
               :name="SLOT.beforeCol"
-              :model="slotProps(fieldConf)"
+              :model="slotProps(conf)"
             />
             <div
-              v-if="showCol(fieldConf)"
-              :key="fieldConf.model"
+              v-if="showCol(conf)"
+              :key="conf.model"
               :class="[
                 CLASS.col,
-                fieldConf.model,
+                conf.model,
                 classes.col,
               ]"
             >
-              <slot :name="SLOT.beforeComponent(fieldConf.model)" />
+              <slot :name="SLOT.beforeComponent(conf.model)" />
               <component
-                :is="componentName(fieldConf)"
-                v-model="fields[fieldConf.model]"
-                v-bind="componentProps(fieldConf)"
-                v-on="componentEvents(fieldConf)"
+                :is="componentName(conf)"
+                v-model="fields[conf.model]"
+                v-bind="componentProps(conf)"
+                v-on="componentEvents(conf)"
               >
-                <slot :name="fieldConf.model" />
+                <slot :name="conf.model" />
               </component>
-              <slot :name="SLOT.afterComponent(fieldConf.model)" />
+              <slot :name="SLOT.afterComponent(conf.model)" />
             </div>
             <slot
-              v-if="showCol(fieldConf)"
+              v-if="showCol(conf)"
               :name="SLOT.afterCol"
-              :model="slotProps(fieldConf)"
+              :model="slotProps(conf)"
             />
           </template>
 
           <!-- MULTIPLE COLS -->
           <template v-else>
-            <template v-for="subFieldConf in fieldConf">
+            <template v-for="subConf in conf">
               <slot
-                v-if="showCol(subFieldConf)"
+                v-if="showCol(subConf)"
                 :name="SLOT.beforeCol"
-                :model="slotProps(subFieldConf)"
+                :model="slotProps(subConf)"
               />
               <div
-                v-if="showCol(subFieldConf)"
-                :key="subFieldConf.model"
+                v-if="showCol(subConf)"
+                :key="subConf.model"
                 :class="[
                   CLASS.col,
-                  subFieldConf.model,
+                  subConf.model,
                   classes.col,
                 ]"
               >
-                <slot :name="SLOT.beforeComponent(subFieldConf.model)" />
+                <slot :name="SLOT.beforeComponent(subConf.model)" />
                 <component
-                  :is="componentName(subFieldConf)"
-                  v-model="fields[subFieldConf.model]"
-                  v-bind="componentProps(subFieldConf)"
-                  v-on="componentEvents(subFieldConf)"
+                  :is="componentName(subConf)"
+                  v-model="fields[subConf.model]"
+                  v-bind="componentProps(subConf)"
+                  v-on="componentEvents(subConf)"
                 >
-                  <slot :name="subFieldConf.model" />
+                  <slot :name="subConf.model" />
                 </component>
-                <slot :name="SLOT.afterComponent(subFieldConf.model)" />
+                <slot :name="SLOT.afterComponent(subConf.model)" />
               </div>
               <slot
-                v-if="showCol(subFieldConf)"
+                v-if="showCol(subConf)"
                 :name="SLOT.afterCol"
-                :model="slotProps(subFieldConf)"
+                :model="slotProps(subConf)"
               />
             </template>
           </template>
         </div>
         <slot
-          v-if="showRow(fieldConf)"
+          v-if="showRow(conf)"
           :name="SLOT.afterRow"
-          :model="slotProps(fieldConf)"
+          :model="slotProps(conf)"
         />
       </template>
     </div>

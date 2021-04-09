@@ -724,39 +724,39 @@ var __vue_render__ = function __vue_render__() {
         return _vm.handleSubmit($event);
       }
     }
-  }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.allFieldsArray, function (fieldConf, i) {
-    return [_vm.showRow(fieldConf) ? _vm._t(_vm.SLOT.beforeRow, null, {
-      "model": _vm.slotProps(fieldConf)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(fieldConf) ? [_vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
-      "model": _vm.slotProps(fieldConf)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(fieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, fieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(fieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentName(fieldConf), _vm._g(_vm._b({
+  }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.allFieldsArray, function (conf, i) {
+    return [_vm.showRow(conf) ? _vm._t(_vm.SLOT.beforeRow, null, {
+      "model": _vm.slotProps(conf)
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+      "model": _vm.slotProps(conf)
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(conf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, conf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._ssrNode(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
-        value: _vm.fields[fieldConf.model],
+        value: _vm.fields[conf.model],
         callback: function callback($$v) {
-          _vm.$set(_vm.fields, fieldConf.model, $$v);
+          _vm.$set(_vm.fields, conf.model, $$v);
         },
-        expression: "fields[fieldConf.model]"
+        expression: "fields[conf.model]"
       }
-    }, 'component', _vm.componentProps(fieldConf), false), _vm.componentEvents(fieldConf)), [_vm._t(fieldConf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(fieldConf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(fieldConf) ? _vm._t(_vm.SLOT.afterCol, null, {
-      "model": _vm.slotProps(fieldConf)
-    }) : _vm._e()] : [_vm._l(fieldConf, function (subFieldConf) {
-      return [_vm.showCol(subFieldConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
-        "model": _vm.slotProps(subFieldConf)
-      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subFieldConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subFieldConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subFieldConf.model)), _vm._ssrNode(" "), _c(_vm.componentName(subFieldConf), _vm._g(_vm._b({
+    }, 'component', _vm.componentProps(conf), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
+      "model": _vm.slotProps(conf)
+    }) : _vm._e()] : [_vm._l(conf, function (subConf) {
+      return [_vm.showCol(subConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+        "model": _vm.slotProps(subConf)
+      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._ssrNode(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {
-          value: _vm.fields[subFieldConf.model],
+          value: _vm.fields[subConf.model],
           callback: function callback($$v) {
-            _vm.$set(_vm.fields, subFieldConf.model, $$v);
+            _vm.$set(_vm.fields, subConf.model, $$v);
           },
-          expression: "fields[subFieldConf.model]"
+          expression: "fields[subConf.model]"
         }
-      }, 'component', _vm.componentProps(subFieldConf), false), _vm.componentEvents(subFieldConf)), [_vm._t(subFieldConf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(subFieldConf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subFieldConf) ? _vm._t(_vm.SLOT.afterCol, null, {
-        "model": _vm.slotProps(subFieldConf)
+      }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
+        "model": _vm.slotProps(subConf)
       }) : _vm._e()];
-    })]], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(fieldConf) ? _vm._t(_vm.SLOT.afterRow, null, {
-      "model": _vm.slotProps(fieldConf)
+    })]], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
+      "model": _vm.slotProps(conf)
     }) : _vm._e()];
   })], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, _vm.CLASS.footer) + ">", "</div>", [_vm._t(_vm.SLOT.footer)], 2)], 2);
 };
@@ -770,7 +770,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-481d5895";
+var __vue_module_identifier__ = "data-v-435c269f";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
