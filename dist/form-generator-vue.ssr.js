@@ -496,8 +496,8 @@ var FIELD = {
       }
 
       var component = this.components.find(function (_ref2) {
-        var type = _ref2.type;
-        return type.includes(fieldType);
+        var types = _ref2.types;
+        return types.includes(fieldType);
       });
       var componentName = component === null || component === void 0 ? void 0 : component.name;
 
@@ -770,7 +770,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-435c269f";
+var __vue_module_identifier__ = "data-v-b830074a";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

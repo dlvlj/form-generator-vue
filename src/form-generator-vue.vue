@@ -284,7 +284,7 @@ export default {
       if (UTILS.isStr(fieldConf?.[FIELD.component])) {
         return fieldConf?.[FIELD.component];
       }
-      const component = this.components.find(({ type }) => type.includes(fieldType));
+      const component = this.components.find(({ types }) => types.includes(fieldType));
       const componentName = component?.name;
       if (!componentName) {
         console.error(

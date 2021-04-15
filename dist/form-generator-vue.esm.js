@@ -400,8 +400,8 @@ var script = {
       }
 
       const component = this.components.find(({
-        type
-      }) => type.includes(fieldType));
+        types
+      }) => types.includes(fieldType));
       const componentName = component === null || component === void 0 ? void 0 : component.name;
 
       if (!componentName) {
