@@ -339,13 +339,13 @@ var script = {
     },
 
     slotProps(fieldConf) {
-      if (UTILS.isArr()) {
+      if (UTILS.isArr(fieldConf)) {
         return fieldConf.map(({
           model
         }) => model);
       }
 
-      return fieldConf.model;
+      return [fieldConf.model];
     },
 
     componentProps(fieldConf) {

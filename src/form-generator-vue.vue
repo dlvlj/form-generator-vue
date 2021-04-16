@@ -232,10 +232,10 @@ export default {
       return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
     },
     slotProps(fieldConf) {
-      if (UTILS.isArr()) {
+      if (UTILS.isArr(fieldConf)) {
         return fieldConf.map(({ model }) => model);
       }
-      return fieldConf.model;
+      return [fieldConf.model];
     },
     componentProps(fieldConf) {
       const componentName = this.componentName(fieldConf);

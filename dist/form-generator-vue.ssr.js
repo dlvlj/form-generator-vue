@@ -438,14 +438,14 @@ var FIELD = {
       return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
     },
     slotProps: function slotProps(fieldConf) {
-      if (UTILS.isArr()) {
+      if (UTILS.isArr(fieldConf)) {
         return fieldConf.map(function (_ref) {
           var model = _ref.model;
           return model;
         });
       }
 
-      return fieldConf.model;
+      return [fieldConf.model];
     },
     componentProps: function componentProps(fieldConf) {
       var componentName = this.componentName(fieldConf);
@@ -770,7 +770,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-b830074a";
+var __vue_module_identifier__ = "data-v-3e1bb6e2";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
