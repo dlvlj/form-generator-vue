@@ -281,16 +281,17 @@ export default {
     },
     componentName(fieldConf) {
       const fieldType = fieldConf?.vBind?.type || FIELD.type.text;
-      if (UTILS.isStr(fieldConf?.[FIELD.component])) {
-        return fieldConf?.[FIELD.component];
-      }
+      // if (UTILS.isStr(fieldConf?.[FIELD.component])) {
+      //   return fieldConf?.[FIELD.component];
+      // }
       const component = this.components.find(({ types }) => types.includes(fieldType));
       const componentName = component?.name;
-      if (!componentName) {
-        console.error(
-          `Component cannot be rendered. Component for type "${fieldType}" is not found in components prop.`,
-        );
-      }
+      // if (!componentName) {
+      //   console.error(
+      //     `Component cannot be rendered. Component for type
+      //     "${fieldType}" is not found in components prop.`,
+      //   );
+      // }
       return componentName;
     },
     fieldConf(model) {

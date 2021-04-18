@@ -495,21 +495,20 @@ var FIELD = {
     componentName: function componentName(fieldConf) {
       var _fieldConf$vBind3;
 
-      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
-
-      if (UTILS.isStr(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component])) {
-        return fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component];
-      }
+      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text; // if (UTILS.isStr(fieldConf?.[FIELD.component])) {
+      //   return fieldConf?.[FIELD.component];
+      // }
 
       var component = this.components.find(function (_ref2) {
         var types = _ref2.types;
         return types.includes(fieldType);
       });
-      var componentName = component === null || component === void 0 ? void 0 : component.name;
-
-      if (!componentName) {
-        console.error("Component cannot be rendered. Component for type \"".concat(fieldType, "\" is not found in components prop."));
-      }
+      var componentName = component === null || component === void 0 ? void 0 : component.name; // if (!componentName) {
+      //   console.error(
+      //     `Component cannot be rendered. Component for type
+      //     "${fieldType}" is not found in components prop.`,
+      //   );
+      // }
 
       return componentName;
     },
@@ -776,7 +775,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-7cdb0abc";
+var __vue_module_identifier__ = "data-v-c9eb46f8";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

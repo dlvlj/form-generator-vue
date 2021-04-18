@@ -399,20 +399,19 @@ var script = {
     componentName(fieldConf) {
       var _fieldConf$vBind3;
 
-      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
-
-      if (UTILS.isStr(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component])) {
-        return fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component];
-      }
+      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text; // if (UTILS.isStr(fieldConf?.[FIELD.component])) {
+      //   return fieldConf?.[FIELD.component];
+      // }
 
       const component = this.components.find(({
         types
       }) => types.includes(fieldType));
-      const componentName = component === null || component === void 0 ? void 0 : component.name;
-
-      if (!componentName) {
-        console.error(`Component cannot be rendered. Component for type "${fieldType}" is not found in components prop.`);
-      }
+      const componentName = component === null || component === void 0 ? void 0 : component.name; // if (!componentName) {
+      //   console.error(
+      //     `Component cannot be rendered. Component for type
+      //     "${fieldType}" is not found in components prop.`,
+      //   );
+      // }
 
       return componentName;
     },
