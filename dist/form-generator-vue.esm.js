@@ -352,11 +352,14 @@ var script = {
       var _fieldConf$vBind;
 
       const componentName = this.componentName(fieldConf);
-      const component = this.componentData(componentName);
-      const errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
-      return { ...fieldConf.vBind,
-        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text,
-        [errorPropName]: this.errors[fieldConf.model]
+      const componentData = this.componentData(componentName); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+
+      const errorPropName = componentData === null || componentData === void 0 ? void 0 : componentData.errorProp;
+      return { ...(errorPropName ? {
+          [errorPropName]: this.errors[fieldConf.model]
+        } : {}),
+        ...fieldConf.vBind,
+        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text
       };
     },
 
@@ -397,7 +400,7 @@ var script = {
     },
 
     componentName(fieldConf) {
-      var _fieldConf$vBind3;
+      var _fieldConf$vBind3, _fieldConf$vBind4;
 
       const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text; // if (UTILS.isStr(fieldConf?.[FIELD.component])) {
       //   return fieldConf?.[FIELD.component];
@@ -406,7 +409,7 @@ var script = {
       const component = this.components.find(({
         types
       }) => types.includes(fieldType));
-      const componentName = component === null || component === void 0 ? void 0 : component.name; // if (!componentName) {
+      const componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name); // if (!componentName) {
       //   console.error(
       //     `Component cannot be rendered. Component for type
       //     "${fieldType}" is not found in components prop.`,

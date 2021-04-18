@@ -451,11 +451,12 @@ var FIELD = {
       var _fieldConf$vBind;
 
       var componentName = this.componentName(fieldConf);
-      var component = this.componentData(componentName);
-      var errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
-      return _objectSpread2(_objectSpread2({}, fieldConf.vBind), {}, _defineProperty({
+      var componentData = this.componentData(componentName); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+
+      var errorPropName = componentData === null || componentData === void 0 ? void 0 : componentData.errorProp;
+      return _objectSpread2(_objectSpread2(_objectSpread2({}, errorPropName ? _defineProperty({}, errorPropName, this.errors[fieldConf.model]) : {}), fieldConf.vBind), {}, {
         type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text
-      }, errorPropName, this.errors[fieldConf.model]));
+      });
     },
     removeAllErrors: function removeAllErrors() {
       var _this6 = this;
@@ -493,17 +494,17 @@ var FIELD = {
       return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn] : {};
     },
     componentName: function componentName(fieldConf) {
-      var _fieldConf$vBind3;
+      var _fieldConf$vBind3, _fieldConf$vBind4;
 
       var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text; // if (UTILS.isStr(fieldConf?.[FIELD.component])) {
       //   return fieldConf?.[FIELD.component];
       // }
 
-      var component = this.components.find(function (_ref2) {
-        var types = _ref2.types;
+      var component = this.components.find(function (_ref3) {
+        var types = _ref3.types;
         return types.includes(fieldType);
       });
-      var componentName = component === null || component === void 0 ? void 0 : component.name; // if (!componentName) {
+      var componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name); // if (!componentName) {
       //   console.error(
       //     `Component cannot be rendered. Component for type
       //     "${fieldType}" is not found in components prop.`,
@@ -775,7 +776,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-c9eb46f8";
+var __vue_module_identifier__ = "data-v-8a114d6e";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

@@ -239,12 +239,13 @@ export default {
     },
     componentProps(fieldConf) {
       const componentName = this.componentName(fieldConf);
-      const component = this.componentData(componentName);
-      const errorPropName = fieldConf?.errorProp || component?.errorProp || 'errorMessages';
+      const componentData = this.componentData(componentName);
+      // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+      const errorPropName = componentData?.errorProp;
       return {
+        ...(errorPropName ? { [errorPropName]: this.errors[fieldConf.model] } : {}),
         ...fieldConf.vBind,
         type: fieldConf?.vBind?.type || FIELD.type.text,
-        [errorPropName]: this.errors[fieldConf.model]
       };
     },
     removeAllErrors() {
@@ -285,7 +286,7 @@ export default {
       //   return fieldConf?.[FIELD.component];
       // }
       const component = this.components.find(({ types }) => types.includes(fieldType));
-      const componentName = component?.name;
+      const componentName = fieldConf?.vBind?.is || component?.name;
       // if (!componentName) {
       //   console.error(
       //     `Component cannot be rendered. Component for type
