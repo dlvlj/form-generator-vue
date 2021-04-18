@@ -152,6 +152,8 @@ const SLOT = {
   beforeComponent: v => `before-${v}`,
   afterComponent: v => `after-${v}`,
   beforeRow: 'before-row',
+  rowStart: 'row-start',
+  rowend: 'row-end',
   afterRow: 'after-row',
   beforeCol: 'before-col',
   afterCol: 'after-col'
@@ -624,7 +626,9 @@ var __vue_render__ = function () {
     }) : _vm._e(), _vm._v(" "), _vm.showRow(conf) ? _c('div', {
       key: i,
       class: [_vm.CLASS.row, _vm.classes.row]
-    }, [!_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+    }, [_vm._t(_vm.SLOT.rowStart, null, {
+      "models": _vm.slotProps(conf)
+    }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _c('div', {
       key: conf.model,
@@ -658,7 +662,9 @@ var __vue_render__ = function () {
       }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
         "models": _vm.slotProps(subConf)
       }) : _vm._e()];
-    })]], 2) : _vm._e(), _vm._v(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
+    })], _vm._v(" "), _vm._t(_vm.SLOT.rowEnd, null, {
+      "models": _vm.slotProps(conf)
+    })], 2) : _vm._e(), _vm._v(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e()];
   })], 2), _vm._v(" "), _c('div', {

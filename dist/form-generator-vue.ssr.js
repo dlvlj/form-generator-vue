@@ -253,6 +253,8 @@ var SLOT = {
     return "after-".concat(v);
   },
   beforeRow: 'before-row',
+  rowStart: 'row-start',
+  rowend: 'row-end',
   afterRow: 'after-row',
   beforeCol: 'before-col',
   afterCol: 'after-col'
@@ -733,7 +735,9 @@ var __vue_render__ = function __vue_render__() {
   }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.allFieldsArray, function (conf, i) {
     return [_vm.showRow(conf) ? _vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [!_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [_vm._t(_vm.SLOT.rowStart, null, {
+      "models": _vm.slotProps(conf)
+    }), _vm._ssrNode(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(conf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, conf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._ssrNode(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
@@ -761,7 +765,9 @@ var __vue_render__ = function __vue_render__() {
       }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
         "models": _vm.slotProps(subConf)
       }) : _vm._e()];
-    })]], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
+    })], _vm._ssrNode(" "), _vm._t(_vm.SLOT.rowEnd, null, {
+      "models": _vm.slotProps(conf)
+    })], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e()];
   })], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, _vm.CLASS.footer) + ">", "</div>", [_vm._t(_vm.SLOT.footer)], 2)], 2);
@@ -776,7 +782,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-31563a74";
+var __vue_module_identifier__ = "data-v-347d2889";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

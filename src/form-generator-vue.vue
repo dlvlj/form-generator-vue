@@ -21,6 +21,10 @@
           :key="i"
           :class="[CLASS.row, classes.row]"
         >
+          <slot
+            :name="SLOT.rowStart"
+            :models="slotProps(conf)"
+          />
           <!-- COL -->
           <template v-if="!UTILS.isArr(conf)">
             <slot
@@ -90,6 +94,10 @@
               />
             </template>
           </template>
+          <slot
+            :name="SLOT.rowEnd"
+            :models="slotProps(conf)"
+          />
         </div>
         <slot
           v-if="showRow(conf)"
