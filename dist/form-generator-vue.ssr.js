@@ -270,7 +270,7 @@ var VMODEL = {
 var FIELD = {
   av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
-  events: 'v-on',
+  vOn: 'vOn',
   component: 'component',
   type: {
     text: 'text',
@@ -486,7 +486,7 @@ var FIELD = {
       }
     },
     componentEvents: function componentEvents(fieldConf) {
-      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events] : {};
+      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn] : {};
     },
     componentName: function componentName(fieldConf) {
       var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) || FIELD.type.text;
@@ -770,7 +770,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-00c32b87";
+var __vue_module_identifier__ = "data-v-795515c2";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

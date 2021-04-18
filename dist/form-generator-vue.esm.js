@@ -169,7 +169,7 @@ const VMODEL = {
 const FIELD = {
   av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
-  events: 'v-on',
+  vOn: 'vOn',
   component: 'component',
   type: {
     text: 'text',
@@ -389,7 +389,7 @@ var script = {
     },
 
     componentEvents(fieldConf) {
-      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.events] : {};
+      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn] : {};
     },
 
     componentName(fieldConf) {

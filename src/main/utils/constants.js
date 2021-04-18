@@ -34,7 +34,7 @@ export const VMODEL = {
 export const FIELD = {
   av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
-  events: 'v-on',
+  vOn: 'vOn',
   component: 'component',
   type: {
     text: 'text',

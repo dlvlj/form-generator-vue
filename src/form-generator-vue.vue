@@ -275,8 +275,8 @@ export default {
       }
     },
     componentEvents(fieldConf) {
-      return UTILS.isObj(fieldConf?.[FIELD.events])
-        ? fieldConf?.[FIELD.events]
+      return UTILS.isObj(fieldConf?.[FIELD.vOn])
+        ? fieldConf?.[FIELD.vOn]
         : {};
     },
     componentName(fieldConf) {
