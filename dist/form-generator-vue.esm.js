@@ -180,7 +180,7 @@ const FIELD = {
     disabled: 'disabled',
     hidden: 'hidden'
   },
-  validator: 'validator'
+  validation: 'validation'
 };
 
 //
@@ -450,9 +450,9 @@ var script = {
     fieldValidation(fieldConf) {
       const NO_ERROR = '';
       const fieldRequired = this.fieldRequired(fieldConf);
-      const validator = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.validator;
+      const validation = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.validation];
       const avField = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv;
-      const error = this.submit || avField ? UTILS.handleFunc(validator) || NO_ERROR : NO_ERROR;
+      const error = this.submit || avField ? UTILS.handleFunc(validation) || NO_ERROR : NO_ERROR;
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, error);

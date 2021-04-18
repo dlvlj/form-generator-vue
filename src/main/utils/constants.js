@@ -45,5 +45,5 @@ export const FIELD = {
     disabled: 'disabled',
     hidden: 'hidden'
   },
-  validator: 'validator'
+  validation: 'validation'
 };

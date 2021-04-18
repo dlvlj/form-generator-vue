@@ -281,7 +281,7 @@ var FIELD = {
     disabled: 'disabled',
     hidden: 'hidden'
   },
-  validator: 'validator'
+  validation: 'validation'
 };var script = {
   mixins: [props],
   emits: ['input'],
@@ -540,9 +540,9 @@ var FIELD = {
     fieldValidation: function fieldValidation(fieldConf) {
       var NO_ERROR = '';
       var fieldRequired = this.fieldRequired(fieldConf);
-      var validator = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.validator;
+      var validation = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.validation];
       var avField = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv;
-      var error = this.submit || avField ? UTILS.handleFunc(validator) || NO_ERROR : NO_ERROR;
+      var error = this.submit || avField ? UTILS.handleFunc(validation) || NO_ERROR : NO_ERROR;
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, error);
@@ -776,7 +776,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-8a114d6e";
+var __vue_module_identifier__ = "data-v-31563a74";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
