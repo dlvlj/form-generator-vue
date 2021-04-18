@@ -25,75 +25,77 @@
             :name="SLOT.rowStart"
             :models="slotProps(conf)"
           />
-          <!-- COL -->
-          <template v-if="!UTILS.isArr(conf)">
-            <slot
-              v-if="showCol(conf)"
-              :name="SLOT.beforeCol"
-              :models="slotProps(conf)"
-            />
-            <div
-              v-if="showCol(conf)"
-              :key="conf.model"
-              :class="[
-                CLASS.col,
-                conf.model,
-                classes.col,
-              ]"
-            >
-              <slot :name="SLOT.beforeComponent(conf.model)" />
-              <component
-                :is="componentName(conf)"
-                v-model="fields[conf.model]"
-                v-bind="componentProps(conf)"
-                v-on="componentEvents(conf)"
-              >
-                <slot :name="conf.model" />
-              </component>
-              <slot :name="SLOT.afterComponent(conf.model)" />
-            </div>
-            <slot
-              v-if="showCol(conf)"
-              :name="SLOT.afterCol"
-              :models="slotProps(conf)"
-            />
-          </template>
-
-          <!-- MULTIPLE COLS -->
-          <template v-else>
-            <template v-for="subConf in conf">
+          <div :class="[CLASS.colContainer]">
+            <!-- COL -->
+            <template v-if="!UTILS.isArr(conf)">
               <slot
-                v-if="showCol(subConf)"
+                v-if="showCol(conf)"
                 :name="SLOT.beforeCol"
-                :models="slotProps(subConf)"
+                :models="slotProps(conf)"
               />
               <div
-                v-if="showCol(subConf)"
-                :key="subConf.model"
+                v-if="showCol(conf)"
+                :key="conf.model"
                 :class="[
                   CLASS.col,
-                  subConf.model,
+                  conf.model,
                   classes.col,
                 ]"
               >
-                <slot :name="SLOT.beforeComponent(subConf.model)" />
+                <slot :name="SLOT.beforeComponent(conf.model)" />
                 <component
-                  :is="componentName(subConf)"
-                  v-model="fields[subConf.model]"
-                  v-bind="componentProps(subConf)"
-                  v-on="componentEvents(subConf)"
+                  :is="componentName(conf)"
+                  v-model="fields[conf.model]"
+                  v-bind="componentProps(conf)"
+                  v-on="componentEvents(conf)"
                 >
-                  <slot :name="subConf.model" />
+                  <slot :name="conf.model" />
                 </component>
-                <slot :name="SLOT.afterComponent(subConf.model)" />
+                <slot :name="SLOT.afterComponent(conf.model)" />
               </div>
               <slot
-                v-if="showCol(subConf)"
+                v-if="showCol(conf)"
                 :name="SLOT.afterCol"
-                :models="slotProps(subConf)"
+                :models="slotProps(conf)"
               />
             </template>
-          </template>
+
+            <!-- MULTIPLE COLS -->
+            <template v-else>
+              <template v-for="subConf in conf">
+                <slot
+                  v-if="showCol(subConf)"
+                  :name="SLOT.beforeCol"
+                  :models="slotProps(subConf)"
+                />
+                <div
+                  v-if="showCol(subConf)"
+                  :key="subConf.model"
+                  :class="[
+                    CLASS.col,
+                    subConf.model,
+                    classes.col,
+                  ]"
+                >
+                  <slot :name="SLOT.beforeComponent(subConf.model)" />
+                  <component
+                    :is="componentName(subConf)"
+                    v-model="fields[subConf.model]"
+                    v-bind="componentProps(subConf)"
+                    v-on="componentEvents(subConf)"
+                  >
+                    <slot :name="subConf.model" />
+                  </component>
+                  <slot :name="SLOT.afterComponent(subConf.model)" />
+                </div>
+                <slot
+                  v-if="showCol(subConf)"
+                  :name="SLOT.afterCol"
+                  :models="slotProps(subConf)"
+                />
+              </template>
+            </template>
+          </div>
           <slot
             :name="SLOT.rowEnd"
             :models="slotProps(conf)"

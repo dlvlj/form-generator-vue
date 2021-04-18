@@ -5,7 +5,8 @@ export const CLASS = {
   body: 'fgv-form__body',
   footer: 'fgv-form__footer',
   row: 'fgv-form__body__row',
-  col: 'fgv-form__body__row__col',
+  colContainer: 'fgv-form__body__row__col-container',
+  col: 'fgv-form__body__row__col-container__col',
 };
 
 export const SLOT = {
