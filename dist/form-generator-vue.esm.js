@@ -175,7 +175,7 @@ const FIELD = {
     text: 'text',
     number: 'number'
   },
-  props: {
+  vBind: {
     required: 'required',
     disabled: 'disabled',
     hidden: 'hidden'
@@ -352,7 +352,7 @@ var script = {
       const componentName = this.componentName(fieldConf);
       const component = this.componentData(componentName);
       const errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
-      return { ...fieldConf.props,
+      return { ...fieldConf.vBind,
         type: fieldConf.type || FIELD.type.text,
         [errorPropName]: this.errors[fieldConf.model]
       };
@@ -417,15 +417,15 @@ var script = {
 
     fieldDisabled(fieldConf) {
       const DISABLED = true;
-      const hasDisabledProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.disabled in fieldConf.props;
-      const fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.disabled]) : !DISABLED;
+      const hasDisabledProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind;
+      const fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled]) : !DISABLED;
       return this.disabled || fieldDisabled;
     },
 
     fieldRequired(fieldConf) {
       const REQUIRED = true;
-      const hasRequiredProp = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.required in fieldConf.props;
-      const fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.required]) : !REQUIRED; // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
+      const hasRequiredProp = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.required in fieldConf.vBind;
+      const fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED; // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
       //   ? fieldRequired
       //   : !REQUIRED;
 
@@ -434,8 +434,8 @@ var script = {
 
     fieldHidden(fieldConf) {
       const HIDDEN = true;
-      const hasHiddenProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.hidden in fieldConf.props;
-      const fieldHidden = hasHiddenProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.hidden]) : !HIDDEN;
+      const hasHiddenProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind;
+      const fieldHidden = hasHiddenProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden]) : !HIDDEN;
       return fieldHidden;
     },
 

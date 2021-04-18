@@ -276,7 +276,7 @@ var FIELD = {
     text: 'text',
     number: 'number'
   },
-  props: {
+  vBind: {
     required: 'required',
     disabled: 'disabled',
     hidden: 'hidden'
@@ -451,7 +451,7 @@ var FIELD = {
       var componentName = this.componentName(fieldConf);
       var component = this.componentData(componentName);
       var errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
-      return _objectSpread2(_objectSpread2({}, fieldConf.props), {}, _defineProperty({
+      return _objectSpread2(_objectSpread2({}, fieldConf.vBind), {}, _defineProperty({
         type: fieldConf.type || FIELD.type.text
       }, errorPropName, this.errors[fieldConf.model]));
     },
@@ -512,14 +512,14 @@ var FIELD = {
     },
     fieldDisabled: function fieldDisabled(fieldConf) {
       var DISABLED = true;
-      var hasDisabledProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.disabled in fieldConf.props;
-      var fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.disabled]) : !DISABLED;
+      var hasDisabledProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind;
+      var fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled]) : !DISABLED;
       return this.disabled || fieldDisabled;
     },
     fieldRequired: function fieldRequired(fieldConf) {
       var REQUIRED = true;
-      var hasRequiredProp = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.required in fieldConf.props;
-      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.required]) : !REQUIRED; // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
+      var hasRequiredProp = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.required in fieldConf.vBind;
+      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED; // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
       //   ? fieldRequired
       //   : !REQUIRED;
 
@@ -527,8 +527,8 @@ var FIELD = {
     },
     fieldHidden: function fieldHidden(fieldConf) {
       var HIDDEN = true;
-      var hasHiddenProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.props) && FIELD.props.hidden in fieldConf.props;
-      var fieldHidden = hasHiddenProp ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.hidden]) : !HIDDEN;
+      var hasHiddenProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind;
+      var fieldHidden = hasHiddenProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden]) : !HIDDEN;
       return fieldHidden;
     },
     fieldValidation: function fieldValidation(fieldConf) {
@@ -770,7 +770,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-795515c2";
+var __vue_module_identifier__ = "data-v-7711ba61";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

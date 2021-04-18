@@ -40,7 +40,7 @@ export const FIELD = {
     text: 'text',
     number: 'number',
   },
-  props: {
+  vBind: {
     required: 'required',
     disabled: 'disabled',
     hidden: 'hidden'

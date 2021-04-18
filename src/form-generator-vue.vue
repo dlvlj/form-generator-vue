@@ -242,7 +242,7 @@ export default {
       const component = this.componentData(componentName);
       const errorPropName = fieldConf?.errorProp || component?.errorProp || 'errorMessages';
       return {
-        ...fieldConf.props,
+        ...fieldConf.vBind,
         type: fieldConf.type || FIELD.type.text,
         [errorPropName]: this.errors[fieldConf.model]
       };
@@ -298,18 +298,18 @@ export default {
     },
     fieldDisabled(fieldConf) {
       const DISABLED = true;
-      const hasDisabledProp = UTILS.isObj(fieldConf?.props)
-       && FIELD.props.disabled in fieldConf.props;
+      const hasDisabledProp = UTILS.isObj(fieldConf?.vBind)
+       && FIELD.vBind.disabled in fieldConf.vBind;
       const fieldDisabled = hasDisabledProp
-        ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.disabled])
+        ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled])
         : !DISABLED;
       return this.disabled || fieldDisabled;
     },
     fieldRequired(fieldConf) {
       const REQUIRED = true;
-      const hasRequiredProp = fieldConf?.props && FIELD.props.required in fieldConf.props;
+      const hasRequiredProp = fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind;
       const fieldRequired = hasRequiredProp
-        ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.required]) : !REQUIRED;
+        ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED;
       // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
       //   ? fieldRequired
       //   : !REQUIRED;
@@ -317,10 +317,10 @@ export default {
     },
     fieldHidden(fieldConf) {
       const HIDDEN = true;
-      const hasHiddenProp = UTILS.isObj(fieldConf?.props)
-       && FIELD.props.hidden in fieldConf.props;
+      const hasHiddenProp = UTILS.isObj(fieldConf?.vBind)
+       && FIELD.vBind.hidden in fieldConf.vBind;
       const fieldHidden = hasHiddenProp
-        ? UTILS.handleFuncOrBool(fieldConf.props[FIELD.props.hidden])
+        ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden])
         : !HIDDEN;
       return fieldHidden;
     },
