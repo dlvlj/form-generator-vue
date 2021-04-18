@@ -612,12 +612,12 @@ var __vue_render__ = function () {
     class: [_vm.CLASS.body]
   }, [_vm._l(_vm.allFieldsArray, function (conf, i) {
     return [_vm.showRow(conf) ? _vm._t(_vm.SLOT.beforeRow, null, {
-      "model": _vm.slotProps(conf)
+      "models": _vm.slotProps(conf)
     }) : _vm._e(), _vm._v(" "), _vm.showRow(conf) ? _c('div', {
       key: i,
       class: [_vm.CLASS.row, _vm.classes.row]
     }, [!_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
-      "model": _vm.slotProps(conf)
+      "models": _vm.slotProps(conf)
     }) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _c('div', {
       key: conf.model,
       class: [_vm.CLASS.col, conf.model, _vm.classes.col]
@@ -631,10 +631,10 @@ var __vue_render__ = function () {
         expression: "fields[conf.model]"
       }
     }, 'component', _vm.componentProps(conf), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
-      "model": _vm.slotProps(conf)
+      "models": _vm.slotProps(conf)
     }) : _vm._e()] : [_vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
-        "model": _vm.slotProps(subConf)
+        "models": _vm.slotProps(subConf)
       }) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _c('div', {
         key: subConf.model,
         class: [_vm.CLASS.col, subConf.model, _vm.classes.col]
@@ -648,10 +648,10 @@ var __vue_render__ = function () {
           expression: "fields[subConf.model]"
         }
       }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
-        "model": _vm.slotProps(subConf)
+        "models": _vm.slotProps(subConf)
       }) : _vm._e()];
     })]], 2) : _vm._e(), _vm._v(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
-      "model": _vm.slotProps(conf)
+      "models": _vm.slotProps(conf)
     }) : _vm._e()];
   })], 2), _vm._v(" "), _c('div', {
     class: _vm.CLASS.footer

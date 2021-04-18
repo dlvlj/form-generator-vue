@@ -13,7 +13,7 @@
         <slot
           v-if="showRow(conf)"
           :name="SLOT.beforeRow"
-          :model="slotProps(conf)"
+          :models="slotProps(conf)"
         />
         <!-- ROW -->
         <div
@@ -26,7 +26,7 @@
             <slot
               v-if="showCol(conf)"
               :name="SLOT.beforeCol"
-              :model="slotProps(conf)"
+              :models="slotProps(conf)"
             />
             <div
               v-if="showCol(conf)"
@@ -51,7 +51,7 @@
             <slot
               v-if="showCol(conf)"
               :name="SLOT.afterCol"
-              :model="slotProps(conf)"
+              :models="slotProps(conf)"
             />
           </template>
 
@@ -61,7 +61,7 @@
               <slot
                 v-if="showCol(subConf)"
                 :name="SLOT.beforeCol"
-                :model="slotProps(subConf)"
+                :models="slotProps(subConf)"
               />
               <div
                 v-if="showCol(subConf)"
@@ -86,7 +86,7 @@
               <slot
                 v-if="showCol(subConf)"
                 :name="SLOT.afterCol"
-                :model="slotProps(subConf)"
+                :models="slotProps(subConf)"
               />
             </template>
           </template>
@@ -94,7 +94,7 @@
         <slot
           v-if="showRow(conf)"
           :name="SLOT.afterRow"
-          :model="slotProps(conf)"
+          :models="slotProps(conf)"
         />
       </template>
     </div>
