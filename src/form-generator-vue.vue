@@ -243,7 +243,7 @@ export default {
       const errorPropName = fieldConf?.errorProp || component?.errorProp || 'errorMessages';
       return {
         ...fieldConf.vBind,
-        type: fieldConf.type || FIELD.type.text,
+        type: fieldConf?.vBind?.type || FIELD.type.text,
         [errorPropName]: this.errors[fieldConf.model]
       };
     },
@@ -270,7 +270,7 @@ export default {
       if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
         return;
       }
-      if (fieldConf?.type === FIELD.type.number && this.fields[fieldConf.model]) {
+      if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
         this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
@@ -280,7 +280,7 @@ export default {
         : {};
     },
     componentName(fieldConf) {
-      const fieldType = fieldConf?.type || FIELD.type.text;
+      const fieldType = fieldConf?.vBind?.type || FIELD.type.text;
       if (UTILS.isStr(fieldConf?.[FIELD.component])) {
         return fieldConf?.[FIELD.component];
       }

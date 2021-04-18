@@ -448,11 +448,13 @@ var FIELD = {
       return [fieldConf.model];
     },
     componentProps: function componentProps(fieldConf) {
+      var _fieldConf$vBind;
+
       var componentName = this.componentName(fieldConf);
       var component = this.componentData(componentName);
       var errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
       return _objectSpread2(_objectSpread2({}, fieldConf.vBind), {}, _defineProperty({
-        type: fieldConf.type || FIELD.type.text
+        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text
       }, errorPropName, this.errors[fieldConf.model]));
     },
     removeAllErrors: function removeAllErrors() {
@@ -477,11 +479,13 @@ var FIELD = {
       });
     },
     typeCoercion: function typeCoercion(fieldConf) {
+      var _fieldConf$vBind2;
+
       if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
         return;
       }
 
-      if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) === FIELD.type.number && this.fields[fieldConf.model]) {
+      if ((fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.type) === FIELD.type.number && this.fields[fieldConf.model]) {
         this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
@@ -489,7 +493,9 @@ var FIELD = {
       return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn] : {};
     },
     componentName: function componentName(fieldConf) {
-      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) || FIELD.type.text;
+      var _fieldConf$vBind3;
+
+      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
 
       if (UTILS.isStr(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component])) {
         return fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component];
@@ -770,7 +776,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-7711ba61";
+var __vue_module_identifier__ = "data-v-7cdb0abc";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

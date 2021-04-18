@@ -349,11 +349,13 @@ var script = {
     },
 
     componentProps(fieldConf) {
+      var _fieldConf$vBind;
+
       const componentName = this.componentName(fieldConf);
       const component = this.componentData(componentName);
       const errorPropName = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.errorProp) || (component === null || component === void 0 ? void 0 : component.errorProp) || 'errorMessages';
       return { ...fieldConf.vBind,
-        type: fieldConf.type || FIELD.type.text,
+        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text,
         [errorPropName]: this.errors[fieldConf.model]
       };
     },
@@ -379,11 +381,13 @@ var script = {
     },
 
     typeCoercion(fieldConf) {
+      var _fieldConf$vBind2;
+
       if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
         return;
       }
 
-      if ((fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) === FIELD.type.number && this.fields[fieldConf.model]) {
+      if ((fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.type) === FIELD.type.number && this.fields[fieldConf.model]) {
         this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
@@ -393,7 +397,9 @@ var script = {
     },
 
     componentName(fieldConf) {
-      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.type) || FIELD.type.text;
+      var _fieldConf$vBind3;
+
+      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
 
       if (UTILS.isStr(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component])) {
         return fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.component];
