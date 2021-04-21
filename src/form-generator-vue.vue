@@ -339,10 +339,10 @@ export default {
     fieldValidation(fieldConf) {
       const NO_ERROR = '';
       const fieldRequired = this.fieldRequired(fieldConf);
-      const validation = fieldConf?.[FIELD.validation];
+      const rules = fieldConf?.[FIELD.rules];
       const avField = fieldConf?.[FIELD.av] || this.globalAv;
       const error = this.submit || avField
-        ? UTILS.handleFunc(validation) || NO_ERROR
+        ? UTILS.handleFunc(rules) || NO_ERROR
         : NO_ERROR;
 
       if (!fieldRequired) {
