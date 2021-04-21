@@ -97,6 +97,80 @@ function _objectSpread2(target) {
   }
 
   return target;
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _createForOfIteratorHelper(o, allowArrayLike) {
+  var it;
+
+  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
+      var i = 0;
+
+      var F = function () {};
+
+      return {
+        s: F,
+        n: function () {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        },
+        e: function (e) {
+          throw e;
+        },
+        f: F
+      };
+    }
+
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var normalCompletion = true,
+      didErr = false,
+      err;
+  return {
+    s: function () {
+      it = o[Symbol.iterator]();
+    },
+    n: function () {
+      var step = it.next();
+      normalCompletion = step.done;
+      return step;
+    },
+    e: function (e) {
+      didErr = true;
+      err = e;
+    },
+    f: function () {
+      try {
+        if (!normalCompletion && it.return != null) it.return();
+      } finally {
+        if (didErr) throw err;
+      }
+    }
+  };
 }var props = {
   props: {
     value: {
@@ -540,16 +614,27 @@ var FIELD = {
       // valid return values: string, bool
       var res; // eslint-disable-next-line no-restricted-syntax
 
-      for (var rule in rules) {
-        if (UTILS.isFunc(rule)) {
-          res = UTILS.handleFunc(rules, val);
-        } else {
-          res = rule;
-        }
+      var _iterator = _createForOfIteratorHelper(rules),
+          _step;
 
-        if (!res) {
-          break;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var rule = _step.value;
+
+          if (UTILS.isFunc(rule)) {
+            res = UTILS.handleFunc(rule, val);
+          } else {
+            res = rule;
+          }
+
+          if (!res) {
+            break;
+          }
         }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
       }
 
       return res;
@@ -557,11 +642,11 @@ var FIELD = {
     fieldValidation: function fieldValidation(fieldConf) {
       var NO_ERR = '';
       var fieldRequired = this.fieldRequired(fieldConf);
-      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runRules(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model], NO_ERR) : NO_ERR;
+      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runRules(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR;
 
       if (!fieldRequired) {
-        if (!this.submit) this.setError(fieldConf.model, err);
-      } else this.setError(fieldConf.model, err);
+        if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
+      } else this.setError(fieldConf.model, err, NO_ERR);
 
       if (this.logs && this.submit) {
         console.log(fieldConf.model, {
@@ -795,7 +880,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-bf86642c";
+var __vue_module_identifier__ = "data-v-56674d6a";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

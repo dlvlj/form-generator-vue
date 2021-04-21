@@ -326,9 +326,9 @@ export default {
     runRules(rules, val) { // valid return values: string, bool
       let res;
       // eslint-disable-next-line no-restricted-syntax
-      for (const rule in rules) {
+      for (const rule of rules) {
         if (UTILS.isFunc(rule)) {
-          res = UTILS.handleFunc(rules, val);
+          res = UTILS.handleFunc(rule, val);
         } else { res = rule; }
 
         if (!res) {
@@ -341,12 +341,12 @@ export default {
       const NO_ERR = '';
       const fieldRequired = this.fieldRequired(fieldConf);
       const err = this.submit || fieldConf?.[FIELD.av] || this.globalAv
-        ? this.runRules(fieldConf?.[FIELD.rules], this.fields[fieldConf.model], NO_ERR)
+        ? this.runRules(fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
         : NO_ERR;
 
       if (!fieldRequired) {
-        if (!this.submit) this.setError(fieldConf.model, err);
-      } else this.setError(fieldConf.model, err);
+        if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
+      } else this.setError(fieldConf.model, err, NO_ERR);
 
       if (this.logs && this.submit) {
         console.log(fieldConf.model, {
