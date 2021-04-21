@@ -267,7 +267,7 @@ export default {
       });
     },
     setError(model, err, noErr) {
-      if ((UTILS.isBool(err) && err) || !err) {
+      if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
         this.errors[model] = noErr;
         return;
       }
@@ -324,13 +324,18 @@ export default {
         : !HIDDEN;
     },
     runRules(rules, val) { // valid return values: string, bool
+      let res;
       // eslint-disable-next-line no-restricted-syntax
       for (const rule in rules) {
         if (UTILS.isFunc(rule)) {
-          return UTILS.handleFunc(rules, val);
+          res = UTILS.handleFunc(rules, val);
+        } else { res = rule; }
+
+        if (!res) {
+          break;
         }
-        return rule;
       }
+      return res;
     },
     fieldValidation(fieldConf) {
       const NO_ERR = '';
