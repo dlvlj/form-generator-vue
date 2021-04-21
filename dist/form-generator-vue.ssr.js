@@ -519,25 +519,45 @@ var FIELD = {
       return this.allFieldsFlatObj[model];
     },
     fieldDisabled: function fieldDisabled(fieldConf) {
-      var DISABLED = true;
-      var hasDisabledProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind;
-      var fieldDisabled = hasDisabledProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled]) : !DISABLED;
+      var _fieldConf$vBind5;
+
+      var DISABLED = true; // const hasDisabledProp = UTILS.isObj(fieldConf?.vBind)
+      //  && FIELD.vBind.disabled in fieldConf.vBind;
+      // const fieldDisabled = hasDisabledProp
+      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled])
+      //   : !DISABLED;
+
+      var fieldDisabled = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.disabled] : !DISABLED;
       return this.disabled || fieldDisabled;
     },
     fieldRequired: function fieldRequired(fieldConf) {
-      var REQUIRED = true;
-      var hasRequiredProp = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.required in fieldConf.vBind;
-      var fieldRequired = hasRequiredProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED; // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
+      var _fieldConf$vBind6;
+
+      var REQUIRED = true; // const hasRequiredProp = fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind;
+      // const fieldRequired = hasRequiredProp
+      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED;
+      // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
       //   ? fieldRequired
       //   : !REQUIRED;
+      // return fieldRequired;
 
-      return fieldRequired;
+      if (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules]) {
+        return REQUIRED;
+      }
+
+      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.required in fieldConf.vBind ? Boolean(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind6 = fieldConf.vBind) === null || _fieldConf$vBind6 === void 0 ? void 0 : _fieldConf$vBind6[FIELD.vBind.required]) : !REQUIRED;
     },
     fieldHidden: function fieldHidden(fieldConf) {
-      var HIDDEN = true;
-      var hasHiddenProp = UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind;
-      var fieldHidden = hasHiddenProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden]) : !HIDDEN;
-      return fieldHidden;
+      var _fieldConf$vBind7;
+
+      var HIDDEN = true; // const hasHiddenProp = UTILS.isObj(fieldConf?.vBind)
+      //  && FIELD.vBind.hidden in fieldConf.vBind;
+      // const fieldHidden = hasHiddenProp
+      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden])
+      //   : !HIDDEN;
+      // return fieldHidden;
+
+      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind7 = fieldConf.vBind) === null || _fieldConf$vBind7 === void 0 ? void 0 : _fieldConf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
     runRules: function runRules(rules, val) {
       // valid return values: string, bool
@@ -791,7 +811,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-9720ef7c";
+var __vue_module_identifier__ = "data-v-418213ec";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

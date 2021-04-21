@@ -308,31 +308,44 @@ export default {
     },
     fieldDisabled(fieldConf) {
       const DISABLED = true;
-      const hasDisabledProp = UTILS.isObj(fieldConf?.vBind)
-       && FIELD.vBind.disabled in fieldConf.vBind;
-      const fieldDisabled = hasDisabledProp
-        ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled])
+      // const hasDisabledProp = UTILS.isObj(fieldConf?.vBind)
+      //  && FIELD.vBind.disabled in fieldConf.vBind;
+      // const fieldDisabled = hasDisabledProp
+      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled])
+      //   : !DISABLED;
+      const fieldDisabled = fieldConf?.vBind
+       && FIELD.vBind.disabled in fieldConf.vBind
+        ? fieldConf.vBind?.[FIELD.vBind.disabled]
         : !DISABLED;
       return this.disabled || fieldDisabled;
     },
     fieldRequired(fieldConf) {
       const REQUIRED = true;
-      const hasRequiredProp = fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind;
-      const fieldRequired = hasRequiredProp
-        ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED;
+      // const hasRequiredProp = fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind;
+      // const fieldRequired = hasRequiredProp
+      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED;
       // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
       //   ? fieldRequired
       //   : !REQUIRED;
-      return fieldRequired;
+      // return fieldRequired;
+      if (fieldConf?.[FIELD.rules]) {
+        return REQUIRED;
+      }
+      return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
+        ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     },
     fieldHidden(fieldConf) {
       const HIDDEN = true;
-      const hasHiddenProp = UTILS.isObj(fieldConf?.vBind)
-       && FIELD.vBind.hidden in fieldConf.vBind;
-      const fieldHidden = hasHiddenProp
-        ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden])
+      // const hasHiddenProp = UTILS.isObj(fieldConf?.vBind)
+      //  && FIELD.vBind.hidden in fieldConf.vBind;
+      // const fieldHidden = hasHiddenProp
+      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden])
+      //   : !HIDDEN;
+      // return fieldHidden;
+      return fieldConf?.vBind
+       && FIELD.vBind.hidden in fieldConf.vBind
+        ? fieldConf.vBind?.[FIELD.vBind.hidden]
         : !HIDDEN;
-      return fieldHidden;
     },
     runRules(rules, val) { // valid return values: string, bool
       // eslint-disable-next-line no-restricted-syntax
