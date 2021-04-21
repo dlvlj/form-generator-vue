@@ -263,11 +263,9 @@ export default {
         this.errors[model] = '';
       });
     },
-    setError(model, err) {
-      const oldErr = this.errors[model];
-      if (oldErr === err
-        || (UTILS.isObj([oldErr, err]) && JSON.stringify(oldErr) === JSON.stringify(err))
-      ) {
+    setError(model, err, noErr) {
+      if ((UTILS.isBool(err) && err) || !err) {
+        this.errors[model] = noErr;
         return;
       }
       this.errors[model] = err;
@@ -336,31 +334,38 @@ export default {
         : !HIDDEN;
       return fieldHidden;
     },
+    runRules(rules, val) { // valid return values: string, bool
+      // eslint-disable-next-line no-restricted-syntax
+      for (const rule in rules) {
+        if (UTILS.isFunc(rule)) {
+          return UTILS.handleFunc(rules, val);
+        }
+        return rule;
+      }
+    },
     fieldValidation(fieldConf) {
-      const NO_ERROR = '';
+      const NO_ERR = '';
       const fieldRequired = this.fieldRequired(fieldConf);
-      const rules = fieldConf?.[FIELD.rules];
-      const avField = fieldConf?.[FIELD.av] || this.globalAv;
-      const error = this.submit || avField
-        ? UTILS.handleFunc(rules, this.fields[fieldConf.model]) || NO_ERROR
-        : NO_ERROR;
+      const err = this.submit || fieldConf?.[FIELD.av] || this.globalAv
+        ? this.runRules(fieldConf?.[FIELD.rules], this.fields[fieldConf.model], NO_ERR)
+        : NO_ERR;
 
       if (!fieldRequired) {
-        if (!this.submit) this.setError(fieldConf.model, error);
-      } else this.setError(fieldConf.model, error);
+        if (!this.submit) this.setError(fieldConf.model, err);
+      } else this.setError(fieldConf.model, err);
 
-      if (this.logs) {
+      if (this.logs && this.submit) {
         console.log(fieldConf.model, {
           value: this.fields[fieldConf.model],
-          valid: !error,
+          valid: !err,
           required: fieldRequired,
-          error,
+          error: err,
         });
       }
-      return error;
+      return err;
     },
     validate(fieldConf = undefined, isWatcher = false) {
-      // for watcher
+      // for handling watcher on all fields
       if (fieldConf && isWatcher) {
         const fieldAv = fieldConf[FIELD.av] || this.globalAv;
         const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
@@ -371,7 +376,7 @@ export default {
 
         return;
       }
-      // for submit
+      // for form submit
       const validationsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach((conf) => {
         const err = this.fieldValidation(conf);

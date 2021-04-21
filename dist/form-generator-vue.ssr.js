@@ -468,10 +468,9 @@ var FIELD = {
         _this6.errors[model] = '';
       });
     },
-    setError: function setError(model, err) {
-      var oldErr = this.errors[model];
-
-      if (oldErr === err || UTILS.isObj([oldErr, err]) && JSON.stringify(oldErr) === JSON.stringify(err)) {
+    setError: function setError(model, err, noErr) {
+      if (UTILS.isBool(err) && err || !err) {
+        this.errors[model] = noErr;
         return;
       }
 
@@ -540,27 +539,36 @@ var FIELD = {
       var fieldHidden = hasHiddenProp ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden]) : !HIDDEN;
       return fieldHidden;
     },
+    runRules: function runRules(rules, val) {
+      // valid return values: string, bool
+      // eslint-disable-next-line no-restricted-syntax
+      for (var rule in rules) {
+        if (UTILS.isFunc(rule)) {
+          return UTILS.handleFunc(rules, val);
+        }
+
+        return rule;
+      }
+    },
     fieldValidation: function fieldValidation(fieldConf) {
-      var NO_ERROR = '';
+      var NO_ERR = '';
       var fieldRequired = this.fieldRequired(fieldConf);
-      var rules = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules];
-      var avField = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv;
-      var error = this.submit || avField ? UTILS.handleFunc(rules, this.fields[fieldConf.model]) || NO_ERROR : NO_ERROR;
+      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runRules(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model], NO_ERR) : NO_ERR;
 
       if (!fieldRequired) {
-        if (!this.submit) this.setError(fieldConf.model, error);
-      } else this.setError(fieldConf.model, error);
+        if (!this.submit) this.setError(fieldConf.model, err);
+      } else this.setError(fieldConf.model, err);
 
-      if (this.logs) {
+      if (this.logs && this.submit) {
         console.log(fieldConf.model, {
           value: this.fields[fieldConf.model],
-          valid: !error,
+          valid: !err,
           required: fieldRequired,
-          error: error
+          error: err
         });
       }
 
-      return error;
+      return err;
     },
     validate: function validate() {
       var _this7 = this;
@@ -568,7 +576,7 @@ var FIELD = {
       var fieldConf = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
       var isWatcher = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      // for watcher
+      // for handling watcher on all fields
       if (fieldConf && isWatcher) {
         var fieldAv = fieldConf[FIELD.av] || this.globalAv;
         var fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
@@ -578,7 +586,7 @@ var FIELD = {
         } else this.fieldValidation(fieldConf);
 
         return;
-      } // for submit
+      } // for form submit
 
 
       var validationsStatus = {};
@@ -783,7 +791,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-27abc41c";
+var __vue_module_identifier__ = "data-v-9720ef7c";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
