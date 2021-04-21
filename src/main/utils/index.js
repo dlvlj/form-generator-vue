@@ -39,9 +39,9 @@ const UTILS = {
     }
     return children.every((child) => child in parent);
   },
-  handleFunc(func) {
+  handleFunc(func, params) {
     if (UTILS.isFunc(func)) {
-      return func();
+      return func(params);
     }
   },
   handleFuncOrBool(val, funcParams = undefined) {

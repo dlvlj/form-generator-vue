@@ -209,9 +209,9 @@ var UTILS = {
       return child in parent;
     });
   },
-  handleFunc: function handleFunc(func) {
+  handleFunc: function handleFunc(func, params) {
     if (UTILS.isFunc(func)) {
-      return func();
+      return func(params);
     }
   },
   handleFuncOrBool: function handleFuncOrBool(val) {
@@ -545,7 +545,7 @@ var FIELD = {
       var fieldRequired = this.fieldRequired(fieldConf);
       var rules = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules];
       var avField = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv;
-      var error = this.submit || avField ? UTILS.handleFunc(rules) || NO_ERROR : NO_ERROR;
+      var error = this.submit || avField ? UTILS.handleFunc(rules, this.fields[fieldConf.model]) || NO_ERROR : NO_ERROR;
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, error);
@@ -783,7 +783,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-fc9ca874";
+var __vue_module_identifier__ = "data-v-27abc41c";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

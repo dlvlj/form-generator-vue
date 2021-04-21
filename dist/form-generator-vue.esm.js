@@ -110,9 +110,9 @@ const UTILS = {
     return children.every(child => child in parent);
   },
 
-  handleFunc(func) {
+  handleFunc(func, params) {
     if (UTILS.isFunc(func)) {
-      return func();
+      return func(params);
     }
   },
 
@@ -455,7 +455,7 @@ var script = {
       const fieldRequired = this.fieldRequired(fieldConf);
       const rules = fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules];
       const avField = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv;
-      const error = this.submit || avField ? UTILS.handleFunc(rules) || NO_ERROR : NO_ERROR;
+      const error = this.submit || avField ? UTILS.handleFunc(rules, this.fields[fieldConf.model]) || NO_ERROR : NO_ERROR;
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, error);

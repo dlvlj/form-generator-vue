@@ -342,7 +342,7 @@ export default {
       const rules = fieldConf?.[FIELD.rules];
       const avField = fieldConf?.[FIELD.av] || this.globalAv;
       const error = this.submit || avField
-        ? UTILS.handleFunc(rules) || NO_ERROR
+        ? UTILS.handleFunc(rules, this.fields[fieldConf.model]) || NO_ERROR
         : NO_ERROR;
 
       if (!fieldRequired) {
