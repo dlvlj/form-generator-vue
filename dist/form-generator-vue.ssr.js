@@ -472,7 +472,7 @@ var FIELD = {
       });
     },
     setError: function setError(model, err, noErr) {
-      if (UTILS.isBool(err) && err || !err) {
+      if (UTILS.isBool(err) && err || !UTILS.isBool(err) && !err) {
         this.errors[model] = noErr;
         return;
       }
@@ -538,14 +538,21 @@ var FIELD = {
     },
     runRules: function runRules(rules, val) {
       // valid return values: string, bool
-      // eslint-disable-next-line no-restricted-syntax
+      var res; // eslint-disable-next-line no-restricted-syntax
+
       for (var rule in rules) {
         if (UTILS.isFunc(rule)) {
-          return UTILS.handleFunc(rules, val);
+          res = UTILS.handleFunc(rules, val);
+        } else {
+          res = rule;
         }
 
-        return rule;
+        if (!res) {
+          break;
+        }
       }
+
+      return res;
     },
     fieldValidation: function fieldValidation(fieldConf) {
       var NO_ERR = '';
@@ -788,7 +795,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-f2e8bc60";
+var __vue_module_identifier__ = "data-v-bf86642c";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
