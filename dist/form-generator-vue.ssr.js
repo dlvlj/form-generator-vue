@@ -390,9 +390,7 @@ var FIELD = {
     },
     fields: {
       handler: function handler() {
-        var _this$$emit;
-
-        this.$emit('input', (_this$$emit = {}, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
+        this.emitData();
       },
       deep: true,
       immediate: true
@@ -419,6 +417,11 @@ var FIELD = {
     });
   },
   methods: {
+    emitData: function emitData() {
+      var _this$$emit;
+
+      this.$emit('input', (_this$$emit = {}, _defineProperty(_this$$emit, VMODEL.fields, _objectSpread2({}, this.fields)), _defineProperty(_this$$emit, VMODEL.errors, _objectSpread2({}, this.errors)), _this$$emit));
+    },
     resetForm: function resetForm() {
       this.submit = false;
     },
@@ -785,7 +788,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-64b4c199";
+var __vue_module_identifier__ = "data-v-f2e8bc60";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

@@ -206,7 +206,7 @@ export default {
     },
     fields: {
       handler() {
-        this.$emit('input', { [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
+        this.emitData();
       },
       deep: true,
       immediate: true,
@@ -226,6 +226,9 @@ export default {
     });
   },
   methods: {
+    emitData() {
+      this.$emit('input', { [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
+    },
     resetForm() {
       this.submit = false;
     },
