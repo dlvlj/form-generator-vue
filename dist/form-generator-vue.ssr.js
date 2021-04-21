@@ -498,21 +498,12 @@ var FIELD = {
     componentName: function componentName(fieldConf) {
       var _fieldConf$vBind3, _fieldConf$vBind4;
 
-      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text; // if (UTILS.isStr(fieldConf?.[FIELD.component])) {
-      //   return fieldConf?.[FIELD.component];
-      // }
-
+      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
       var component = this.components.find(function (_ref3) {
         var types = _ref3.types;
         return types.includes(fieldType);
       });
-      var componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name); // if (!componentName) {
-      //   console.error(
-      //     `Component cannot be rendered. Component for type
-      //     "${fieldType}" is not found in components prop.`,
-      //   );
-      // }
-
+      var componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name);
       return componentName;
     },
     fieldConf: function fieldConf(model) {
@@ -521,25 +512,14 @@ var FIELD = {
     fieldDisabled: function fieldDisabled(fieldConf) {
       var _fieldConf$vBind5;
 
-      var DISABLED = true; // const hasDisabledProp = UTILS.isObj(fieldConf?.vBind)
-      //  && FIELD.vBind.disabled in fieldConf.vBind;
-      // const fieldDisabled = hasDisabledProp
-      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled])
-      //   : !DISABLED;
-
+      var DISABLED = true;
       var fieldDisabled = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.disabled] : !DISABLED;
       return this.disabled || fieldDisabled;
     },
     fieldRequired: function fieldRequired(fieldConf) {
       var _fieldConf$vBind6;
 
-      var REQUIRED = true; // const hasRequiredProp = fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind;
-      // const fieldRequired = hasRequiredProp
-      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED;
-      // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
-      //   ? fieldRequired
-      //   : !REQUIRED;
-      // return fieldRequired;
+      var REQUIRED = true;
 
       if (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules]) {
         return REQUIRED;
@@ -550,13 +530,7 @@ var FIELD = {
     fieldHidden: function fieldHidden(fieldConf) {
       var _fieldConf$vBind7;
 
-      var HIDDEN = true; // const hasHiddenProp = UTILS.isObj(fieldConf?.vBind)
-      //  && FIELD.vBind.hidden in fieldConf.vBind;
-      // const fieldHidden = hasHiddenProp
-      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden])
-      //   : !HIDDEN;
-      // return fieldHidden;
-
+      var HIDDEN = true;
       return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind7 = fieldConf.vBind) === null || _fieldConf$vBind7 === void 0 ? void 0 : _fieldConf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
     runRules: function runRules(rules, val) {
@@ -811,7 +785,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-418213ec";
+var __vue_module_identifier__ = "data-v-64b4c199";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

@@ -404,20 +404,11 @@ var script = {
     componentName(fieldConf) {
       var _fieldConf$vBind3, _fieldConf$vBind4;
 
-      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text; // if (UTILS.isStr(fieldConf?.[FIELD.component])) {
-      //   return fieldConf?.[FIELD.component];
-      // }
-
+      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
       const component = this.components.find(({
         types
       }) => types.includes(fieldType));
-      const componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name); // if (!componentName) {
-      //   console.error(
-      //     `Component cannot be rendered. Component for type
-      //     "${fieldType}" is not found in components prop.`,
-      //   );
-      // }
-
+      const componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name);
       return componentName;
     },
 
@@ -428,12 +419,7 @@ var script = {
     fieldDisabled(fieldConf) {
       var _fieldConf$vBind5;
 
-      const DISABLED = true; // const hasDisabledProp = UTILS.isObj(fieldConf?.vBind)
-      //  && FIELD.vBind.disabled in fieldConf.vBind;
-      // const fieldDisabled = hasDisabledProp
-      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.disabled])
-      //   : !DISABLED;
-
+      const DISABLED = true;
       const fieldDisabled = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.disabled] : !DISABLED;
       return this.disabled || fieldDisabled;
     },
@@ -441,13 +427,7 @@ var script = {
     fieldRequired(fieldConf) {
       var _fieldConf$vBind6;
 
-      const REQUIRED = true; // const hasRequiredProp = fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind;
-      // const fieldRequired = hasRequiredProp
-      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.required]) : !REQUIRED;
-      // return fieldConf && !this.fieldDisabled(fieldConf) && !this.fieldHidden(fieldConf)
-      //   ? fieldRequired
-      //   : !REQUIRED;
-      // return fieldRequired;
+      const REQUIRED = true;
 
       if (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules]) {
         return REQUIRED;
@@ -459,13 +439,7 @@ var script = {
     fieldHidden(fieldConf) {
       var _fieldConf$vBind7;
 
-      const HIDDEN = true; // const hasHiddenProp = UTILS.isObj(fieldConf?.vBind)
-      //  && FIELD.vBind.hidden in fieldConf.vBind;
-      // const fieldHidden = hasHiddenProp
-      //   ? UTILS.handleFuncOrBool(fieldConf.vBind[FIELD.vBind.hidden])
-      //   : !HIDDEN;
-      // return fieldHidden;
-
+      const HIDDEN = true;
       return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind7 = fieldConf.vBind) === null || _fieldConf$vBind7 === void 0 ? void 0 : _fieldConf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
 
