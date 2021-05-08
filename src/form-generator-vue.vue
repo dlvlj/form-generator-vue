@@ -1,5 +1,6 @@
 <template>
-  <form
+  <component
+    :is="'form'"
     :class="[CLASS.form]"
     @submit.prevent="handleSubmit"
   >
@@ -112,7 +113,7 @@
     <div :class="CLASS.footer">
       <slot :name="SLOT.footer" />
     </div>
-  </form>
+  </component>
 </template>
 
 <script>
@@ -323,25 +324,33 @@ export default {
         ? fieldConf.vBind?.[FIELD.vBind.hidden]
         : !HIDDEN;
     },
-    runRules(rules, val) { // valid return values: string, bool
+    runRules(noErr, rules, val) {
       let res;
-      // eslint-disable-next-line no-restricted-syntax
-      for (const rule of rules) {
-        if (UTILS.isFunc(rule)) {
-          res = UTILS.handleFunc(rule, val);
-        } else { res = rule; }
+      if (rules) {
+        for (const rule of rules) {
+          // valid return values: string
+          // console.log('out', res);
+          if (UTILS.isFunc(rule)) {
+            res = UTILS.handleFunc(rule, val);
+            // console.log('[func]', res);
+          } else {
+            res = rule;
+            // console.log('[not func]', res);
+          }
 
-        if (!res) {
-          break;
+          if (UTILS.isStr(res)) {
+            // console.log('[break]', res);
+            break;
+          }
         }
       }
-      return res;
+      return UTILS.isStr(res) ? res : noErr;
     },
     fieldValidation(fieldConf) {
       const NO_ERR = '';
       const fieldRequired = this.fieldRequired(fieldConf);
       const err = this.submit || fieldConf?.[FIELD.av] || this.globalAv
-        ? this.runRules(fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
+        ? this.runRules(NO_ERR, fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
         : NO_ERR;
 
       if (!fieldRequired) {

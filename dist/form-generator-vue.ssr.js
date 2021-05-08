@@ -610,39 +610,43 @@ var FIELD = {
       var HIDDEN = true;
       return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind7 = fieldConf.vBind) === null || _fieldConf$vBind7 === void 0 ? void 0 : _fieldConf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
-    runRules: function runRules(rules, val) {
-      // valid return values: string, bool
-      var res; // eslint-disable-next-line no-restricted-syntax
+    runRules: function runRules(noErr, rules, val) {
+      var res;
 
-      var _iterator = _createForOfIteratorHelper(rules),
-          _step;
+      if (rules) {
+        var _iterator = _createForOfIteratorHelper(rules),
+            _step;
 
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var rule = _step.value;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var rule = _step.value;
 
-          if (UTILS.isFunc(rule)) {
-            res = UTILS.handleFunc(rule, val);
-          } else {
-            res = rule;
+            // valid return values: string
+            // console.log('out', res);
+            if (UTILS.isFunc(rule)) {
+              res = UTILS.handleFunc(rule, val); // console.log('[func]', res);
+            } else {
+              res = rule; // console.log('[not func]', res);
+            }
+
+            if (UTILS.isStr(res)) {
+              // console.log('[break]', res);
+              break;
+            }
           }
-
-          if (!res) {
-            break;
-          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
       }
 
-      return res;
+      return UTILS.isStr(res) ? res : noErr;
     },
     fieldValidation: function fieldValidation(fieldConf) {
       var NO_ERR = '';
       var fieldRequired = this.fieldRequired(fieldConf);
-      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runRules(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR;
+      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runRules(NO_ERR, fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR;
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
@@ -823,6 +827,7 @@ var __vue_render__ = function __vue_render__() {
   var _c = _vm._self._c || _h;
 
   return _c('form', {
+    tag: "component",
     class: [_vm.CLASS.form],
     on: {
       "submit": function submit($event) {
@@ -830,14 +835,26 @@ var __vue_render__ = function __vue_render__() {
         return _vm.handleSubmit($event);
       }
     }
-  }, [_vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.header]) + ">", "</div>", [_vm._t(_vm.SLOT.header)], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.body]) + ">", "</div>", [_vm._l(_vm.allFieldsArray, function (conf, i) {
+  }, [_c('div', {
+    class: [_vm.CLASS.header]
+  }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
+    class: [_vm.CLASS.body]
+  }, [_vm._l(_vm.allFieldsArray, function (conf, i) {
     return [_vm.showRow(conf) ? _vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.row, _vm.classes.row]) + ">", "</div>", [_vm._t(_vm.SLOT.rowStart, null, {
+    }) : _vm._e(), _vm._v(" "), _vm.showRow(conf) ? _c('div', {
+      key: i,
+      class: [_vm.CLASS.row, _vm.classes.row]
+    }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
-    }), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.colContainer]) + ">", "</div>", [!_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
+    }), _vm._v(" "), _c('div', {
+      class: [_vm.CLASS.colContainer]
+    }, [!_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
-    }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(conf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, conf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._ssrNode(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
+    }) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _c('div', {
+      key: conf.model,
+      class: [_vm.CLASS.col, conf.model, _vm.classes.col]
+    }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
         value: _vm.fields[conf.model],
@@ -846,12 +863,15 @@ var __vue_render__ = function __vue_render__() {
         },
         expression: "fields[conf.model]"
       }
-    }, 'component', _vm.componentProps(conf), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
+    }, 'component', _vm.componentProps(conf), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e()] : [_vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
-      }) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subConf) ? _vm._ssrNode("<div" + _vm._ssrClass(null, [_vm.CLASS.col, subConf.model, _vm.classes.col]) + ">", "</div>", [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._ssrNode(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
+      }) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _c('div', {
+        key: subConf.model,
+        class: [_vm.CLASS.col, subConf.model, _vm.classes.col]
+      }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {
           value: _vm.fields[subConf.model],
@@ -860,15 +880,17 @@ var __vue_render__ = function __vue_render__() {
           },
           expression: "fields[subConf.model]"
         }
-      }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
+      }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
         "models": _vm.slotProps(subConf)
       }) : _vm._e()];
-    })]], 2), _vm._ssrNode(" "), _vm._t(_vm.SLOT.rowEnd, null, {
+    })]], 2), _vm._v(" "), _vm._t(_vm.SLOT.rowEnd, null, {
       "models": _vm.slotProps(conf)
-    })], 2) : _vm._e(), _vm._ssrNode(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
+    })], 2) : _vm._e(), _vm._v(" "), _vm.showRow(conf) ? _vm._t(_vm.SLOT.afterRow, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e()];
-  })], 2), _vm._ssrNode(" "), _vm._ssrNode("<div" + _vm._ssrClass(null, _vm.CLASS.footer) + ">", "</div>", [_vm._t(_vm.SLOT.footer)], 2)], 2);
+  })], 2), _vm._v(" "), _c('div', {
+    class: _vm.CLASS.footer
+  }, [_vm._t(_vm.SLOT.footer)], 2)]);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -880,7 +902,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-56674d6a";
+var __vue_module_identifier__ = "data-v-32d3678d";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
