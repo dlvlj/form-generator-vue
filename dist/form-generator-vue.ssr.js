@@ -329,7 +329,7 @@ var SLOT = {
   },
   beforeRow: 'before-row',
   rowStart: 'row-start',
-  rowend: 'row-end',
+  rowEnd: 'row-end',
   afterRow: 'after-row',
   beforeCol: 'before-col',
   afterCol: 'after-col'
