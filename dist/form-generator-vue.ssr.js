@@ -234,7 +234,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     activeValidation: {
       type: Boolean,
       required: false,
-      default: false
+      default: true
     },
     activeValidationDelay: {
       type: Number,

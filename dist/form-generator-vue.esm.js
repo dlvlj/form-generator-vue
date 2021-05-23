@@ -39,7 +39,7 @@ var props = {
     activeValidation: {
       type: Boolean,
       required: false,
-      default: false
+      default: true
     },
     activeValidationDelay: {
       type: Number,
