@@ -41,11 +41,11 @@ var props = {
       required: false,
       default: true
     },
-    activeValidationDelay: {
-      type: Number,
-      required: false,
-      default: 0
-    },
+    // activeValidationDelay: {
+    //   type: Number,
+    //   required: false,
+    //   default: 0
+    // },
     logs: {
       type: Boolean,
       required: false,
@@ -54,7 +54,6 @@ var props = {
   }
 };
 
-let debounce_timeout;
 const UTILS = {
   isUndef(val) {
     return typeof val === 'undefined';
@@ -125,7 +124,8 @@ const UTILS = {
   },
 
   debounce(func) {
-    return time => data => {
+    let debounce_timeout;
+    return (time, data) => {
       clearTimeout(debounce_timeout);
       debounce_timeout = setTimeout(() => {
         clearTimeout(debounce_timeout);
@@ -230,10 +230,9 @@ var script = {
       return this.activeValidation || false;
     },
 
-    globalAvDelay() {
-      return this.activeValidationDelay || 0;
-    },
-
+    // globalAvDelay() {
+    //   return this.activeValidationDelay || 0;
+    // },
     allFieldsArray() {
       var _this$schema;
 
@@ -257,13 +256,12 @@ var script = {
 
     allFieldsFlatObj() {
       return Object.fromEntries(this.allFieldsFlatArray.map(fieldConf => [fieldConf.model, fieldConf]));
-    },
+    } // debounceValidateField() {
+    //   return UTILS.debounce((model) => {
+    //     this.validateField(model);
+    //   });
+    // },
 
-    debounceValidateField() {
-      return UTILS.debounce(model => {
-        this.fieldValidation(model);
-      });
-    }
 
   },
   watch: {
@@ -305,9 +303,10 @@ var script = {
 
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
-        }
+        } // this.validate(fieldConf, true);
 
-        this.validate(fieldConf, true);
+
+        this.validateField(fieldConf);
       }, {
         deep: true
       });
@@ -469,7 +468,7 @@ var script = {
       return UTILS.isStr(res) ? res : noErr;
     },
 
-    fieldValidation(fieldConf) {
+    validateField(fieldConf) {
       const NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
       const err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runFieldRules(NO_ERR, fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR; // if (!fieldRequired) {
@@ -480,24 +479,22 @@ var script = {
       return err;
     },
 
-    validate(fieldConf = undefined, isWatcher = false) {
+    validateForm() {
       // watcher handler
-      if (fieldConf && isWatcher) {
-        const fieldAv = fieldConf[FIELD.av] || this.globalAv;
-        const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
-
-        if (fieldAv && fieldAvDelay) {
-          this.debounceValidateField(fieldAvDelay)(fieldConf);
-        } else this.fieldValidation(fieldConf);
-
-        return;
-      } // watcher handler end
+      // if (fieldConf && isWatcher) {
+      // const fieldAv = fieldConf[FIELD.av] || this.globalAv;
+      // const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
+      // if (fieldAv && fieldAvDelay) {
+      //   this.debounceValidateField(fieldAvDelay)(fieldConf);
+      // } else this.validateField(fieldConf);
+      // this.validateField(fieldConf);
+      // return;
+      // }
+      // watcher handler end
       // On form submit
-
-
       const fieldsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach(conf => {
-        const err = this.fieldValidation(conf);
+        const err = this.validateField(conf);
         fieldsStatus[conf.model] = {
           // validationSuccess: !err ? true : !this.fieldRequired(conf),
           validationSuccess: !err,
@@ -516,7 +513,7 @@ var script = {
       const {
         fieldsStatus,
         submitFail
-      } = this.validate();
+      } = this.validateForm();
       this.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
 
       if (submitFail) {

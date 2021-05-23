@@ -159,9 +159,9 @@ export default {
     globalAv() {
       return this.activeValidation || false;
     },
-    globalAvDelay() {
-      return this.activeValidationDelay || 0;
-    },
+    // globalAvDelay() {
+    //   return this.activeValidationDelay || 0;
+    // },
     allFieldsArray() {
       return UTILS.isArr(this.schema?.[SCHEMA.fields])
         ? this.schema[SCHEMA.fields]
@@ -185,11 +185,11 @@ export default {
         this.allFieldsFlatArray.map((fieldConf) => [fieldConf.model, fieldConf])
       );
     },
-    debounceValidateField() {
-      return UTILS.debounce((model) => {
-        this.fieldValidation(model);
-      });
-    },
+    // debounceValidateField() {
+    //   return UTILS.debounce((model) => {
+    //     this.validateField(model);
+    //   });
+    // },
   },
   watch: {
     disabled: {
@@ -223,7 +223,8 @@ export default {
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         }
-        this.validate(fieldConf, true);
+        // this.validate(fieldConf, true);
+        this.validateField(fieldConf);
       }, { deep: true });
     });
   },
@@ -342,38 +343,38 @@ export default {
       }
       return UTILS.isStr(res) ? res : noErr;
     },
-    fieldValidation(fieldConf) {
+    validateField(fieldConf) {
       const NO_ERR = '';
       // const fieldRequired = this.fieldRequired(fieldConf);
       const err = this.submit || fieldConf?.[FIELD.av] || this.globalAv
         ? this.runFieldRules(NO_ERR, fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
         : NO_ERR;
-
       // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
       this.setError(fieldConf.model, err, NO_ERR);
-
       return err;
     },
-    validate(fieldConf = undefined, isWatcher = false) {
+    validateForm() {
       // watcher handler
-      if (fieldConf && isWatcher) {
-        const fieldAv = fieldConf[FIELD.av] || this.globalAv;
-        const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
+      // if (fieldConf && isWatcher) {
+      // const fieldAv = fieldConf[FIELD.av] || this.globalAv;
+      // const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
 
-        if (fieldAv && fieldAvDelay) {
-          this.debounceValidateField(fieldAvDelay)(fieldConf);
-        } else this.fieldValidation(fieldConf);
+      // if (fieldAv && fieldAvDelay) {
+      //   this.debounceValidateField(fieldAvDelay)(fieldConf);
+      // } else this.validateField(fieldConf);
 
-        return;
-      }
+      // this.validateField(fieldConf);
+
+      // return;
+      // }
       // watcher handler end
 
       // On form submit
       const fieldsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach((conf) => {
-        const err = this.fieldValidation(conf);
+        const err = this.validateField(conf);
         fieldsStatus[conf.model] = {
           // validationSuccess: !err ? true : !this.fieldRequired(conf),
           validationSuccess: !err,
@@ -387,7 +388,7 @@ export default {
     },
     async handleSubmit() {
       this.submit = true;
-      const { fieldsStatus, submitFail } = this.validate();
+      const { fieldsStatus, submitFail } = this.validateForm();
       this.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
       if (submitFail) {
         this.resetForm();

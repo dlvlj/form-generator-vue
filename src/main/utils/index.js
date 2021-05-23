@@ -1,4 +1,3 @@
-let debounce_timeout;
 const UTILS = {
   isUndef(val) {
     return typeof val === 'undefined';
@@ -52,7 +51,8 @@ const UTILS = {
     return res;
   },
   debounce(func) {
-    return (time) => (data) => {
+    let debounce_timeout;
+    return (time, data) => {
       clearTimeout(debounce_timeout);
       debounce_timeout = setTimeout(() => {
         clearTimeout(debounce_timeout);

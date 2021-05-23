@@ -43,11 +43,11 @@ export default {
       required: false,
       default: true
     },
-    activeValidationDelay: {
-      type: Number,
-      required: false,
-      default: 0
-    },
+    // activeValidationDelay: {
+    //   type: Number,
+    //   required: false,
+    //   default: 0
+    // },
     logs: {
       type: Boolean,
       required: false,
