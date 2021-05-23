@@ -482,14 +482,7 @@ var script = {
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      } else this.setError(fieldConf.model, err, NO_ERR); // if (this.submit) {
-      //   this.logger([`[${fieldConf.model}]`, {
-      //     value: this.fields[fieldConf.model],
-      //     error: err,
-      //     ...fieldConf
-      //   }]);
-      // }
-
+      } else this.setError(fieldConf.model, err, NO_ERR);
 
       return err;
     },
@@ -512,9 +505,12 @@ var script = {
       const fieldsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach(conf => {
         const err = this.fieldValidation(conf);
-        fieldsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
+        fieldsStatus[conf.model] = {
+          validationSuccess: !err ? true : !this.fieldRequired(conf),
+          schema: conf
+        };
       });
-      const submitFail = Object.keys(fieldsStatus).find(model => !fieldsStatus[model]);
+      const submitFail = Object.keys(fieldsStatus).find(model => !fieldsStatus[model].validationSuccess);
       return {
         fieldsStatus,
         submitFail
@@ -527,7 +523,7 @@ var script = {
         fieldsStatus,
         submitFail
       } = this.validate();
-      this.logger(['[Fields status]', fieldsStatus]);
+      this.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
 
       if (submitFail) {
         this.resetForm();

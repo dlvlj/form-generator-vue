@@ -669,14 +669,7 @@ var FIELD = {
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      } else this.setError(fieldConf.model, err, NO_ERR); // if (this.submit) {
-      //   this.logger([`[${fieldConf.model}]`, {
-      //     value: this.fields[fieldConf.model],
-      //     error: err,
-      //     ...fieldConf
-      //   }]);
-      // }
-
+      } else this.setError(fieldConf.model, err, NO_ERR);
 
       return err;
     },
@@ -704,10 +697,13 @@ var FIELD = {
       Object.values(this.allFieldsFlatObj).forEach(function (conf) {
         var err = _this7.fieldValidation(conf);
 
-        fieldsStatus[conf.model] = !err ? true : !_this7.fieldRequired(conf);
+        fieldsStatus[conf.model] = {
+          validationSuccess: !err ? true : !_this7.fieldRequired(conf),
+          schema: conf
+        };
       });
       var submitFail = Object.keys(fieldsStatus).find(function (model) {
-        return !fieldsStatus[model];
+        return !fieldsStatus[model].validationSuccess;
       });
       return {
         fieldsStatus: fieldsStatus,
@@ -727,7 +723,7 @@ var FIELD = {
                 _this8.submit = true;
                 _this8$validate = _this8.validate(), fieldsStatus = _this8$validate.fieldsStatus, submitFail = _this8$validate.submitFail;
 
-                _this8.logger(['[Fields status]', fieldsStatus]);
+                _this8.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus]);
 
                 if (!submitFail) {
                   _context.next = 8;
@@ -918,7 +914,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-657ca109";
+var __vue_module_identifier__ = "data-v-34cfa44e";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
