@@ -193,8 +193,8 @@ export default {
   },
   watch: {
     disabled: {
-      handler(newVal) {
-        if (newVal) this.removeAllErrors();
+      handler() {
+        this.removeAllErrors();
       },
     },
     value: {
@@ -264,6 +264,7 @@ export default {
         ...(errorPropName ? { [errorPropName]: this.errors[fieldConf.model] } : {}),
         ...fieldConf.vBind,
         type: fieldConf?.vBind?.type || FIELD.type.text,
+        disabled: Boolean(this.disabled || fieldConf?.disabled)
       };
     },
     removeAllErrors() {
@@ -305,22 +306,19 @@ export default {
     fieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
-    fieldDisabled(fieldConf) {
-      const DISABLED = true;
-      const fieldDisabled = fieldConf?.vBind
-       && FIELD.vBind.disabled in fieldConf.vBind
-        ? fieldConf.vBind?.[FIELD.vBind.disabled]
-        : !DISABLED;
-      return this.disabled || fieldDisabled;
-    },
-    fieldRequired(fieldConf) {
-      const REQUIRED = true;
-      if (fieldConf?.[FIELD.rules]) {
-        return REQUIRED;
-      }
-      return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
-        ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
-    },
+    // fieldDisabled(fieldConf) {
+    //   const DISABLED = true;
+    //   const fieldDisabled = fieldConf?.vBind
+    //    && FIELD.vBind.disabled in fieldConf.vBind
+    //     ? fieldConf.vBind?.[FIELD.vBind.disabled]
+    //     : !DISABLED;
+    //   return this.disabled || fieldDisabled;
+    // },
+    // fieldRequired(fieldConf) {
+    //   const REQUIRED = true;
+    //   return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
+    //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
+    // },
     fieldHidden(fieldConf) {
       const HIDDEN = true;
       return fieldConf?.vBind
@@ -346,14 +344,15 @@ export default {
     },
     fieldValidation(fieldConf) {
       const NO_ERR = '';
-      const fieldRequired = this.fieldRequired(fieldConf);
+      // const fieldRequired = this.fieldRequired(fieldConf);
       const err = this.submit || fieldConf?.[FIELD.av] || this.globalAv
         ? this.runFieldRules(NO_ERR, fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
         : NO_ERR;
 
-      if (!fieldRequired) {
-        if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      } else this.setError(fieldConf.model, err, NO_ERR);
+      // if (!fieldRequired) {
+      //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
+      // } else this.setError(fieldConf.model, err, NO_ERR);
+      this.setError(fieldConf.model, err, NO_ERR);
 
       return err;
     },
@@ -376,7 +375,8 @@ export default {
       Object.values(this.allFieldsFlatObj).forEach((conf) => {
         const err = this.fieldValidation(conf);
         fieldsStatus[conf.model] = {
-          validationSuccess: !err ? true : !this.fieldRequired(conf),
+          // validationSuccess: !err ? true : !this.fieldRequired(conf),
+          validationSuccess: !err,
           schema: conf
         };
       });

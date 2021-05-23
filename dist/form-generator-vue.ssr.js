@@ -459,8 +459,8 @@ var FIELD = {
   },
   watch: {
     disabled: {
-      handler: function handler(newVal) {
-        if (newVal) this.removeAllErrors();
+      handler: function handler() {
+        this.removeAllErrors();
       }
     },
     value: {
@@ -557,7 +557,8 @@ var FIELD = {
 
       var errorPropName = componentData === null || componentData === void 0 ? void 0 : componentData.errorProp;
       return _objectSpread2(_objectSpread2(_objectSpread2({}, errorPropName ? _defineProperty({}, errorPropName, this.errors[fieldConf.model]) : {}), fieldConf.vBind), {}, {
-        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text
+        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text,
+        disabled: Boolean(this.disabled || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.disabled))
       });
     },
     removeAllErrors: function removeAllErrors() {
@@ -608,29 +609,24 @@ var FIELD = {
     fieldConf: function fieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
-    fieldDisabled: function fieldDisabled(fieldConf) {
+    // fieldDisabled(fieldConf) {
+    //   const DISABLED = true;
+    //   const fieldDisabled = fieldConf?.vBind
+    //    && FIELD.vBind.disabled in fieldConf.vBind
+    //     ? fieldConf.vBind?.[FIELD.vBind.disabled]
+    //     : !DISABLED;
+    //   return this.disabled || fieldDisabled;
+    // },
+    // fieldRequired(fieldConf) {
+    //   const REQUIRED = true;
+    //   return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
+    //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
+    // },
+    fieldHidden: function fieldHidden(fieldConf) {
       var _fieldConf$vBind5;
 
-      var DISABLED = true;
-      var fieldDisabled = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.disabled] : !DISABLED;
-      return this.disabled || fieldDisabled;
-    },
-    fieldRequired: function fieldRequired(fieldConf) {
-      var _fieldConf$vBind6;
-
-      var REQUIRED = true;
-
-      if (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules]) {
-        return REQUIRED;
-      }
-
-      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.required in fieldConf.vBind ? Boolean(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind6 = fieldConf.vBind) === null || _fieldConf$vBind6 === void 0 ? void 0 : _fieldConf$vBind6[FIELD.vBind.required]) : !REQUIRED;
-    },
-    fieldHidden: function fieldHidden(fieldConf) {
-      var _fieldConf$vBind7;
-
       var HIDDEN = true;
-      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind7 = fieldConf.vBind) === null || _fieldConf$vBind7 === void 0 ? void 0 : _fieldConf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
+      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.hidden] : !HIDDEN;
     },
     runFieldRules: function runFieldRules(noErr, rules, val) {
       var res;
@@ -663,14 +659,13 @@ var FIELD = {
       return UTILS.isStr(res) ? res : noErr;
     },
     fieldValidation: function fieldValidation(fieldConf) {
-      var NO_ERR = '';
-      var fieldRequired = this.fieldRequired(fieldConf);
-      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runFieldRules(NO_ERR, fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR;
+      var NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      if (!fieldRequired) {
-        if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      } else this.setError(fieldConf.model, err, NO_ERR);
+      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runFieldRules(NO_ERR, fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR; // if (!fieldRequired) {
+      //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
+      // } else this.setError(fieldConf.model, err, NO_ERR);
 
+      this.setError(fieldConf.model, err, NO_ERR);
       return err;
     },
     validate: function validate() {
@@ -698,7 +693,8 @@ var FIELD = {
         var err = _this7.fieldValidation(conf);
 
         fieldsStatus[conf.model] = {
-          validationSuccess: !err ? true : !_this7.fieldRequired(conf),
+          // validationSuccess: !err ? true : !this.fieldRequired(conf),
+          validationSuccess: !err,
           schema: conf
         };
       });
@@ -914,7 +910,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-75eda6d4";
+var __vue_module_identifier__ = "data-v-a18bd9b2";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

@@ -268,8 +268,8 @@ var script = {
   },
   watch: {
     disabled: {
-      handler(newVal) {
-        if (newVal) this.removeAllErrors();
+      handler() {
+        this.removeAllErrors();
       }
 
     },
@@ -373,7 +373,8 @@ var script = {
           [errorPropName]: this.errors[fieldConf.model]
         } : {}),
         ...fieldConf.vBind,
-        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text
+        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text,
+        disabled: Boolean(this.disabled || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.disabled))
       };
     },
 
@@ -427,31 +428,24 @@ var script = {
       return this.allFieldsFlatObj[model];
     },
 
-    fieldDisabled(fieldConf) {
+    // fieldDisabled(fieldConf) {
+    //   const DISABLED = true;
+    //   const fieldDisabled = fieldConf?.vBind
+    //    && FIELD.vBind.disabled in fieldConf.vBind
+    //     ? fieldConf.vBind?.[FIELD.vBind.disabled]
+    //     : !DISABLED;
+    //   return this.disabled || fieldDisabled;
+    // },
+    // fieldRequired(fieldConf) {
+    //   const REQUIRED = true;
+    //   return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
+    //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
+    // },
+    fieldHidden(fieldConf) {
       var _fieldConf$vBind5;
 
-      const DISABLED = true;
-      const fieldDisabled = (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.disabled in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.disabled] : !DISABLED;
-      return this.disabled || fieldDisabled;
-    },
-
-    fieldRequired(fieldConf) {
-      var _fieldConf$vBind6;
-
-      const REQUIRED = true;
-
-      if (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules]) {
-        return REQUIRED;
-      }
-
-      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.required in fieldConf.vBind ? Boolean(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind6 = fieldConf.vBind) === null || _fieldConf$vBind6 === void 0 ? void 0 : _fieldConf$vBind6[FIELD.vBind.required]) : !REQUIRED;
-    },
-
-    fieldHidden(fieldConf) {
-      var _fieldConf$vBind7;
-
       const HIDDEN = true;
-      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind7 = fieldConf.vBind) === null || _fieldConf$vBind7 === void 0 ? void 0 : _fieldConf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
+      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.hidden] : !HIDDEN;
     },
 
     runFieldRules(noErr, rules, val) {
@@ -476,14 +470,13 @@ var script = {
     },
 
     fieldValidation(fieldConf) {
-      const NO_ERR = '';
-      const fieldRequired = this.fieldRequired(fieldConf);
-      const err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runFieldRules(NO_ERR, fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR;
+      const NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      if (!fieldRequired) {
-        if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      } else this.setError(fieldConf.model, err, NO_ERR);
+      const err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runFieldRules(NO_ERR, fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR; // if (!fieldRequired) {
+      //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
+      // } else this.setError(fieldConf.model, err, NO_ERR);
 
+      this.setError(fieldConf.model, err, NO_ERR);
       return err;
     },
 
@@ -506,7 +499,8 @@ var script = {
       Object.values(this.allFieldsFlatObj).forEach(conf => {
         const err = this.fieldValidation(conf);
         fieldsStatus[conf.model] = {
-          validationSuccess: !err ? true : !this.fieldRequired(conf),
+          // validationSuccess: !err ? true : !this.fieldRequired(conf),
+          validationSuccess: !err,
           schema: conf
         };
       });
