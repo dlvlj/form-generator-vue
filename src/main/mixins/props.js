@@ -9,7 +9,7 @@ export default {
       type: Function,
       required: false,
       default: () => {
-        console.error('submit handler not present');
+        // console.warn('submit handler prop not present');
       },
     },
     components: {
@@ -35,7 +35,7 @@ export default {
       type: Function,
       required: false,
       default: () => {
-        console.warn('Form submit fail');
+        // console.warn('Form submit failed');
       },
     },
     activeValidation: {

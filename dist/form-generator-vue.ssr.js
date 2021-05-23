@@ -99,6 +99,18 @@ function _objectSpread2(target) {
   return target;
 }
 
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
   if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -114,6 +126,10 @@ function _arrayLikeToArray(arr, len) {
   for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
 
   return arr2;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 function _createForOfIteratorHelper(o, allowArrayLike) {
@@ -181,8 +197,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     onSubmit: {
       type: Function,
       required: false,
-      default: function _default() {
-        console.error('submit handler not present');
+      default: function _default() {// console.warn('submit handler prop not present');
       }
     },
     components: {
@@ -213,8 +228,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     onSubmitFail: {
       type: Function,
       required: false,
-      default: function _default() {
-        console.warn('Form submit fail');
+      default: function _default() {// console.warn('Form submit failed');
       }
     },
     activeValidation: {
@@ -382,9 +396,10 @@ var FIELD = {
           fieldConf.forEach(function (subFieldConf) {
             addFieldsAndErrors(subFieldConf.model);
           });
-        } else {
-          addFieldsAndErrors(fieldConf.model);
+          return;
         }
+
+        addFieldsAndErrors(fieldConf.model);
       });
     }
 
@@ -422,17 +437,17 @@ var FIELD = {
           fieldConf.forEach(function (subFieldConf) {
             arr.push(subFieldConf);
           });
-        } else {
-          arr.push(fieldConf);
+          return;
         }
+
+        arr.push(fieldConf);
       });
       return arr;
     },
     allFieldsFlatObj: function allFieldsFlatObj() {
-      var obj = this.allFieldsFlatArray.map(function (fieldConf) {
+      return Object.fromEntries(this.allFieldsFlatArray.map(function (fieldConf) {
         return [fieldConf.model, fieldConf];
-      });
-      return Object.fromEntries(obj);
+      }));
     },
     debounceValidateField: function debounceValidateField() {
       var _this2 = this;
@@ -491,6 +506,13 @@ var FIELD = {
     });
   },
   methods: {
+    logger: function logger(items) {
+      if (this.logs) {
+        var _console;
+
+        (_console = console).log.apply(_console, _toConsumableArray(items));
+      }
+    },
     emitData: function emitData() {
       var _this$$emit;
 
@@ -613,24 +635,21 @@ var FIELD = {
     runRules: function runRules(noErr, rules, val) {
       var res;
 
-      if (rules) {
+      if (UTILS.isArr(rules)) {
         var _iterator = _createForOfIteratorHelper(rules),
             _step;
 
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var rule = _step.value;
-
             // valid return values: string
-            // console.log('out', res);
+            res = rule;
+
             if (UTILS.isFunc(rule)) {
-              res = UTILS.handleFunc(rule, val); // console.log('[func]', res);
-            } else {
-              res = rule; // console.log('[not func]', res);
+              res = UTILS.handleFunc(rule, val);
             }
 
             if (UTILS.isStr(res)) {
-              // console.log('[break]', res);
               break;
             }
           }
@@ -650,16 +669,14 @@ var FIELD = {
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      } else this.setError(fieldConf.model, err, NO_ERR);
+      } else this.setError(fieldConf.model, err, NO_ERR); // if (this.submit) {
+      //   this.logger([`[${fieldConf.model}]`, {
+      //     value: this.fields[fieldConf.model],
+      //     error: err,
+      //     ...fieldConf
+      //   }]);
+      // }
 
-      if (this.logs && this.submit) {
-        console.log(fieldConf.model, {
-          value: this.fields[fieldConf.model],
-          valid: !err,
-          required: fieldRequired,
-          error: err
-        });
-      }
 
       return err;
     },
@@ -669,7 +686,7 @@ var FIELD = {
       var fieldConf = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
       var isWatcher = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      // for handling watcher on all fields
+      // watcher handler
       if (fieldConf && isWatcher) {
         var fieldAv = fieldConf[FIELD.av] || this.globalAv;
         var fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
@@ -679,20 +696,21 @@ var FIELD = {
         } else this.fieldValidation(fieldConf);
 
         return;
-      } // for form submit
+      } // watcher handler end
+      // On form submit
 
 
-      var validationsStatus = {};
+      var fieldsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach(function (conf) {
         var err = _this7.fieldValidation(conf);
 
-        validationsStatus[conf.model] = !err ? true : !_this7.fieldRequired(conf);
+        fieldsStatus[conf.model] = !err ? true : !_this7.fieldRequired(conf);
       });
-      var submitFail = Object.keys(validationsStatus).find(function (model) {
-        return !validationsStatus[model];
+      var submitFail = Object.keys(fieldsStatus).find(function (model) {
+        return !fieldsStatus[model];
       });
       return {
-        validationsStatus: validationsStatus,
+        fieldsStatus: fieldsStatus,
         submitFail: submitFail
       };
     },
@@ -700,18 +718,16 @@ var FIELD = {
       var _this8 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this8$validate, validationsStatus, submitFail;
+        var _this8$validate, fieldsStatus, submitFail;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _this8.submit = true;
-                _this8$validate = _this8.validate(), validationsStatus = _this8$validate.validationsStatus, submitFail = _this8$validate.submitFail;
+                _this8$validate = _this8.validate(), fieldsStatus = _this8$validate.fieldsStatus, submitFail = _this8$validate.submitFail;
 
-                if (_this8.logs) {
-                  console.log('form validations:', validationsStatus);
-                }
+                _this8.logger(['[Fields status]', fieldsStatus]);
 
                 if (!submitFail) {
                   _context.next = 8;
@@ -902,7 +918,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-32d3678d";
+var __vue_module_identifier__ = "data-v-657ca109";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

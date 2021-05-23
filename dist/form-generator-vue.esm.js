@@ -8,8 +8,7 @@ var props = {
     onSubmit: {
       type: Function,
       required: false,
-      default: () => {
-        console.error('submit handler not present');
+      default: () => {// console.warn('submit handler prop not present');
       }
     },
     components: {
@@ -34,8 +33,7 @@ var props = {
     onSubmitFail: {
       type: Function,
       required: false,
-      default: () => {
-        console.warn('Form submit fail');
+      default: () => {// console.warn('Form submit failed');
       }
     },
     activeValidation: {
@@ -209,9 +207,10 @@ var script = {
           fieldConf.forEach(subFieldConf => {
             addFieldsAndErrors(subFieldConf.model);
           });
-        } else {
-          addFieldsAndErrors(fieldConf.model);
+          return;
         }
+
+        addFieldsAndErrors(fieldConf.model);
       });
     }
 
@@ -248,16 +247,16 @@ var script = {
           fieldConf.forEach(subFieldConf => {
             arr.push(subFieldConf);
           });
-        } else {
-          arr.push(fieldConf);
+          return;
         }
+
+        arr.push(fieldConf);
       });
       return arr;
     },
 
     allFieldsFlatObj() {
-      const obj = this.allFieldsFlatArray.map(fieldConf => [fieldConf.model, fieldConf]);
-      return Object.fromEntries(obj);
+      return Object.fromEntries(this.allFieldsFlatArray.map(fieldConf => [fieldConf.model, fieldConf]));
     },
 
     debounceValidateField() {
@@ -316,6 +315,12 @@ var script = {
   },
 
   methods: {
+    logger(items) {
+      if (this.logs) {
+        console.log(...items);
+      }
+    },
+
     emitData() {
       this.$emit('input', {
         [VMODEL.fields]: { ...this.fields
@@ -452,18 +457,16 @@ var script = {
     runRules(noErr, rules, val) {
       let res;
 
-      if (rules) {
+      if (UTILS.isArr(rules)) {
         for (const rule of rules) {
           // valid return values: string
-          // console.log('out', res);
+          res = rule;
+
           if (UTILS.isFunc(rule)) {
-            res = UTILS.handleFunc(rule, val); // console.log('[func]', res);
-          } else {
-            res = rule; // console.log('[not func]', res);
+            res = UTILS.handleFunc(rule, val);
           }
 
           if (UTILS.isStr(res)) {
-            // console.log('[break]', res);
             break;
           }
         }
@@ -479,22 +482,20 @@ var script = {
 
       if (!fieldRequired) {
         if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      } else this.setError(fieldConf.model, err, NO_ERR);
+      } else this.setError(fieldConf.model, err, NO_ERR); // if (this.submit) {
+      //   this.logger([`[${fieldConf.model}]`, {
+      //     value: this.fields[fieldConf.model],
+      //     error: err,
+      //     ...fieldConf
+      //   }]);
+      // }
 
-      if (this.logs && this.submit) {
-        console.log(fieldConf.model, {
-          value: this.fields[fieldConf.model],
-          valid: !err,
-          required: fieldRequired,
-          error: err
-        });
-      }
 
       return err;
     },
 
     validate(fieldConf = undefined, isWatcher = false) {
-      // for handling watcher on all fields
+      // watcher handler
       if (fieldConf && isWatcher) {
         const fieldAv = fieldConf[FIELD.av] || this.globalAv;
         const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
@@ -504,17 +505,18 @@ var script = {
         } else this.fieldValidation(fieldConf);
 
         return;
-      } // for form submit
+      } // watcher handler end
+      // On form submit
 
 
-      const validationsStatus = {};
+      const fieldsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach(conf => {
         const err = this.fieldValidation(conf);
-        validationsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
+        fieldsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
       });
-      const submitFail = Object.keys(validationsStatus).find(model => !validationsStatus[model]);
+      const submitFail = Object.keys(fieldsStatus).find(model => !fieldsStatus[model]);
       return {
-        validationsStatus,
+        fieldsStatus,
         submitFail
       };
     },
@@ -522,13 +524,10 @@ var script = {
     async handleSubmit() {
       this.submit = true;
       const {
-        validationsStatus,
+        fieldsStatus,
         submitFail
       } = this.validate();
-
-      if (this.logs) {
-        console.log('form validations:', validationsStatus);
-      }
+      this.logger(['[Fields status]', fieldsStatus]);
 
       if (submitFail) {
         this.resetForm();

@@ -141,9 +141,9 @@ export default {
           fieldConf.forEach((subFieldConf) => {
             addFieldsAndErrors(subFieldConf.model);
           });
-        } else {
-          addFieldsAndErrors(fieldConf.model);
+          return;
         }
+        addFieldsAndErrors(fieldConf.model);
       });
     }
     return {
@@ -174,15 +174,16 @@ export default {
           fieldConf.forEach((subFieldConf) => {
             arr.push(subFieldConf);
           });
-        } else {
-          arr.push(fieldConf);
+          return;
         }
+        arr.push(fieldConf);
       });
       return arr;
     },
     allFieldsFlatObj() {
-      const obj = this.allFieldsFlatArray.map((fieldConf) => [fieldConf.model, fieldConf]);
-      return Object.fromEntries(obj);
+      return Object.fromEntries(
+        this.allFieldsFlatArray.map((fieldConf) => [fieldConf.model, fieldConf])
+      );
     },
     debounceValidateField() {
       return UTILS.debounce((model) => {
@@ -227,6 +228,9 @@ export default {
     });
   },
   methods: {
+    logger(items) {
+      if (this.logs) { console.log(...items); }
+    },
     emitData() {
       this.$emit('input', { [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
     },
@@ -326,20 +330,14 @@ export default {
     },
     runRules(noErr, rules, val) {
       let res;
-      if (rules) {
+      if (UTILS.isArr(rules)) {
         for (const rule of rules) {
           // valid return values: string
-          // console.log('out', res);
+          res = rule;
           if (UTILS.isFunc(rule)) {
             res = UTILS.handleFunc(rule, val);
-            // console.log('[func]', res);
-          } else {
-            res = rule;
-            // console.log('[not func]', res);
           }
-
           if (UTILS.isStr(res)) {
-            // console.log('[break]', res);
             break;
           }
         }
@@ -357,18 +355,17 @@ export default {
         if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       } else this.setError(fieldConf.model, err, NO_ERR);
 
-      if (this.logs && this.submit) {
-        console.log(fieldConf.model, {
-          value: this.fields[fieldConf.model],
-          valid: !err,
-          required: fieldRequired,
-          error: err,
-        });
-      }
+      // if (this.submit) {
+      //   this.logger([`[${fieldConf.model}]`, {
+      //     value: this.fields[fieldConf.model],
+      //     error: err,
+      //     ...fieldConf
+      //   }]);
+      // }
       return err;
     },
     validate(fieldConf = undefined, isWatcher = false) {
-      // for handling watcher on all fields
+      // watcher handler
       if (fieldConf && isWatcher) {
         const fieldAv = fieldConf[FIELD.av] || this.globalAv;
         const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
@@ -379,21 +376,21 @@ export default {
 
         return;
       }
-      // for form submit
-      const validationsStatus = {};
+      // watcher handler end
+
+      // On form submit
+      const fieldsStatus = {};
       Object.values(this.allFieldsFlatObj).forEach((conf) => {
         const err = this.fieldValidation(conf);
-        validationsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
+        fieldsStatus[conf.model] = !err ? true : !this.fieldRequired(conf);
       });
-      const submitFail = Object.keys(validationsStatus).find((model) => !validationsStatus[model]);
-      return { validationsStatus, submitFail };
+      const submitFail = Object.keys(fieldsStatus).find((model) => !fieldsStatus[model]);
+      return { fieldsStatus, submitFail };
     },
     async handleSubmit() {
       this.submit = true;
-      const { validationsStatus, submitFail } = this.validate();
-      if (this.logs) {
-        console.log('form validations:', validationsStatus);
-      }
+      const { fieldsStatus, submitFail } = this.validate();
+      this.logger(['[Fields status]', fieldsStatus]);
       if (submitFail) {
         this.resetForm();
         await this.onSubmitFail();
