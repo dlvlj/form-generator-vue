@@ -1,8 +1,9 @@
 <template>
   <component
-    :is="'form'"
+    :is="componentName(schema.form)"
+    v-bind="componentProps(schema.form, {form: schema.form})"
     :class="[CLASS.form]"
-    @submit.prevent="handleSubmit"
+    v-on="componentEvents(schema.form)"
   >
     <!-- header -->
     <div :class="[CLASS.header]">
@@ -47,7 +48,7 @@
                 <component
                   :is="componentName(conf)"
                   v-model="fields[conf.model]"
-                  v-bind="componentProps(conf)"
+                  v-bind="componentProps(conf, {field: true})"
                   v-on="componentEvents(conf)"
                 >
                   <slot :name="conf.model" />
@@ -82,7 +83,7 @@
                   <component
                     :is="componentName(subConf)"
                     v-model="fields[subConf.model]"
-                    v-bind="componentProps(subConf)"
+                    v-bind="componentProps(subConf, {field: true})"
                     v-on="componentEvents(subConf)"
                   >
                     <slot :name="subConf.model" />
@@ -256,17 +257,24 @@ export default {
       }
       return [fieldConf.model];
     },
-    componentProps(fieldConf) {
-      const componentName = this.componentName(fieldConf);
+    componentProps(conf, options = {}) {
+      const { form, field } = options;
+      const componentName = this.componentName(conf, options);
       const componentData = this.componentData(componentName);
       // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
-      const errorPropName = componentData?.errorProp;
-      return {
-        ...(errorPropName ? { [errorPropName]: this.errors[fieldConf.model] } : {}),
-        ...fieldConf.vBind,
-        type: fieldConf?.vBind?.type || FIELD.type.text,
-        disabled: Boolean(this.disabled || fieldConf?.disabled)
+      // const errorPropName = componentData?.errorProp;
+      const p = {
+        ...conf?.vBind,
+        disabled: Boolean(this.disabled || conf?.disabled)
       };
+      if (form) {
+        p.is = conf?.vBind?.is || 'form';
+      }
+      if (field) {
+        if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
+        p.type = conf?.vBind?.type || FIELD.type.text;
+      }
+      return p;
     },
     removeAllErrors() {
       Object.keys(this.errors).forEach((model) => {
@@ -299,10 +307,12 @@ export default {
         : {};
     },
     componentName(fieldConf) {
-      const fieldType = fieldConf?.vBind?.type || FIELD.type.text;
-      const component = this.components.find(({ types }) => types.includes(fieldType));
-      const componentName = fieldConf?.vBind?.is || component?.name;
-      return componentName;
+      if (fieldConf?.vBind?.is) {
+        return fieldConf?.vBind?.is;
+      }
+      const componentType = fieldConf?.vBind?.type;
+      const componentData = this.components.find(({ types }) => types.includes(componentType));
+      return componentData?.name;
     },
     fieldConf(model) {
       return this.allFieldsFlatObj[model];

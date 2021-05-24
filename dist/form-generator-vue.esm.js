@@ -361,20 +361,36 @@ var script = {
       return [fieldConf.model];
     },
 
-    componentProps(fieldConf) {
-      var _fieldConf$vBind;
-
-      const componentName = this.componentName(fieldConf);
+    componentProps(conf, options = {}) {
+      const {
+        form,
+        field
+      } = options;
+      const componentName = this.componentName(conf, options);
       const componentData = this.componentData(componentName); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+      // const errorPropName = componentData?.errorProp;
 
-      const errorPropName = componentData === null || componentData === void 0 ? void 0 : componentData.errorProp;
-      return { ...(errorPropName ? {
-          [errorPropName]: this.errors[fieldConf.model]
-        } : {}),
-        ...fieldConf.vBind,
-        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text,
-        disabled: Boolean(this.disabled || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.disabled))
+      const p = { ...(conf === null || conf === void 0 ? void 0 : conf.vBind),
+        disabled: Boolean(this.disabled || (conf === null || conf === void 0 ? void 0 : conf.disabled))
       };
+
+      if (form) {
+        var _conf$vBind;
+
+        p.is = (conf === null || conf === void 0 ? void 0 : (_conf$vBind = conf.vBind) === null || _conf$vBind === void 0 ? void 0 : _conf$vBind.is) || 'form';
+      }
+
+      if (field) {
+        var _conf$vBind2;
+
+        if (componentData === null || componentData === void 0 ? void 0 : componentData.errorProp) {
+          p[componentData.errorProp] = this.errors[conf.model];
+        }
+
+        p.type = (conf === null || conf === void 0 ? void 0 : (_conf$vBind2 = conf.vBind) === null || _conf$vBind2 === void 0 ? void 0 : _conf$vBind2.type) || FIELD.type.text;
+      }
+
+      return p;
     },
 
     removeAllErrors() {
@@ -397,13 +413,13 @@ var script = {
     },
 
     typeCoercion(fieldConf) {
-      var _fieldConf$vBind2;
+      var _fieldConf$vBind;
 
       if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
         return;
       }
 
-      if ((fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.type) === FIELD.type.number && this.fields[fieldConf.model]) {
+      if ((fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) === FIELD.type.number && this.fields[fieldConf.model]) {
         this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
@@ -413,14 +429,19 @@ var script = {
     },
 
     componentName(fieldConf) {
-      var _fieldConf$vBind3, _fieldConf$vBind4;
+      var _fieldConf$vBind2, _fieldConf$vBind4;
 
-      const fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
-      const component = this.components.find(({
+      if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is) {
+        var _fieldConf$vBind3;
+
+        return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.is;
+      }
+
+      const componentType = fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.type;
+      const componentData = this.components.find(({
         types
-      }) => types.includes(fieldType));
-      const componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name);
-      return componentName;
+      }) => types.includes(componentType));
+      return componentData === null || componentData === void 0 ? void 0 : componentData.name;
     },
 
     fieldConf(model) {
@@ -615,16 +636,12 @@ var __vue_render__ = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('form', {
+  return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: [_vm.CLASS.form],
-    on: {
-      "submit": function ($event) {
-        $event.preventDefault();
-        return _vm.handleSubmit($event);
-      }
-    }
-  }, [_c('div', {
+    class: [_vm.CLASS.form]
+  }, 'component', _vm.componentProps(_vm.schema.form, {
+    form: _vm.schema.form
+  }), false), _vm.componentEvents(_vm.schema.form)), [_c('div', {
     class: [_vm.CLASS.header]
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
@@ -652,7 +669,9 @@ var __vue_render__ = function () {
         },
         expression: "fields[conf.model]"
       }
-    }, 'component', _vm.componentProps(conf), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
+    }, 'component', _vm.componentProps(conf, {
+      field: true
+    }), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e()] : [_vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
@@ -669,7 +688,9 @@ var __vue_render__ = function () {
           },
           expression: "fields[subConf.model]"
         }
-      }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
+      }, 'component', _vm.componentProps(subConf, {
+        field: true
+      }), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
         "models": _vm.slotProps(subConf)
       }) : _vm._e()];
     })]], 2), _vm._v(" "), _vm._t(_vm.SLOT.rowEnd, null, {

@@ -546,17 +546,35 @@ var FIELD = {
 
       return [fieldConf.model];
     },
-    componentProps: function componentProps(fieldConf) {
-      var _fieldConf$vBind;
-
-      var componentName = this.componentName(fieldConf);
+    componentProps: function componentProps(conf) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var form = options.form,
+          field = options.field;
+      var componentName = this.componentName(conf, options);
       var componentData = this.componentData(componentName); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+      // const errorPropName = componentData?.errorProp;
 
-      var errorPropName = componentData === null || componentData === void 0 ? void 0 : componentData.errorProp;
-      return _objectSpread2(_objectSpread2(_objectSpread2({}, errorPropName ? _defineProperty({}, errorPropName, this.errors[fieldConf.model]) : {}), fieldConf.vBind), {}, {
-        type: (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) || FIELD.type.text,
-        disabled: Boolean(this.disabled || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.disabled))
+      var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.vBind), {}, {
+        disabled: Boolean(this.disabled || (conf === null || conf === void 0 ? void 0 : conf.disabled))
       });
+
+      if (form) {
+        var _conf$vBind;
+
+        p.is = (conf === null || conf === void 0 ? void 0 : (_conf$vBind = conf.vBind) === null || _conf$vBind === void 0 ? void 0 : _conf$vBind.is) || 'form';
+      }
+
+      if (field) {
+        var _conf$vBind2;
+
+        if (componentData === null || componentData === void 0 ? void 0 : componentData.errorProp) {
+          p[componentData.errorProp] = this.errors[conf.model];
+        }
+
+        p.type = (conf === null || conf === void 0 ? void 0 : (_conf$vBind2 = conf.vBind) === null || _conf$vBind2 === void 0 ? void 0 : _conf$vBind2.type) || FIELD.type.text;
+      }
+
+      return p;
     },
     removeAllErrors: function removeAllErrors() {
       var _this5 = this;
@@ -579,13 +597,13 @@ var FIELD = {
       });
     },
     typeCoercion: function typeCoercion(fieldConf) {
-      var _fieldConf$vBind2;
+      var _fieldConf$vBind;
 
       if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
         return;
       }
 
-      if ((fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.type) === FIELD.type.number && this.fields[fieldConf.model]) {
+      if ((fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) === FIELD.type.number && this.fields[fieldConf.model]) {
         this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
@@ -593,15 +611,20 @@ var FIELD = {
       return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn] : {};
     },
     componentName: function componentName(fieldConf) {
-      var _fieldConf$vBind3, _fieldConf$vBind4;
+      var _fieldConf$vBind2, _fieldConf$vBind4;
 
-      var fieldType = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type) || FIELD.type.text;
-      var component = this.components.find(function (_ref3) {
-        var types = _ref3.types;
-        return types.includes(fieldType);
+      if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is) {
+        var _fieldConf$vBind3;
+
+        return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.is;
+      }
+
+      var componentType = fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.type;
+      var componentData = this.components.find(function (_ref2) {
+        var types = _ref2.types;
+        return types.includes(componentType);
       });
-      var componentName = (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.is) || (component === null || component === void 0 ? void 0 : component.name);
-      return componentName;
+      return componentData === null || componentData === void 0 ? void 0 : componentData.name;
     },
     fieldConf: function fieldConf(model) {
       return this.allFieldsFlatObj[model];
@@ -826,16 +849,12 @@ var __vue_render__ = function __vue_render__() {
 
   var _c = _vm._self._c || _h;
 
-  return _c('form', {
+  return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: [_vm.CLASS.form],
-    on: {
-      "submit": function submit($event) {
-        $event.preventDefault();
-        return _vm.handleSubmit($event);
-      }
-    }
-  }, [_c('div', {
+    class: [_vm.CLASS.form]
+  }, 'component', _vm.componentProps(_vm.schema.form, {
+    form: _vm.schema.form
+  }), false), _vm.componentEvents(_vm.schema.form)), [_c('div', {
     class: [_vm.CLASS.header]
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
@@ -863,7 +882,9 @@ var __vue_render__ = function __vue_render__() {
         },
         expression: "fields[conf.model]"
       }
-    }, 'component', _vm.componentProps(conf), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
+    }, 'component', _vm.componentProps(conf, {
+      field: true
+    }), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(conf) ? _vm._t(_vm.SLOT.afterCol, null, {
       "models": _vm.slotProps(conf)
     }) : _vm._e()] : [_vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _vm._t(_vm.SLOT.beforeCol, null, {
@@ -880,7 +901,9 @@ var __vue_render__ = function __vue_render__() {
           },
           expression: "fields[subConf.model]"
         }
-      }, 'component', _vm.componentProps(subConf), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
+      }, 'component', _vm.componentProps(subConf, {
+        field: true
+      }), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2) : _vm._e(), _vm._v(" "), _vm.showCol(subConf) ? _vm._t(_vm.SLOT.afterCol, null, {
         "models": _vm.slotProps(subConf)
       }) : _vm._e()];
     })]], 2), _vm._v(" "), _vm._t(_vm.SLOT.rowEnd, null, {
@@ -902,7 +925,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-45eaa732";
+var __vue_module_identifier__ = "data-v-56defa29";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
