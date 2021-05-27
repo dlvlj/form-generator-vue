@@ -373,7 +373,8 @@ var FIELD = {
   mixins: [props],
   emits: ['input'],
   data: function data() {
-    var _this = this;
+    var _this = this,
+        _this$value3;
 
     var fields = {};
     var errors = {};
@@ -419,6 +420,7 @@ var FIELD = {
     }
 
     return {
+      form: (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3.form,
       fields: fields,
       errors: errors,
       submit: false
@@ -497,11 +499,11 @@ var FIELD = {
     },
     value: {
       handler: function handler() {
-        for (var model in (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) {
-          var _this$value3, _this$value4, _this$value4$VMODEL$f, _this$value5, _this$value5$VMODEL$e;
+        for (var model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
+          var _this$value4, _this$value5, _this$value5$VMODEL$f, _this$value6, _this$value6$VMODEL$e;
 
-          this.fields[model] = (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : (_this$value4$VMODEL$f = _this$value4[VMODEL.fields]) === null || _this$value4$VMODEL$f === void 0 ? void 0 : _this$value4$VMODEL$f[model];
-          this.errors[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$e = _this$value5[VMODEL.errors]) === null || _this$value5$VMODEL$e === void 0 ? void 0 : _this$value5$VMODEL$e[model];
+          this.fields[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$f = _this$value5[VMODEL.fields]) === null || _this$value5$VMODEL$f === void 0 ? void 0 : _this$value5$VMODEL$f[model];
+          this.errors[model] = (_this$value6 = this.value) === null || _this$value6 === void 0 ? void 0 : (_this$value6$VMODEL$e = _this$value6[VMODEL.errors]) === null || _this$value6$VMODEL$e === void 0 ? void 0 : _this$value6$VMODEL$e[model];
         }
       },
       deep: true
@@ -562,7 +564,9 @@ var FIELD = {
     emitData: function emitData() {
       var _this$$emit;
 
-      this.$emit('input', (_this$$emit = {}, _defineProperty(_this$$emit, VMODEL.fields, _objectSpread2({}, this.fields)), _defineProperty(_this$$emit, VMODEL.errors, _objectSpread2({}, this.errors)), _this$$emit));
+      this.$emit('input', (_this$$emit = {
+        form: this.form
+      }, _defineProperty(_this$$emit, VMODEL.fields, _objectSpread2({}, this.fields)), _defineProperty(_this$$emit, VMODEL.errors, _objectSpread2({}, this.errors)), _this$$emit));
     },
     resetForm: function resetForm() {
       this.submit = false;
@@ -929,7 +933,14 @@ var __vue_render__ = function __vue_render__() {
 
   return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: [_vm.CLASS.form]
+    class: [_vm.CLASS.form],
+    model: {
+      value: _vm.form,
+      callback: function callback($$v) {
+        _vm.form = $$v;
+      },
+      expression: "form"
+    }
   }, 'component', _vm.componentProps(_vm.schema.form, {
     form: _vm.schema.form
   }), false), _vm.componentEvents(_vm.schema.form, {
@@ -1005,7 +1016,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-6578e2c0";
+var __vue_module_identifier__ = "data-v-44ab9173";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

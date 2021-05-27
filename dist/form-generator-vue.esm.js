@@ -188,6 +188,8 @@ var script = {
   emits: ['input'],
 
   data() {
+    var _this$value3;
+
     const fields = {};
     const errors = {};
 
@@ -211,6 +213,7 @@ var script = {
     }
 
     return {
+      form: (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3.form,
       fields,
       errors,
       submit: false
@@ -268,11 +271,11 @@ var script = {
     },
     value: {
       handler() {
-        for (const model in (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) {
-          var _this$value3, _this$value4, _this$value4$VMODEL$f, _this$value5, _this$value5$VMODEL$e;
+        for (const model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
+          var _this$value4, _this$value5, _this$value5$VMODEL$f, _this$value6, _this$value6$VMODEL$e;
 
-          this.fields[model] = (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : (_this$value4$VMODEL$f = _this$value4[VMODEL.fields]) === null || _this$value4$VMODEL$f === void 0 ? void 0 : _this$value4$VMODEL$f[model];
-          this.errors[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$e = _this$value5[VMODEL.errors]) === null || _this$value5$VMODEL$e === void 0 ? void 0 : _this$value5$VMODEL$e[model];
+          this.fields[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$f = _this$value5[VMODEL.fields]) === null || _this$value5$VMODEL$f === void 0 ? void 0 : _this$value5$VMODEL$f[model];
+          this.errors[model] = (_this$value6 = this.value) === null || _this$value6 === void 0 ? void 0 : (_this$value6$VMODEL$e = _this$value6[VMODEL.errors]) === null || _this$value6$VMODEL$e === void 0 ? void 0 : _this$value6$VMODEL$e[model];
         }
       },
 
@@ -327,6 +330,7 @@ var script = {
 
     emitData() {
       this.$emit('input', {
+        form: this.form,
         [VMODEL.fields]: { ...this.fields
         },
         [VMODEL.errors]: { ...this.errors
@@ -674,7 +678,14 @@ var __vue_render__ = function () {
 
   return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: [_vm.CLASS.form]
+    class: [_vm.CLASS.form],
+    model: {
+      value: _vm.form,
+      callback: function ($$v) {
+        _vm.form = $$v;
+      },
+      expression: "form"
+    }
   }, 'component', _vm.componentProps(_vm.schema.form, {
     form: _vm.schema.form
   }), false), _vm.componentEvents(_vm.schema.form, {

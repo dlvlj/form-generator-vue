@@ -1,6 +1,7 @@
 <template>
   <component
     :is="componentName(schema.form)"
+    v-model="form"
     v-bind="componentProps(schema.form, {form: schema.form})"
     :class="[CLASS.form]"
     v-on="componentEvents(schema.form, {form: schema.form})"
@@ -130,6 +131,7 @@ export default {
   data() {
     const fields = {};
     const errors = {};
+
     const addFieldsAndErrors = (model) => {
       fields[model] = this.value?.[VMODEL.fields]?.[model] || '';
       errors[model] = this.value?.[VMODEL.errors]?.[model] || '';
@@ -146,6 +148,7 @@ export default {
     }
 
     return {
+      form: this.value?.form,
       fields,
       errors,
       submit: false,
@@ -240,7 +243,7 @@ export default {
       if (this.logs) { console.log(...items); }
     },
     emitData() {
-      this.$emit('input', { [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
+      this.$emit('input', { form: this.form, [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
     },
     resetForm() {
       this.submit = false;
