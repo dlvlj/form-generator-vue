@@ -192,7 +192,6 @@ var script = {
   data() {
     const fields = {};
     const errors = {};
-    const schemaValid = this.schemaValid();
 
     const addFieldsAndErrors = model => {
       var _this$value, _this$value$VMODEL$fi, _this$value2, _this$value2$VMODEL$e;
@@ -201,17 +200,16 @@ var script = {
       errors[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$e = _this$value2[VMODEL.errors]) === null || _this$value2$VMODEL$e === void 0 ? void 0 : _this$value2$VMODEL$e[model]) || '';
     };
 
-    if (schemaValid) {
-      this.schema[SCHEMA.fields].forEach(fieldConf => {
-        if (UTILS.isArr(fieldConf)) {
-          fieldConf.forEach(subFieldConf => {
-            addFieldsAndErrors(subFieldConf.model);
-          });
-          return;
+    for (const fieldConf of this.schema[SCHEMA.fields]) {
+      if (UTILS.isArr(fieldConf)) {
+        for (const subFieldConf of fieldConf) {
+          addFieldsAndErrors(subFieldConf.model);
         }
 
-        addFieldsAndErrors(fieldConf.model);
-      });
+        break;
+      }
+
+      addFieldsAndErrors(fieldConf.model);
     }
 
     return {
@@ -239,23 +237,22 @@ var script = {
       return UTILS.isArr((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : _this$schema[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
     },
 
-    allFieldsFlatArray() {
-      const arr = [];
-      this.allFieldsArray.forEach(fieldConf => {
+    allFieldsFlatObj() {
+      const obj = {};
+
+      for (const fieldConf of this.allFieldsArray) {
         if (UTILS.isArr(fieldConf)) {
-          fieldConf.forEach(subFieldConf => {
-            arr.push(subFieldConf);
-          });
-          return;
+          for (const subFieldConf of fieldConf) {
+            obj[subFieldConf.model] = subFieldConf;
+          }
+
+          break;
         }
 
-        arr.push(fieldConf);
-      });
-      return arr;
-    },
+        obj[fieldConf.model] = fieldConf;
+      }
 
-    allFieldsFlatObj() {
-      return Object.fromEntries(this.allFieldsFlatArray.map(fieldConf => [fieldConf.model, fieldConf]));
+      return obj;
     } // debounceValidateField() {
     //   return UTILS.debounce((model) => {
     //     this.validateField(model);
@@ -273,14 +270,12 @@ var script = {
     },
     value: {
       handler() {
-        var _this$value3;
-
-        Object.keys(((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) || {}).forEach(model => {
-          var _this$value4, _this$value4$VMODEL$f, _this$value5, _this$value5$VMODEL$e;
+        for (const model in (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) {
+          var _this$value3, _this$value4, _this$value4$VMODEL$f, _this$value5, _this$value5$VMODEL$e;
 
           this.fields[model] = (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : (_this$value4$VMODEL$f = _this$value4[VMODEL.fields]) === null || _this$value4$VMODEL$f === void 0 ? void 0 : _this$value4$VMODEL$f[model];
           this.errors[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$e = _this$value5[VMODEL.errors]) === null || _this$value5$VMODEL$e === void 0 ? void 0 : _this$value5$VMODEL$e[model];
-        });
+        }
       },
 
       deep: true
@@ -296,7 +291,7 @@ var script = {
   },
 
   created() {
-    Object.keys(this.fields).forEach(model => {
+    for (const model in this.fields) {
       const fieldConf = this.fieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
         this.typeCoercion(fieldConf); // when only data type is changed.
@@ -310,7 +305,19 @@ var script = {
       }, {
         deep: true
       });
-    });
+    } // Object.keys(this.fields).forEach((model) => {
+    //   const fieldConf = this.fieldConf(model);
+    //   this.$watch(`fields.${model}`, (newVal, oldVal) => {
+    //     this.typeCoercion(fieldConf);
+    //     // when only data type is changed.
+    //     if (newVal == oldVal && typeof newVal !== typeof oldVal) {
+    //       return;
+    //     }
+    //     // this.validate(fieldConf, true);
+    //     this.validateField(fieldConf);
+    //   }, { deep: true });
+    // });
+
   },
 
   methods: {
@@ -394,9 +401,9 @@ var script = {
     },
 
     removeAllErrors() {
-      Object.keys(this.errors).forEach(model => {
+      for (const model in this.errors) {
         this.errors[model] = '';
-      });
+      }
     },
 
     setError(model, err, noErr) {
@@ -516,15 +523,25 @@ var script = {
       // }
       // watcher handler end
       // On form submit
-      const fieldsStatus = {};
-      Object.values(this.allFieldsFlatObj).forEach(conf => {
+      const fieldsStatus = {}; // Object.values(this.allFieldsFlatObj).forEach((conf) => {
+      //   const err = this.validateField(conf);
+      //   fieldsStatus[conf.model] = {
+      //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
+      //     validationSuccess: !err,
+      //     schema: conf
+      //   };
+      // });
+
+      for (const model in this.allFieldsFlatObj) {
+        const conf = this.allFieldsFlatObj[model];
         const err = this.validateField(conf);
         fieldsStatus[conf.model] = {
           // validationSuccess: !err ? true : !this.fieldRequired(conf),
           validationSuccess: !err,
           schema: conf
         };
-      });
+      }
+
       const submitFail = Object.keys(fieldsStatus).find(model => !fieldsStatus[model].validationSuccess);
       return {
         fieldsStatus,

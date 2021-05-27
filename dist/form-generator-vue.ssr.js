@@ -379,7 +379,6 @@ var FIELD = {
 
     var fields = {};
     var errors = {};
-    var schemaValid = this.schemaValid();
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
       var _this$value, _this$value$VMODEL$fi, _this$value2, _this$value2$VMODEL$e;
@@ -388,17 +387,37 @@ var FIELD = {
       errors[model] = ((_this$value2 = _this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$e = _this$value2[VMODEL.errors]) === null || _this$value2$VMODEL$e === void 0 ? void 0 : _this$value2$VMODEL$e[model]) || '';
     };
 
-    if (schemaValid) {
-      this.schema[SCHEMA.fields].forEach(function (fieldConf) {
+    var _iterator = _createForOfIteratorHelper(this.schema[SCHEMA.fields]),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var fieldConf = _step.value;
+
         if (UTILS.isArr(fieldConf)) {
-          fieldConf.forEach(function (subFieldConf) {
-            addFieldsAndErrors(subFieldConf.model);
-          });
-          return;
+          var _iterator2 = _createForOfIteratorHelper(fieldConf),
+              _step2;
+
+          try {
+            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+              var subFieldConf = _step2.value;
+              addFieldsAndErrors(subFieldConf.model);
+            }
+          } catch (err) {
+            _iterator2.e(err);
+          } finally {
+            _iterator2.f();
+          }
+
+          break;
         }
 
         addFieldsAndErrors(fieldConf.model);
-      });
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
     }
 
     return {
@@ -428,24 +447,43 @@ var FIELD = {
 
       return UTILS.isArr((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : _this$schema[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
     },
-    allFieldsFlatArray: function allFieldsFlatArray() {
-      var arr = [];
-      this.allFieldsArray.forEach(function (fieldConf) {
-        if (UTILS.isArr(fieldConf)) {
-          fieldConf.forEach(function (subFieldConf) {
-            arr.push(subFieldConf);
-          });
-          return;
-        }
-
-        arr.push(fieldConf);
-      });
-      return arr;
-    },
     allFieldsFlatObj: function allFieldsFlatObj() {
-      return Object.fromEntries(this.allFieldsFlatArray.map(function (fieldConf) {
-        return [fieldConf.model, fieldConf];
-      }));
+      var obj = {};
+
+      var _iterator3 = _createForOfIteratorHelper(this.allFieldsArray),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var fieldConf = _step3.value;
+
+          if (UTILS.isArr(fieldConf)) {
+            var _iterator4 = _createForOfIteratorHelper(fieldConf),
+                _step4;
+
+            try {
+              for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+                var subFieldConf = _step4.value;
+                obj[subFieldConf.model] = subFieldConf;
+              }
+            } catch (err) {
+              _iterator4.e(err);
+            } finally {
+              _iterator4.f();
+            }
+
+            break;
+          }
+
+          obj[fieldConf.model] = fieldConf;
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+
+      return obj;
     } // debounceValidateField() {
     //   return UTILS.debounce((model) => {
     //     this.validateField(model);
@@ -461,15 +499,12 @@ var FIELD = {
     },
     value: {
       handler: function handler() {
-        var _this$value3,
-            _this2 = this;
+        for (var model in (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) {
+          var _this$value3, _this$value4, _this$value4$VMODEL$f, _this$value5, _this$value5$VMODEL$e;
 
-        Object.keys(((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3[VMODEL.fields]) || {}).forEach(function (model) {
-          var _this2$value, _this2$value$VMODEL$f, _this2$value2, _this2$value2$VMODEL$;
-
-          _this2.fields[model] = (_this2$value = _this2.value) === null || _this2$value === void 0 ? void 0 : (_this2$value$VMODEL$f = _this2$value[VMODEL.fields]) === null || _this2$value$VMODEL$f === void 0 ? void 0 : _this2$value$VMODEL$f[model];
-          _this2.errors[model] = (_this2$value2 = _this2.value) === null || _this2$value2 === void 0 ? void 0 : (_this2$value2$VMODEL$ = _this2$value2[VMODEL.errors]) === null || _this2$value2$VMODEL$ === void 0 ? void 0 : _this2$value2$VMODEL$[model];
-        });
+          this.fields[model] = (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : (_this$value4$VMODEL$f = _this$value4[VMODEL.fields]) === null || _this$value4$VMODEL$f === void 0 ? void 0 : _this$value4$VMODEL$f[model];
+          this.errors[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$e = _this$value5[VMODEL.errors]) === null || _this$value5$VMODEL$e === void 0 ? void 0 : _this$value5$VMODEL$e[model];
+        }
       },
       deep: true
     },
@@ -482,13 +517,13 @@ var FIELD = {
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this2 = this;
 
-    Object.keys(this.fields).forEach(function (model) {
-      var fieldConf = _this3.fieldConf(model);
+    var _loop = function _loop(model) {
+      var fieldConf = _this2.fieldConf(model);
 
-      _this3.$watch("fields.".concat(model), function (newVal, oldVal) {
-        _this3.typeCoercion(fieldConf); // when only data type is changed.
+      _this2.$watch("fields.".concat(model), function (newVal, oldVal) {
+        _this2.typeCoercion(fieldConf); // when only data type is changed.
 
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
@@ -496,11 +531,27 @@ var FIELD = {
         } // this.validate(fieldConf, true);
 
 
-        _this3.validateField(fieldConf);
+        _this2.validateField(fieldConf);
       }, {
         deep: true
       });
-    });
+    };
+
+    for (var model in this.fields) {
+      _loop(model);
+    } // Object.keys(this.fields).forEach((model) => {
+    //   const fieldConf = this.fieldConf(model);
+    //   this.$watch(`fields.${model}`, (newVal, oldVal) => {
+    //     this.typeCoercion(fieldConf);
+    //     // when only data type is changed.
+    //     if (newVal == oldVal && typeof newVal !== typeof oldVal) {
+    //       return;
+    //     }
+    //     // this.validate(fieldConf, true);
+    //     this.validateField(fieldConf);
+    //   }, { deep: true });
+    // });
+
   },
   methods: {
     logger: function logger(items) {
@@ -527,10 +578,10 @@ var FIELD = {
       return UTILS.isArr(fieldConf) ? this.showCols(fieldConf) : this.showCol(fieldConf);
     },
     showCols: function showCols(fieldConf) {
-      var _this4 = this;
+      var _this3 = this;
 
       return fieldConf.length && fieldConf.some(function (conf) {
-        return _this4.showCol(conf);
+        return _this3.showCol(conf);
       });
     },
     showCol: function showCol(fieldConf) {
@@ -577,11 +628,9 @@ var FIELD = {
       return p;
     },
     removeAllErrors: function removeAllErrors() {
-      var _this5 = this;
-
-      Object.keys(this.errors).forEach(function (model) {
-        _this5.errors[model] = '';
-      });
+      for (var model in this.errors) {
+        this.errors[model] = '';
+      }
     },
     setError: function setError(model, err, noErr) {
       if (UTILS.isBool(err) && err || !UTILS.isBool(err) && !err) {
@@ -653,12 +702,12 @@ var FIELD = {
       var res;
 
       if (UTILS.isArr(rules)) {
-        var _iterator = _createForOfIteratorHelper(rules),
-            _step;
+        var _iterator5 = _createForOfIteratorHelper(rules),
+            _step5;
 
         try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var rule = _step.value;
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var rule = _step5.value;
             // valid return values: string
             res = rule;
 
@@ -671,9 +720,9 @@ var FIELD = {
             }
           }
         } catch (err) {
-          _iterator.e(err);
+          _iterator5.e(err);
         } finally {
-          _iterator.f();
+          _iterator5.f();
         }
       }
 
@@ -690,8 +739,6 @@ var FIELD = {
       return err;
     },
     validateForm: function validateForm() {
-      var _this6 = this;
-
       // watcher handler
       // if (fieldConf && isWatcher) {
       // const fieldAv = fieldConf[FIELD.av] || this.globalAv;
@@ -704,16 +751,27 @@ var FIELD = {
       // }
       // watcher handler end
       // On form submit
-      var fieldsStatus = {};
-      Object.values(this.allFieldsFlatObj).forEach(function (conf) {
-        var err = _this6.validateField(conf);
+      var fieldsStatus = {}; // Object.values(this.allFieldsFlatObj).forEach((conf) => {
+      //   const err = this.validateField(conf);
+      //   fieldsStatus[conf.model] = {
+      //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
+      //     validationSuccess: !err,
+      //     schema: conf
+      //   };
+      // });
+
+      for (var model in this.allFieldsFlatObj) {
+        var conf = this.allFieldsFlatObj[model];
+
+        var _err = this.validateField(conf);
 
         fieldsStatus[conf.model] = {
           // validationSuccess: !err ? true : !this.fieldRequired(conf),
-          validationSuccess: !err,
+          validationSuccess: !_err,
           schema: conf
         };
-      });
+      }
+
       var submitFail = Object.keys(fieldsStatus).find(function (model) {
         return !fieldsStatus[model].validationSuccess;
       });
@@ -723,39 +781,39 @@ var FIELD = {
       };
     },
     handleSubmit: function handleSubmit() {
-      var _this7 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this7$validateForm, fieldsStatus, submitFail;
+        var _this4$validateForm, fieldsStatus, submitFail;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this7.submit = true;
-                _this7$validateForm = _this7.validateForm(), fieldsStatus = _this7$validateForm.fieldsStatus, submitFail = _this7$validateForm.submitFail;
+                _this4.submit = true;
+                _this4$validateForm = _this4.validateForm(), fieldsStatus = _this4$validateForm.fieldsStatus, submitFail = _this4$validateForm.submitFail;
 
-                _this7.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus]);
+                _this4.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus]);
 
                 if (!submitFail) {
                   _context.next = 8;
                   break;
                 }
 
-                _this7.resetForm();
+                _this4.resetForm();
 
                 _context.next = 7;
-                return _this7.onSubmitFail();
+                return _this4.onSubmitFail();
 
               case 7:
                 return _context.abrupt("return");
 
               case 8:
                 _context.next = 10;
-                return _this7.onSubmit();
+                return _this4.onSubmit();
 
               case 10:
-                _this7.resetForm();
+                _this4.resetForm();
 
               case 11:
               case "end":
@@ -926,7 +984,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-7dc0ad7a";
+var __vue_module_identifier__ = "data-v-36802d63";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
