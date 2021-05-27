@@ -197,8 +197,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     onSubmit: {
       type: Function,
       required: false,
-      default: function _default() {// console.warn('submit handler prop not present');
-      }
+      default: undefined
     },
     components: {
       type: Array,
@@ -228,8 +227,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     onSubmitFail: {
       type: Function,
       required: false,
-      default: function _default() {// console.warn('Form submit failed');
-      }
+      default: undefined
     },
     activeValidation: {
       type: Boolean,
@@ -610,9 +608,10 @@ var FIELD = {
       });
 
       if (form) {
-        var _conf$vBind;
+        var _conf$vBind, _conf$vOn;
 
         p.is = (conf === null || conf === void 0 ? void 0 : (_conf$vBind = conf.vBind) === null || _conf$vBind === void 0 ? void 0 : _conf$vBind.is) || 'form';
+        p.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.handleSubmit;
       }
 
       if (field) {
@@ -780,7 +779,7 @@ var FIELD = {
         submitFail: submitFail
       };
     },
-    handleSubmit: function handleSubmit() {
+    handleSubmit: function handleSubmit(e) {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -790,32 +789,43 @@ var FIELD = {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                e.preventDefault();
                 _this4.submit = true;
                 _this4$validateForm = _this4.validateForm(), fieldsStatus = _this4$validateForm.fieldsStatus, submitFail = _this4$validateForm.submitFail;
 
                 _this4.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus]);
 
                 if (!submitFail) {
-                  _context.next = 8;
+                  _context.next = 10;
                   break;
                 }
 
                 _this4.resetForm();
 
-                _context.next = 7;
+                if (!UTILS.isFunc(_this4.onSubmitFail)) {
+                  _context.next = 9;
+                  break;
+                }
+
+                _context.next = 9;
                 return _this4.onSubmitFail();
 
-              case 7:
+              case 9:
                 return _context.abrupt("return");
 
-              case 8:
-                _context.next = 10;
+              case 10:
+                if (!UTILS.isFunc(_this4.onSubmit)) {
+                  _context.next = 14;
+                  break;
+                }
+
+                _context.next = 13;
                 return _this4.onSubmit();
 
-              case 10:
+              case 13:
                 _this4.resetForm();
 
-              case 11:
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -984,7 +994,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-36802d63";
+var __vue_module_identifier__ = "data-v-6b787d71";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

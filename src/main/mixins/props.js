@@ -8,9 +8,7 @@ export default {
     onSubmit: {
       type: Function,
       required: false,
-      default: () => {
-        // console.warn('submit handler prop not present');
-      },
+      default: undefined
     },
     components: {
       type: Array,
@@ -34,9 +32,7 @@ export default {
     onSubmitFail: {
       type: Function,
       required: false,
-      default: () => {
-        // console.warn('Form submit failed');
-      },
+      default: undefined
     },
     activeValidation: {
       type: Boolean,

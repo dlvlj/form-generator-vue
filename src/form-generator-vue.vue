@@ -275,6 +275,7 @@ export default {
       };
       if (form) {
         p.is = conf?.vBind?.is || 'form';
+        p.submit = conf?.vOn?.submit || this.handleSubmit;
       }
       if (field) {
         if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
@@ -411,17 +412,22 @@ export default {
       );
       return { fieldsStatus, submitFail };
     },
-    async handleSubmit() {
+    async handleSubmit(e) {
+      e.preventDefault();
       this.submit = true;
       const { fieldsStatus, submitFail } = this.validateForm();
       this.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
       if (submitFail) {
         this.resetForm();
-        await this.onSubmitFail();
+        if (UTILS.isFunc(this.onSubmitFail)) {
+          await this.onSubmitFail();
+        }
         return;
       }
-      await this.onSubmit();
-      this.resetForm();
+      if (UTILS.isFunc(this.onSubmit)) {
+        await this.onSubmit();
+        this.resetForm();
+      }
     },
   },
 };

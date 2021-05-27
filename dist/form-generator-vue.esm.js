@@ -8,8 +8,7 @@ var props = {
     onSubmit: {
       type: Function,
       required: false,
-      default: () => {// console.warn('submit handler prop not present');
-      }
+      default: undefined
     },
     components: {
       type: Array,
@@ -33,8 +32,7 @@ var props = {
     onSubmitFail: {
       type: Function,
       required: false,
-      default: () => {// console.warn('Form submit failed');
-      }
+      default: undefined
     },
     activeValidation: {
       type: Boolean,
@@ -382,9 +380,10 @@ var script = {
       };
 
       if (form) {
-        var _conf$vBind;
+        var _conf$vBind, _conf$vOn;
 
         p.is = (conf === null || conf === void 0 ? void 0 : (_conf$vBind = conf.vBind) === null || _conf$vBind === void 0 ? void 0 : _conf$vBind.is) || 'form';
+        p.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.handleSubmit;
       }
 
       if (field) {
@@ -549,7 +548,8 @@ var script = {
       };
     },
 
-    async handleSubmit() {
+    async handleSubmit(e) {
+      e.preventDefault();
       this.submit = true;
       const {
         fieldsStatus,
@@ -559,12 +559,18 @@ var script = {
 
       if (submitFail) {
         this.resetForm();
-        await this.onSubmitFail();
+
+        if (UTILS.isFunc(this.onSubmitFail)) {
+          await this.onSubmitFail();
+        }
+
         return;
       }
 
-      await this.onSubmit();
-      this.resetForm();
+      if (UTILS.isFunc(this.onSubmit)) {
+        await this.onSubmit();
+        this.resetForm();
+      }
     }
 
   }
