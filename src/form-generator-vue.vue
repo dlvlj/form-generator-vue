@@ -3,7 +3,7 @@
     :is="componentName(schema.form)"
     v-bind="componentProps(schema.form, {form: schema.form})"
     :class="[CLASS.form]"
-    v-on="componentEvents(schema.form)"
+    v-on="componentEvents(schema.form, {form: schema.form})"
   >
     <!-- header -->
     <div :class="[CLASS.header]">
@@ -275,7 +275,6 @@ export default {
       };
       if (form) {
         p.is = conf?.vBind?.is || 'form';
-        p.submit = conf?.vOn?.submit || this.handleSubmit;
       }
       if (field) {
         if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
@@ -308,10 +307,13 @@ export default {
         this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
-    componentEvents(fieldConf) {
-      return UTILS.isObj(fieldConf?.[FIELD.vOn])
-        ? fieldConf?.[FIELD.vOn]
-        : {};
+    componentEvents(conf, options = {}) {
+      const { form } = options;
+      const e = conf?.[FIELD.vOn] || {};
+      if (form) {
+        e.submit = conf?.vOn?.submit || this.handleSubmit;
+      }
+      return e;
     },
     componentName(fieldConf) {
       if (fieldConf?.vBind?.is) {

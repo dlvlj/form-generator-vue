@@ -608,10 +608,9 @@ var FIELD = {
       });
 
       if (form) {
-        var _conf$vBind, _conf$vOn;
+        var _conf$vBind;
 
         p.is = (conf === null || conf === void 0 ? void 0 : (_conf$vBind = conf.vBind) === null || _conf$vBind === void 0 ? void 0 : _conf$vBind.is) || 'form';
-        p.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.handleSubmit;
       }
 
       if (field) {
@@ -655,8 +654,18 @@ var FIELD = {
         this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
       }
     },
-    componentEvents: function componentEvents(fieldConf) {
-      return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn] : {};
+    componentEvents: function componentEvents(conf) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var form = options.form;
+      var e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.vOn]) || {};
+
+      if (form) {
+        var _conf$vOn;
+
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.handleSubmit;
+      }
+
+      return e;
     },
     componentName: function componentName(fieldConf) {
       var _fieldConf$vBind2;
@@ -923,7 +932,9 @@ var __vue_render__ = function __vue_render__() {
     class: [_vm.CLASS.form]
   }, 'component', _vm.componentProps(_vm.schema.form, {
     form: _vm.schema.form
-  }), false), _vm.componentEvents(_vm.schema.form)), [_c('div', {
+  }), false), _vm.componentEvents(_vm.schema.form, {
+    form: _vm.schema.form
+  })), [_c('div', {
     class: [_vm.CLASS.header]
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
@@ -994,7 +1005,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-6b787d71";
+var __vue_module_identifier__ = "data-v-6578e2c0";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
