@@ -310,8 +310,8 @@ export default {
       if (fieldConf?.vBind?.is) {
         return fieldConf?.vBind?.is;
       }
-      const componentType = fieldConf?.vBind?.type;
-      const componentData = this.components.find(({ types }) => types.includes(componentType));
+      const componentData = this.components
+        .find(({ types }) => types.includes(fieldConf?.vBind?.type));
       return componentData?.name;
     },
     fieldConf(model) {

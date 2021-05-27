@@ -429,7 +429,7 @@ var script = {
     },
 
     componentName(fieldConf) {
-      var _fieldConf$vBind2, _fieldConf$vBind4;
+      var _fieldConf$vBind2;
 
       if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is) {
         var _fieldConf$vBind3;
@@ -437,10 +437,13 @@ var script = {
         return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.is;
       }
 
-      const componentType = fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.type;
       const componentData = this.components.find(({
         types
-      }) => types.includes(componentType));
+      }) => {
+        var _fieldConf$vBind4;
+
+        return types.includes(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.type);
+      });
       return componentData === null || componentData === void 0 ? void 0 : componentData.name;
     },
 

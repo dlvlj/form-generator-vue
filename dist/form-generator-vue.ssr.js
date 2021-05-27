@@ -611,7 +611,7 @@ var FIELD = {
       return UTILS.isObj(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn]) ? fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.vOn] : {};
     },
     componentName: function componentName(fieldConf) {
-      var _fieldConf$vBind2, _fieldConf$vBind4;
+      var _fieldConf$vBind2;
 
       if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is) {
         var _fieldConf$vBind3;
@@ -619,10 +619,11 @@ var FIELD = {
         return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.is;
       }
 
-      var componentType = fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.type;
       var componentData = this.components.find(function (_ref2) {
+        var _fieldConf$vBind4;
+
         var types = _ref2.types;
-        return types.includes(componentType);
+        return types.includes(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.type);
       });
       return componentData === null || componentData === void 0 ? void 0 : componentData.name;
     },
@@ -925,7 +926,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-56defa29";
+var __vue_module_identifier__ = "data-v-7dc0ad7a";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
