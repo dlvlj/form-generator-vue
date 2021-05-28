@@ -13,102 +13,52 @@
     <!-- body -->
     <div :class="[CLASS.body]">
       <template v-for="(conf, i) in allFieldsArray">
-        <slot
-          v-if="showRow(conf)"
-          :name="SLOT.beforeRow"
-          :models="slotProps(conf)"
-        />
-        <!-- ROW -->
-        <div
+        <Row
           v-if="showRow(conf)"
           :key="i"
-          :class="[CLASS.row, classes.row]"
-        >
-          <slot
-            :name="SLOT.rowStart"
-            :models="slotProps(conf)"
-          />
-          <div :class="[CLASS.colContainer]">
-            <!-- COL -->
-            <template v-if="!UTILS.isArr(conf)">
-              <slot
-                v-if="showCol(conf)"
-                :name="SLOT.beforeCol"
-                :models="slotProps(conf)"
-              />
-              <div
-                v-if="showCol(conf)"
-                :key="conf.model"
-                :class="[
-                  CLASS.col,
-                  conf.model,
-                  classes.col,
-                ]"
-              >
-                <slot :name="SLOT.beforeComponent(conf.model)" />
-                <component
-                  :is="componentName(conf)"
-                  v-model="fields[conf.model]"
-                  v-bind="componentProps(conf, {field: true})"
-                  v-on="componentEvents(conf)"
-                >
-                  <slot :name="conf.model" />
-                </component>
-                <slot :name="SLOT.afterComponent(conf.model)" />
-              </div>
-              <slot
-                v-if="showCol(conf)"
-                :name="SLOT.afterCol"
-                :models="slotProps(conf)"
-              />
-            </template>
-
-            <!-- MULTIPLE COLS -->
-            <template v-else>
-              <template v-for="subConf in conf">
-                <slot
-                  v-if="showCol(subConf)"
-                  :name="SLOT.beforeCol"
-                  :models="slotProps(subConf)"
-                />
-                <div
-                  v-if="showCol(subConf)"
-                  :key="subConf.model"
-                  :class="[
-                    CLASS.col,
-                    subConf.model,
-                    classes.col,
-                  ]"
-                >
-                  <slot :name="SLOT.beforeComponent(subConf.model)" />
-                  <component
-                    :is="componentName(subConf)"
-                    v-model="fields[subConf.model]"
-                    v-bind="componentProps(subConf, {field: true})"
-                    v-on="componentEvents(subConf)"
-                  >
-                    <slot :name="subConf.model" />
-                  </component>
-                  <slot :name="SLOT.afterComponent(subConf.model)" />
-                </div>
-                <slot
-                  v-if="showCol(subConf)"
-                  :name="SLOT.afterCol"
-                  :models="slotProps(subConf)"
-                />
-              </template>
-            </template>
-          </div>
-          <slot
-            :name="SLOT.rowEnd"
-            :models="slotProps(conf)"
-          />
-        </div>
-        <slot
-          v-if="showRow(conf)"
-          :name="SLOT.afterRow"
           :models="slotProps(conf)"
-        />
+          :classes="classes"
+        >
+          <!-- single column -->
+          <template v-if="!UTILS.isArr(conf)">
+            <Column
+              v-if="showCol(conf)"
+              :key="conf.model"
+              :models="slotProps(conf)"
+              :classes="classes"
+            >
+              <component
+                :is="componentName(conf)"
+                v-model="fields[conf.model]"
+                v-bind="componentProps(conf, {field: true})"
+                v-on="componentEvents(conf)"
+              >
+                <slot :name="conf.model" />
+              </component>
+            </Column>
+          </template>
+          <!-- multiple columns -->
+          <template
+            v-for="(subConf) in conf"
+            v-else
+          >
+            <Column
+              v-if="showCol(subConf)"
+              :key="subConf.model"
+              :models="slotProps(conf)"
+              :classes="classes"
+            >
+              <component
+                :is="componentName(subConf)"
+                v-model="fields[subConf.model]"
+                v-bind="componentProps(subConf, {field: true})"
+                v-on="componentEvents(subConf)"
+              >
+                <slot :name="subConf.model" />
+              </component>
+            </Column>
+          </template>
+        </Row>
       </template>
     </div>
     <!-- footer -->
@@ -119,14 +69,21 @@
 </template>
 
 <script>
+import Row from './main/components/Row.vue';
+import Column from './main/components/Column.vue';
 import props from './main/mixins/props';
+import constants from './main/mixins/constants';
 import UTILS from './main/utils';
 import {
-  SLOT, CLASS, SCHEMA, VMODEL, FIELD,
+  SCHEMA, VMODEL, FIELD,
 } from './main/utils/constants';
 
 export default {
-  mixins: [props],
+  components: {
+    Row,
+    Column
+  },
+  mixins: [props, constants],
   emits: ['input'],
   data() {
     const fields = {};
@@ -155,9 +112,9 @@ export default {
     };
   },
   computed: {
-    SLOT: () => SLOT,
-    CLASS: () => CLASS,
-    UTILS: () => UTILS,
+    // SLOT: () => SLOT,
+    // CLASS: () => CLASS,
+    // UTILS: () => UTILS,
     globalAv() {
       return this.activeValidation || false;
     },
@@ -248,14 +205,10 @@ export default {
     resetForm() {
       this.submit = false;
     },
-    schemaValid() {
-      return UTILS.isArr(this.schema?.[SCHEMA.fields]) && this.schema?.[SCHEMA.fields]?.length;
-    },
     showRow(fieldConf) {
-      return UTILS.isArr(fieldConf) ? this.showCols(fieldConf) : this.showCol(fieldConf);
-    },
-    showCols(fieldConf) {
-      return fieldConf.length && fieldConf.some((conf) => this.showCol(conf));
+      return UTILS.isArr(fieldConf)
+        ? fieldConf.length && fieldConf.some((conf) => this.showCol(conf))
+        : this.showCol(fieldConf);
     },
     showCol(fieldConf) {
       return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
@@ -290,11 +243,11 @@ export default {
         this.errors[model] = '';
       }
     },
-    setError(model, err, noErr) {
-      if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
-        this.errors[model] = noErr;
-        return;
-      }
+    setError(model, err) {
+      // if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
+      //   this.errors[model] = noErr;
+      //   return;
+      // }
       this.errors[model] = err;
     },
     componentData(name) {
@@ -349,7 +302,7 @@ export default {
         ? fieldConf.vBind?.[FIELD.vBind.hidden]
         : !HIDDEN;
     },
-    runFieldRules(noErr, rules, val) {
+    runFieldRules(rules, val) {
       let res;
       if (UTILS.isArr(rules)) {
         for (const rule of rules) {
@@ -363,18 +316,18 @@ export default {
           }
         }
       }
-      return UTILS.isStr(res) ? res : noErr;
+      return res;
     },
     validateField(fieldConf) {
       const NO_ERR = '';
       // const fieldRequired = this.fieldRequired(fieldConf);
       const err = this.submit || fieldConf?.[FIELD.av] || this.globalAv
-        ? this.runFieldRules(NO_ERR, fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
+        ? this.runFieldRules(fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
         : NO_ERR;
       // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
-      this.setError(fieldConf.model, err, NO_ERR);
+      this.setError(fieldConf.model, err);
       return err;
     },
     validateForm() {

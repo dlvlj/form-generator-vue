@@ -1,12 +1,13 @@
 export const HELPER_COMPONENT = '_helper';
 export const CLASS = {
   form: 'fgv-form',
-  header: 'fgv-form__header',
-  body: 'fgv-form__body',
-  footer: 'fgv-form__footer',
-  row: 'fgv-form__body__row',
-  colContainer: 'fgv-form__body__row__col-container',
-  col: 'fgv-form__body__row__col-container__col',
+  header: 'fgv-header',
+  body: 'fgv-body',
+  footer: 'fgv-footer',
+  row: 'fgv-row',
+  rowContainer: 'fgv-row-container',
+  colContainer: 'fgv-col-container',
+  col: 'fgv-col',
 };
 
 export const SLOT = {
