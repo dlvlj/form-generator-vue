@@ -423,12 +423,11 @@ var script$2 = {
       if (UTILS.isArr(fieldConf)) {
         for (const subFieldConf of fieldConf) {
           addFieldsAndErrors(subFieldConf.model);
-        }
+        } // break;
 
-        break;
+      } else {
+        addFieldsAndErrors(fieldConf.model);
       }
-
-      addFieldsAndErrors(fieldConf.model);
     }
 
     return {
@@ -463,12 +462,11 @@ var script$2 = {
         if (UTILS.isArr(fieldConf)) {
           for (const subFieldConf of fieldConf) {
             obj[subFieldConf.model] = subFieldConf;
-          }
+          } // break;
 
-          break;
+        } else {
+          obj[fieldConf.model] = fieldConf;
         }
-
-        obj[fieldConf.model] = fieldConf;
       }
 
       return obj;

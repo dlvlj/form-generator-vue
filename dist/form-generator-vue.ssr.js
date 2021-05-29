@@ -617,17 +617,16 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var subFieldConf = _step2.value;
               addFieldsAndErrors(subFieldConf.model);
-            }
+            } // break;
+
           } catch (err) {
             _iterator2.e(err);
           } finally {
             _iterator2.f();
           }
-
-          break;
+        } else {
+          addFieldsAndErrors(fieldConf.model);
         }
-
-        addFieldsAndErrors(fieldConf.model);
       }
     } catch (err) {
       _iterator.e(err);
@@ -675,17 +674,16 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
               for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
                 var subFieldConf = _step4.value;
                 obj[subFieldConf.model] = subFieldConf;
-              }
+              } // break;
+
             } catch (err) {
               _iterator4.e(err);
             } finally {
               _iterator4.f();
             }
-
-            break;
+          } else {
+            obj[fieldConf.model] = fieldConf;
           }
-
-          obj[fieldConf.model] = fieldConf;
         }
       } catch (err) {
         _iterator3.e(err);
@@ -1135,7 +1133,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-664e1bc8";
+var __vue_module_identifier__$2 = "data-v-21566f68";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

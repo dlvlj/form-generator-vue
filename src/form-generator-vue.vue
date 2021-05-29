@@ -99,9 +99,8 @@ export default {
         for (const subFieldConf of fieldConf) {
           addFieldsAndErrors(subFieldConf.model);
         }
-        break;
-      }
-      addFieldsAndErrors(fieldConf.model);
+        // break;
+      } else { addFieldsAndErrors(fieldConf.model); }
     }
 
     return {
@@ -134,9 +133,8 @@ export default {
           for (const subFieldConf of fieldConf) {
             obj[subFieldConf.model] = subFieldConf;
           }
-          break;
-        }
-        obj[fieldConf.model] = fieldConf;
+          // break;
+        } else { obj[fieldConf.model] = fieldConf; }
       }
       return obj;
     },
