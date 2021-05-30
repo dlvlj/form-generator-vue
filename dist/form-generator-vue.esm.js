@@ -708,7 +708,7 @@ var script$2 = {
             res = UTILS.handleFunc(rule, val);
           }
 
-          if (UTILS.isStr(res)) {
+          if (![undefined, null, true].includes(res)) {
             break;
           }
         }
