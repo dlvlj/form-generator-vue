@@ -107,7 +107,7 @@ export default {
       form,
       fields,
       errors,
-      submit: false,
+      submitClick: false,
     };
   },
   computed: {
@@ -206,7 +206,7 @@ export default {
       this.$emit('input', { form: this.form, [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
     },
     resetForm() {
-      this.submit = false;
+      this.submitClick = false;
     },
     showRow(conf) {
       return UTILS.isArr(conf)
@@ -334,7 +334,7 @@ export default {
     validateField(conf) {
       const NO_ERR = '';
       // const fieldRequired = this.fieldRequired(fieldConf);
-      const err = conf?.[FIELD.av] || this.activeValidation || this.submit
+      const err = conf?.[FIELD.av] || this.activeValidation || this.submitClick
         ? this.runFieldRules(this.fields[conf.model], conf?.[FIELD.rules])
         : NO_ERR;
       // if (!fieldRequired) {
@@ -384,13 +384,15 @@ export default {
       return { fieldsStatus, submitFail };
     },
     async handleSubmit(e) {
-      e.preventDefault();
-      this.submit = true;
+      e?.preventDefault();
+      this.submitClick = true;
       const { fieldsStatus, submitFail } = this.validateForm();
       UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], { show: this.logs });
       if (submitFail) {
         this.resetForm();
-        await this.submitFail();
+        if (this.submitFail) {
+          await this.submitFail();
+        }
         return;
       }
       await this.submit();

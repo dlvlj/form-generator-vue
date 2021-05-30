@@ -657,7 +657,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       form: form,
       fields: fields,
       errors: errors,
-      submit: false
+      submitClick: false
     };
   },
   computed: {
@@ -797,7 +797,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       }, _defineProperty(_this$$emit, VMODEL.fields, _objectSpread2({}, this.fields)), _defineProperty(_this$$emit, VMODEL.errors, _objectSpread2({}, this.errors)), _this$$emit));
     },
     resetForm: function resetForm() {
-      this.submit = false;
+      this.submitClick = false;
     },
     showRow: function showRow(conf) {
       var _this3 = this;
@@ -979,7 +979,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     validateField: function validateField(conf) {
       var NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      var err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
+      var err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submitClick ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -1038,34 +1038,39 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                e.preventDefault();
-                _this5.submit = true;
+                e === null || e === void 0 ? void 0 : e.preventDefault();
+                _this5.submitClick = true;
                 _this5$validateForm = _this5.validateForm(), fieldsStatus = _this5$validateForm.fieldsStatus, submitFail = _this5$validateForm.submitFail;
                 UTILS.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus], {
                   show: _this5.logs
                 });
 
                 if (!submitFail) {
-                  _context.next = 9;
+                  _context.next = 10;
                   break;
                 }
 
                 _this5.resetForm();
 
-                _context.next = 8;
+                if (!_this5.submitFail) {
+                  _context.next = 9;
+                  break;
+                }
+
+                _context.next = 9;
                 return _this5.submitFail();
 
-              case 8:
+              case 9:
                 return _context.abrupt("return");
 
-              case 9:
-                _context.next = 11;
+              case 10:
+                _context.next = 12;
                 return _this5.submit();
 
-              case 11:
+              case 12:
                 _this5.resetForm();
 
-              case 12:
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -1161,7 +1166,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-30eb46dd";
+var __vue_module_identifier__$2 = "data-v-5ea53082";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

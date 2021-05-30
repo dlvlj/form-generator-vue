@@ -447,7 +447,7 @@ var script$2 = {
       form,
       fields,
       errors,
-      submit: false
+      submitClick: false
     };
   },
 
@@ -566,7 +566,7 @@ var script$2 = {
     },
 
     resetForm() {
-      this.submit = false;
+      this.submitClick = false;
     },
 
     showRow(conf) {
@@ -745,7 +745,7 @@ var script$2 = {
     validateField(conf) {
       const NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      const err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
+      const err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submitClick ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -793,8 +793,8 @@ var script$2 = {
     },
 
     async handleSubmit(e) {
-      e.preventDefault();
-      this.submit = true;
+      e === null || e === void 0 ? void 0 : e.preventDefault();
+      this.submitClick = true;
       const {
         fieldsStatus,
         submitFail
@@ -805,7 +805,11 @@ var script$2 = {
 
       if (submitFail) {
         this.resetForm();
-        await this.submitFail();
+
+        if (this.submitFail) {
+          await this.submitFail();
+        }
+
         return;
       }
 
