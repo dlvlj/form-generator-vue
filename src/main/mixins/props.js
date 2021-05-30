@@ -5,7 +5,7 @@ export default {
       default: null,
       required: false,
     },
-    onSubmit: {
+    submit: {
       type: Function,
       required: false,
       default: undefined
@@ -29,7 +29,7 @@ export default {
       required: false,
       default: () => ({}),
     },
-    onSubmitFail: {
+    submitFail: {
       type: Function,
       required: false,
       default: undefined

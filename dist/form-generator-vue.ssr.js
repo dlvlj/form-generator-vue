@@ -549,7 +549,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       default: null,
       required: false
     },
-    onSubmit: {
+    submit: {
       type: Function,
       required: false,
       default: undefined
@@ -579,7 +579,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
         return {};
       }
     },
-    onSubmitFail: {
+    submitFail: {
       type: Function,
       required: false,
       default: undefined
@@ -896,7 +896,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       if (form) {
         var _conf$vOn;
 
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.onSubmit && this.handleSubmit || function (ev) {
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.submit && this.handleSubmit || function (ev) {
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
           UTILS.logger(['submit handler not present.\n'], {
             warn: true,
@@ -1046,36 +1046,26 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
                 });
 
                 if (!submitFail) {
-                  _context.next = 10;
-                  break;
-                }
-
-                _this5.resetForm();
-
-                if (!UTILS.isFunc(_this5.onSubmitFail)) {
                   _context.next = 9;
                   break;
                 }
 
-                _context.next = 9;
-                return _this5.onSubmitFail();
-
-              case 9:
-                return _context.abrupt("return");
-
-              case 10:
-                if (!UTILS.isFunc(_this5.onSubmit)) {
-                  _context.next = 14;
-                  break;
-                }
-
-                _context.next = 13;
-                return _this5.onSubmit();
-
-              case 13:
                 _this5.resetForm();
 
-              case 14:
+                _context.next = 8;
+                return _this5.submitFail();
+
+              case 8:
+                return _context.abrupt("return");
+
+              case 9:
+                _context.next = 11;
+                return _this5.submit();
+
+              case 11:
+                _this5.resetForm();
+
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -1171,7 +1161,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-5a7817f8";
+var __vue_module_identifier__$2 = "data-v-30eb46dd";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

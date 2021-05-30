@@ -363,7 +363,7 @@ var props = {
       default: null,
       required: false
     },
-    onSubmit: {
+    submit: {
       type: Function,
       required: false,
       default: undefined
@@ -387,7 +387,7 @@ var props = {
       required: false,
       default: () => ({})
     },
-    onSubmitFail: {
+    submitFail: {
       type: Function,
       required: false,
       default: undefined
@@ -666,7 +666,7 @@ var script$2 = {
       if (form) {
         var _conf$vOn;
 
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.onSubmit && this.handleSubmit || (ev => {
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.submit && this.handleSubmit || (ev => {
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
           UTILS.logger(['submit handler not present.\n'], {
             warn: true,
@@ -805,18 +805,12 @@ var script$2 = {
 
       if (submitFail) {
         this.resetForm();
-
-        if (UTILS.isFunc(this.onSubmitFail)) {
-          await this.onSubmitFail();
-        }
-
+        await this.submitFail();
         return;
       }
 
-      if (UTILS.isFunc(this.onSubmit)) {
-        await this.onSubmit();
-        this.resetForm();
-      }
+      await this.submit();
+      this.resetForm();
     }
 
   }

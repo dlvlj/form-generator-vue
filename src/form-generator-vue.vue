@@ -279,7 +279,7 @@ export default {
       const e = conf?.[FIELD.vOn] || {};
       if (form) {
         e.submit = conf?.vOn?.submit
-        || (this.onSubmit && this.handleSubmit)
+        || (this.submit && this.handleSubmit)
         || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this.logs }); });
       }
       return e;
@@ -390,15 +390,11 @@ export default {
       UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], { show: this.logs });
       if (submitFail) {
         this.resetForm();
-        if (UTILS.isFunc(this.onSubmitFail)) {
-          await this.onSubmitFail();
-        }
+        await this.submitFail();
         return;
       }
-      if (UTILS.isFunc(this.onSubmit)) {
-        await this.onSubmit();
-        this.resetForm();
-      }
+      await this.submit();
+      this.resetForm();
     },
   },
 };
