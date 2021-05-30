@@ -241,11 +241,11 @@ export default {
       }
       return p;
     },
-    removeAllErrors() {
-      for (const model in this.errors) {
-        this.errors[model] = '';
-      }
-    },
+    // removeAllErrors() {
+    //   for (const model in this.errors) {
+    //     this.errors[model] = '';
+    //   }
+    // },
     setError(model, err) {
       // if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
       //   this.errors[model] = noErr;

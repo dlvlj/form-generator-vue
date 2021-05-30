@@ -851,11 +851,11 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
       return p;
     },
-    removeAllErrors: function removeAllErrors() {
-      for (var model in this.errors) {
-        this.errors[model] = '';
-      }
-    },
+    // removeAllErrors() {
+    //   for (const model in this.errors) {
+    //     this.errors[model] = '';
+    //   }
+    // },
     setError: function setError(model, err) {
       // if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
       //   this.errors[model] = noErr;
@@ -1171,7 +1171,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-aaef46dc";
+var __vue_module_identifier__$2 = "data-v-244e40c0";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
