@@ -245,7 +245,7 @@ export default {
       //   this.errors[model] = noErr;
       //   return;
       // }
-      this.errors[model] = err;
+      this.errors[model] = !UTILS.isUndef(err) ? err : '';
     },
     componentData(name) {
       return this.components.find(

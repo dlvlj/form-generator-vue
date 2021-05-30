@@ -615,7 +615,7 @@ var script$2 = {
       //   this.errors[model] = noErr;
       //   return;
       // }
-      this.errors[model] = err;
+      this.errors[model] = !UTILS.isUndef(err) ? err : '';
     },
 
     componentData(name) {

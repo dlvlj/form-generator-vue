@@ -838,7 +838,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       //   this.errors[model] = noErr;
       //   return;
       // }
-      this.errors[model] = err;
+      this.errors[model] = !UTILS.isUndef(err) ? err : '';
     },
     componentData: function componentData(name) {
       return this.components.find(function (component) {
@@ -1132,7 +1132,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-1d19fabb";
+var __vue_module_identifier__$2 = "data-v-411ad434";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
