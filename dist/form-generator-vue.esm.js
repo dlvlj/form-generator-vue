@@ -454,10 +454,9 @@ var script$2 = {
     // SLOT: () => SLOT,
     // CLASS: () => CLASS,
     // UTILS: () => UTILS,
-    globalAv() {
-      return this.activeValidation || false;
-    },
-
+    // globalAv() {
+    //   return this.activeValidation || false;
+    // },
     // globalAvDelay() {
     //   return this.activeValidationDelay || 0;
     // },
@@ -734,7 +733,7 @@ var script$2 = {
     validateField(conf) {
       const NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      const err = this.submit || (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.globalAv ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
+      const err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 

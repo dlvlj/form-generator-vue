@@ -115,9 +115,9 @@ export default {
     // SLOT: () => SLOT,
     // CLASS: () => CLASS,
     // UTILS: () => UTILS,
-    globalAv() {
-      return this.activeValidation || false;
-    },
+    // globalAv() {
+    //   return this.activeValidation || false;
+    // },
     // globalAvDelay() {
     //   return this.activeValidationDelay || 0;
     // },
@@ -325,7 +325,7 @@ export default {
     validateField(conf) {
       const NO_ERR = '';
       // const fieldRequired = this.fieldRequired(fieldConf);
-      const err = this.submit || conf?.[FIELD.av] || this.globalAv
+      const err = conf?.[FIELD.av] || this.activeValidation || this.submit
         ? this.runFieldRules(conf?.[FIELD.rules], this.fields[conf.model])
         : NO_ERR;
       // if (!fieldRequired) {

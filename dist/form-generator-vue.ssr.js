@@ -661,9 +661,9 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     // SLOT: () => SLOT,
     // CLASS: () => CLASS,
     // UTILS: () => UTILS,
-    globalAv: function globalAv() {
-      return this.activeValidation || false;
-    },
+    // globalAv() {
+    //   return this.activeValidation || false;
+    // },
     // globalAvDelay() {
     //   return this.activeValidationDelay || 0;
     // },
@@ -963,7 +963,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     validateField: function validateField(conf) {
       var NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      var err = this.submit || (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.globalAv ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
+      var err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -1153,7 +1153,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-34571df0";
+var __vue_module_identifier__$2 = "data-v-06373542";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
