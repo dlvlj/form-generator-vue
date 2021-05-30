@@ -193,16 +193,6 @@ export default {
     // });
   },
   methods: {
-    logger(items, options = {}) {
-      const { warn } = options;
-      if (this.logs) {
-        if (warn) {
-          console.warn(...items);
-          return;
-        }
-        console.log(...items);
-      }
-    },
     emitData() {
       this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
     },
@@ -281,7 +271,7 @@ export default {
       if (form) {
         e.submit = conf?.vOn?.submit
         || (this.onSubmit && this.handleSubmit)
-        || ((ev) => { ev?.preventDefault(); this.logger(['submit handler not present.\n'], { warn: true }); });
+        || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true }); });
       }
       return e;
     },
@@ -388,7 +378,7 @@ export default {
       e.preventDefault();
       this.submit = true;
       const { fieldsStatus, submitFail } = this.validateForm();
-      this.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
+      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
       if (submitFail) {
         this.resetForm();
         if (UTILS.isFunc(this.onSubmitFail)) {

@@ -39,10 +39,6 @@ const UTILS = {
     throw new Error(msg);
   },
 
-  warn(msg) {
-    console.warn(msg);
-  },
-
   hasProperty(children, parent) {
     if (!UTILS.isArr(children)) {
       return children in parent;
@@ -76,6 +72,21 @@ const UTILS = {
         func(data);
       }, time);
     };
+  },
+
+  logger(items, options = {}) {
+    const {
+      warn
+    } = options;
+
+    if (this.logs) {
+      if (warn) {
+        console.warn(...items);
+        return;
+      }
+
+      console.log(...items);
+    }
   }
 
 };
@@ -535,21 +546,6 @@ var script$2 = {
   },
 
   methods: {
-    logger(items, options = {}) {
-      const {
-        warn
-      } = options;
-
-      if (this.logs) {
-        if (warn) {
-          console.warn(...items);
-          return;
-        }
-
-        console.log(...items);
-      }
-    },
-
     emitData() {
       this.$emit('input', {
         form: this.form,
@@ -662,7 +658,7 @@ var script$2 = {
 
         e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.onSubmit && this.handleSubmit || (ev => {
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
-          this.logger(['submit hadler not present.\n'], {
+          UTILS.logger(['submit handler not present.\n'], {
             warn: true
           });
         });
@@ -792,7 +788,7 @@ var script$2 = {
         fieldsStatus,
         submitFail
       } = this.validateForm();
-      this.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
+      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
 
       if (submitFail) {
         this.resetForm();

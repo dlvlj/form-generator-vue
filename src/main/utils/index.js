@@ -29,9 +29,6 @@ const UTILS = {
   throwError(msg) {
     throw new Error(msg);
   },
-  warn(msg) {
-    console.warn(msg);
-  },
   hasProperty(children, parent) {
     if (!UTILS.isArr(children)) {
       return children in parent;
@@ -59,6 +56,16 @@ const UTILS = {
         func(data);
       }, time);
     };
+  },
+  logger(items, options = {}) {
+    const { warn } = options;
+    if (this.logs) {
+      if (warn) {
+        console.warn(...items);
+        return;
+      }
+      console.log(...items);
+    }
   },
 };
 export default UTILS;

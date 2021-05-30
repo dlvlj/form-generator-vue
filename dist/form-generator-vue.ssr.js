@@ -224,9 +224,6 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
   throwError: function throwError(msg) {
     throw new Error(msg);
   },
-  warn: function warn(msg) {
-    console.warn(msg);
-  },
   hasProperty: function hasProperty(children, parent) {
     if (!UTILS.isArr(children)) {
       return children in parent;
@@ -260,6 +257,24 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
         func(data);
       }, time);
     };
+  },
+  logger: function logger(items) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var warn = options.warn;
+
+    if (this.logs) {
+      var _console2;
+
+      if (warn) {
+        var _console;
+
+        (_console = console).warn.apply(_console, _toConsumableArray(items));
+
+        return;
+      }
+
+      (_console2 = console).log.apply(_console2, _toConsumableArray(items));
+    }
   }
 };var CLASS = {
   form: 'fgv-form',
@@ -761,24 +776,6 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
   },
   methods: {
-    logger: function logger(items) {
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var warn = options.warn;
-
-      if (this.logs) {
-        var _console2;
-
-        if (warn) {
-          var _console;
-
-          (_console = console).warn.apply(_console, _toConsumableArray(items));
-
-          return;
-        }
-
-        (_console2 = console).log.apply(_console2, _toConsumableArray(items));
-      }
-    },
     emitData: function emitData() {
       var _this$$emit;
 
@@ -877,8 +874,6 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
     },
     componentEvents: function componentEvents(conf) {
-      var _this4 = this;
-
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form;
       var e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.vOn]) || {};
@@ -888,8 +883,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
         e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.onSubmit && this.handleSubmit || function (ev) {
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
-
-          _this4.logger(['submit hadler not present.\n'], {
+          UTILS.logger(['submit handler not present.\n'], {
             warn: true
           });
         };
@@ -1019,50 +1013,49 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       };
     },
     handleSubmit: function handleSubmit(e) {
-      var _this5 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this5$validateForm, fieldsStatus, submitFail;
+        var _this4$validateForm, fieldsStatus, submitFail;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 e.preventDefault();
-                _this5.submit = true;
-                _this5$validateForm = _this5.validateForm(), fieldsStatus = _this5$validateForm.fieldsStatus, submitFail = _this5$validateForm.submitFail;
-
-                _this5.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus]);
+                _this4.submit = true;
+                _this4$validateForm = _this4.validateForm(), fieldsStatus = _this4$validateForm.fieldsStatus, submitFail = _this4$validateForm.submitFail;
+                UTILS.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus]);
 
                 if (!submitFail) {
                   _context.next = 10;
                   break;
                 }
 
-                _this5.resetForm();
+                _this4.resetForm();
 
-                if (!UTILS.isFunc(_this5.onSubmitFail)) {
+                if (!UTILS.isFunc(_this4.onSubmitFail)) {
                   _context.next = 9;
                   break;
                 }
 
                 _context.next = 9;
-                return _this5.onSubmitFail();
+                return _this4.onSubmitFail();
 
               case 9:
                 return _context.abrupt("return");
 
               case 10:
-                if (!UTILS.isFunc(_this5.onSubmit)) {
+                if (!UTILS.isFunc(_this4.onSubmit)) {
                   _context.next = 14;
                   break;
                 }
 
                 _context.next = 13;
-                return _this5.onSubmit();
+                return _this4.onSubmit();
 
               case 13:
-                _this5.resetForm();
+                _this4.resetForm();
 
               case 14:
               case "end":
@@ -1160,7 +1153,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-5cbbe089";
+var __vue_module_identifier__$2 = "data-v-34571df0";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
