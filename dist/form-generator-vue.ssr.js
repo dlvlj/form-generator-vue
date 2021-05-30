@@ -774,7 +774,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
       this.$emit('input', (_this$$emit = {
         form: this.form
-      }, _defineProperty(_this$$emit, VMODEL.fields, _objectSpread2({}, this.fields)), _defineProperty(_this$$emit, VMODEL.errors, _objectSpread2({}, this.errors)), _this$$emit));
+      }, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
     },
     resetForm: function resetForm() {
       this.submit = false;
@@ -1133,7 +1133,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-3a0fa93a";
+var __vue_module_identifier__$2 = "data-v-106365e6";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

@@ -198,7 +198,7 @@ export default {
       if (this.logs) { console.log(...items); }
     },
     emitData() {
-      this.$emit('input', { form: this.form, [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
+      this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
     },
     resetForm() {
       this.submit = false;

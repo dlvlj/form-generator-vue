@@ -547,10 +547,8 @@ var script$2 = {
     emitData() {
       this.$emit('input', {
         form: this.form,
-        [VMODEL.fields]: { ...this.fields
-        },
-        [VMODEL.errors]: { ...this.errors
-        }
+        [VMODEL.fields]: this.fields,
+        [VMODEL.errors]: this.errors
       });
     },
 
