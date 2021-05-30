@@ -507,21 +507,21 @@ var script$2 = {
 
   created() {
     for (const model in this.fields) {
-      const fieldConf = this.fieldConf(model);
+      const conf = this.getFieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
-        this.typeCoercion(fieldConf); // when only data type is changed.
+        this.typeCoercion(conf); // when only data type is changed.
 
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         } // this.validate(fieldConf, true);
 
 
-        this.validateField(fieldConf);
+        this.validateField(conf);
       }, {
         deep: true
       });
     } // Object.keys(this.fields).forEach((model) => {
-    //   const fieldConf = this.fieldConf(model);
+    //   const fieldConf = this.getFieldConf(model);
     //   this.$watch(`fields.${model}`, (newVal, oldVal) => {
     //     this.typeCoercion(fieldConf);
     //     // when only data type is changed.
@@ -554,22 +554,22 @@ var script$2 = {
       this.submit = false;
     },
 
-    showRow(fieldConf) {
-      return UTILS.isArr(fieldConf) ? fieldConf.length && fieldConf.some(conf => this.showCol(conf)) : this.showCol(fieldConf);
+    showRow(conf) {
+      return UTILS.isArr(conf) ? conf.length && conf.some(c => this.showCol(c)) : this.showCol(conf);
     },
 
-    showCol(fieldConf) {
-      return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
+    showCol(conf) {
+      return this.componentName(conf) && !this.fieldHidden(conf);
     },
 
-    slotProps(fieldConf) {
-      if (UTILS.isArr(fieldConf)) {
-        return fieldConf.map(({
+    slotProps(conf) {
+      if (UTILS.isArr(conf)) {
+        return conf.map(({
           model
         }) => model);
       }
 
-      return [fieldConf.model];
+      return [conf.model];
     },
 
     componentProps(conf, options = {}) {
@@ -615,11 +615,12 @@ var script$2 = {
       //   this.errors[model] = noErr;
       //   return;
       // }
+      // prop is not rmoved from errors if set undefined
       this.errors[model] = !UTILS.isUndef(err) ? err : '';
     },
 
     componentData(name) {
-      return this.components.find(component => (component === null || component === void 0 ? void 0 : component.name) === name);
+      return this.components.find(c => (c === null || c === void 0 ? void 0 : c.name) === name);
     },
 
     typeCoercion(conf) {
@@ -655,26 +656,26 @@ var script$2 = {
       return e;
     },
 
-    componentName(fieldConf) {
-      var _fieldConf$vBind;
+    componentName(conf) {
+      var _conf$vBind4;
 
-      if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.is) {
-        var _fieldConf$vBind2;
+      if (conf === null || conf === void 0 ? void 0 : (_conf$vBind4 = conf.vBind) === null || _conf$vBind4 === void 0 ? void 0 : _conf$vBind4.is) {
+        var _conf$vBind5;
 
-        return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is;
+        return conf === null || conf === void 0 ? void 0 : (_conf$vBind5 = conf.vBind) === null || _conf$vBind5 === void 0 ? void 0 : _conf$vBind5.is;
       }
 
-      const componentData = this.components.find(({
+      const cData = this.components.find(({
         types
       }) => {
-        var _fieldConf$vBind3;
+        var _conf$vBind6;
 
-        return types.includes(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type);
+        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$vBind6 = conf.vBind) === null || _conf$vBind6 === void 0 ? void 0 : _conf$vBind6.type);
       });
-      return componentData === null || componentData === void 0 ? void 0 : componentData.name;
+      return cData === null || cData === void 0 ? void 0 : cData.name;
     },
 
-    fieldConf(model) {
+    getFieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
 
@@ -691,11 +692,11 @@ var script$2 = {
     //   return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
-    fieldHidden(fieldConf) {
-      var _fieldConf$vBind4;
+    fieldHidden(conf) {
+      var _conf$vBind7;
 
       const HIDDEN = true;
-      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4[FIELD.vBind.hidden] : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? (_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
 
     runFieldRules(rules, val) {
@@ -719,14 +720,14 @@ var script$2 = {
       return res;
     },
 
-    validateField(fieldConf) {
+    validateField(conf) {
       const NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      const err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runFieldRules(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR; // if (!fieldRequired) {
+      const err = this.submit || (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.globalAv ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
-      this.setError(fieldConf.model, err);
+      this.setError(conf.model, err);
       return err;
     },
 

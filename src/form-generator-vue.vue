@@ -168,19 +168,19 @@ export default {
   },
   created() {
     for (const model in this.fields) {
-      const fieldConf = this.fieldConf(model);
+      const conf = this.getFieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
-        this.typeCoercion(fieldConf);
+        this.typeCoercion(conf);
         // when only data type is changed.
         if (newVal == oldVal && typeof newVal !== typeof oldVal) {
           return;
         }
         // this.validate(fieldConf, true);
-        this.validateField(fieldConf);
+        this.validateField(conf);
       }, { deep: true });
     }
     // Object.keys(this.fields).forEach((model) => {
-    //   const fieldConf = this.fieldConf(model);
+    //   const fieldConf = this.getFieldConf(model);
     //   this.$watch(`fields.${model}`, (newVal, oldVal) => {
     //     this.typeCoercion(fieldConf);
     //     // when only data type is changed.
@@ -202,19 +202,19 @@ export default {
     resetForm() {
       this.submit = false;
     },
-    showRow(fieldConf) {
-      return UTILS.isArr(fieldConf)
-        ? fieldConf.length && fieldConf.some((conf) => this.showCol(conf))
-        : this.showCol(fieldConf);
+    showRow(conf) {
+      return UTILS.isArr(conf)
+        ? conf.length && conf.some((c) => this.showCol(c))
+        : this.showCol(conf);
     },
-    showCol(fieldConf) {
-      return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
+    showCol(conf) {
+      return this.componentName(conf) && !this.fieldHidden(conf);
     },
-    slotProps(fieldConf) {
-      if (UTILS.isArr(fieldConf)) {
-        return fieldConf.map(({ model }) => model);
+    slotProps(conf) {
+      if (UTILS.isArr(conf)) {
+        return conf.map(({ model }) => model);
       }
-      return [fieldConf.model];
+      return [conf.model];
     },
     componentProps(conf, options = {}) {
       const { form, field } = options;
@@ -245,11 +245,13 @@ export default {
       //   this.errors[model] = noErr;
       //   return;
       // }
+
+      // prop is not rmoved from errors if set undefined
       this.errors[model] = !UTILS.isUndef(err) ? err : '';
     },
     componentData(name) {
       return this.components.find(
-        (component) => component?.name === name,
+        (c) => c?.name === name,
       );
     },
     typeCoercion(conf) {
@@ -274,15 +276,15 @@ export default {
       }
       return e;
     },
-    componentName(fieldConf) {
-      if (fieldConf?.vBind?.is) {
-        return fieldConf?.vBind?.is;
+    componentName(conf) {
+      if (conf?.vBind?.is) {
+        return conf?.vBind?.is;
       }
-      const componentData = this.components
-        .find(({ types }) => types.includes(fieldConf?.vBind?.type));
-      return componentData?.name;
+      const cData = this.components
+        .find(({ types }) => types.includes(conf?.vBind?.type));
+      return cData?.name;
     },
-    fieldConf(model) {
+    getFieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
     // fieldDisabled(fieldConf) {
@@ -298,11 +300,11 @@ export default {
     //   return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
-    fieldHidden(fieldConf) {
+    fieldHidden(conf) {
       const HIDDEN = true;
-      return fieldConf?.vBind
-       && FIELD.vBind.hidden in fieldConf.vBind
-        ? fieldConf.vBind?.[FIELD.vBind.hidden]
+      return conf?.vBind
+       && FIELD.vBind.hidden in conf.vBind
+        ? conf.vBind?.[FIELD.vBind.hidden]
         : !HIDDEN;
     },
     runFieldRules(rules, val) {
@@ -321,16 +323,16 @@ export default {
       }
       return res;
     },
-    validateField(fieldConf) {
+    validateField(conf) {
       const NO_ERR = '';
       // const fieldRequired = this.fieldRequired(fieldConf);
-      const err = this.submit || fieldConf?.[FIELD.av] || this.globalAv
-        ? this.runFieldRules(fieldConf?.[FIELD.rules], this.fields[fieldConf.model])
+      const err = this.submit || conf?.[FIELD.av] || this.globalAv
+        ? this.runFieldRules(conf?.[FIELD.rules], this.fields[conf.model])
         : NO_ERR;
       // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
-      this.setError(fieldConf.model, err);
+      this.setError(conf.model, err);
       return err;
     },
     validateForm() {

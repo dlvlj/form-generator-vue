@@ -727,10 +727,10 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     var _this2 = this;
 
     var _loop = function _loop(model) {
-      var fieldConf = _this2.fieldConf(model);
+      var conf = _this2.getFieldConf(model);
 
       _this2.$watch("fields.".concat(model), function (newVal, oldVal) {
-        _this2.typeCoercion(fieldConf); // when only data type is changed.
+        _this2.typeCoercion(conf); // when only data type is changed.
 
 
         if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
@@ -738,7 +738,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
         } // this.validate(fieldConf, true);
 
 
-        _this2.validateField(fieldConf);
+        _this2.validateField(conf);
       }, {
         deep: true
       });
@@ -747,7 +747,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     for (var model in this.fields) {
       _loop(model);
     } // Object.keys(this.fields).forEach((model) => {
-    //   const fieldConf = this.fieldConf(model);
+    //   const fieldConf = this.getFieldConf(model);
     //   this.$watch(`fields.${model}`, (newVal, oldVal) => {
     //     this.typeCoercion(fieldConf);
     //     // when only data type is changed.
@@ -778,25 +778,25 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     resetForm: function resetForm() {
       this.submit = false;
     },
-    showRow: function showRow(fieldConf) {
+    showRow: function showRow(conf) {
       var _this3 = this;
 
-      return UTILS.isArr(fieldConf) ? fieldConf.length && fieldConf.some(function (conf) {
-        return _this3.showCol(conf);
-      }) : this.showCol(fieldConf);
+      return UTILS.isArr(conf) ? conf.length && conf.some(function (c) {
+        return _this3.showCol(c);
+      }) : this.showCol(conf);
     },
-    showCol: function showCol(fieldConf) {
-      return this.componentName(fieldConf) && !this.fieldHidden(fieldConf);
+    showCol: function showCol(conf) {
+      return this.componentName(conf) && !this.fieldHidden(conf);
     },
-    slotProps: function slotProps(fieldConf) {
-      if (UTILS.isArr(fieldConf)) {
-        return fieldConf.map(function (_ref) {
+    slotProps: function slotProps(conf) {
+      if (UTILS.isArr(conf)) {
+        return conf.map(function (_ref) {
           var model = _ref.model;
           return model;
         });
       }
 
-      return [fieldConf.model];
+      return [conf.model];
     },
     componentProps: function componentProps(conf) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -838,11 +838,12 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       //   this.errors[model] = noErr;
       //   return;
       // }
+      // prop is not rmoved from errors if set undefined
       this.errors[model] = !UTILS.isUndef(err) ? err : '';
     },
     componentData: function componentData(name) {
-      return this.components.find(function (component) {
-        return (component === null || component === void 0 ? void 0 : component.name) === name;
+      return this.components.find(function (c) {
+        return (c === null || c === void 0 ? void 0 : c.name) === name;
       });
     },
     typeCoercion: function typeCoercion(conf) {
@@ -875,24 +876,24 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
       return e;
     },
-    componentName: function componentName(fieldConf) {
-      var _fieldConf$vBind;
+    componentName: function componentName(conf) {
+      var _conf$vBind4;
 
-      if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.is) {
-        var _fieldConf$vBind2;
+      if (conf === null || conf === void 0 ? void 0 : (_conf$vBind4 = conf.vBind) === null || _conf$vBind4 === void 0 ? void 0 : _conf$vBind4.is) {
+        var _conf$vBind5;
 
-        return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is;
+        return conf === null || conf === void 0 ? void 0 : (_conf$vBind5 = conf.vBind) === null || _conf$vBind5 === void 0 ? void 0 : _conf$vBind5.is;
       }
 
-      var componentData = this.components.find(function (_ref2) {
-        var _fieldConf$vBind3;
+      var cData = this.components.find(function (_ref2) {
+        var _conf$vBind6;
 
         var types = _ref2.types;
-        return types.includes(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type);
+        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$vBind6 = conf.vBind) === null || _conf$vBind6 === void 0 ? void 0 : _conf$vBind6.type);
       });
-      return componentData === null || componentData === void 0 ? void 0 : componentData.name;
+      return cData === null || cData === void 0 ? void 0 : cData.name;
     },
-    fieldConf: function fieldConf(model) {
+    getFieldConf: function getFieldConf(model) {
       return this.allFieldsFlatObj[model];
     },
     // fieldDisabled(fieldConf) {
@@ -908,11 +909,11 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     //   return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
-    fieldHidden: function fieldHidden(fieldConf) {
-      var _fieldConf$vBind4;
+    fieldHidden: function fieldHidden(conf) {
+      var _conf$vBind7;
 
       var HIDDEN = true;
-      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4[FIELD.vBind.hidden] : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? (_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
     runFieldRules: function runFieldRules(rules, val) {
       var res;
@@ -944,14 +945,14 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
       return res;
     },
-    validateField: function validateField(fieldConf) {
+    validateField: function validateField(conf) {
       var NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      var err = this.submit || (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.av]) || this.globalAv ? this.runFieldRules(fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf[FIELD.rules], this.fields[fieldConf.model]) : NO_ERR; // if (!fieldRequired) {
+      var err = this.submit || (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.globalAv ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
-      this.setError(fieldConf.model, err);
+      this.setError(conf.model, err);
       return err;
     },
     validateForm: function validateForm() {
@@ -1138,7 +1139,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-9caf2fc0";
+var __vue_module_identifier__$2 = "data-v-7cad0b09";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
