@@ -27,10 +27,10 @@
 </template>
 
 <script>
-import constants from '../mixins/constants';
+import tempLiterals from '../mixins/tempLiterals';
 
 export default {
-  mixins: [constants],
+  mixins: [tempLiterals],
   props: {
     models: {
       type: Array,

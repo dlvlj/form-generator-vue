@@ -72,7 +72,7 @@
 import Row from './main/components/Row.vue';
 import Column from './main/components/Column.vue';
 import props from './main/mixins/props';
-import constants from './main/mixins/constants';
+import tempLiterals from './main/mixins/tempLiterals';
 import UTILS from './main/utils';
 import {
   SCHEMA, VMODEL, FIELD,
@@ -83,7 +83,7 @@ export default {
     Row,
     Column
   },
-  mixins: [props, constants],
+  mixins: [props, tempLiterals],
   emits: ['input'],
   data() {
     const form = this.value?.form;
@@ -127,15 +127,15 @@ export default {
     // },
 
     fieldsFlat() {
-      const obj = {};
-      for (const fieldConf of this.schema[SCHEMA.fields]) {
-        if (UTILS.isArr(fieldConf)) {
-          for (const subFieldConf of fieldConf) {
-            obj[subFieldConf.model] = subFieldConf;
+      const flat = {};
+      for (const conf of this.schema[SCHEMA.fields]) {
+        if (UTILS.isArr(conf)) {
+          for (const subConf of conf) {
+            flat[subConf.model] = subConf;
           }
-        } else { obj[fieldConf.model] = fieldConf; }
+        } else { flat[conf.model] = conf; }
       }
-      return obj;
+      return flat;
     },
     // debounceValidateField() {
     //   return UTILS.debounce((model) => {
@@ -224,13 +224,13 @@ export default {
     },
     componentProps(conf, options = {}) {
       const { form, field } = options;
-      const componentName = this.componentName(conf, options);
-      const componentData = this.componentData(componentName);
+      // const cName = this.componentName(conf);
+      const componentData = this.componentData(this.componentName(conf));
       // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
       // const errorPropName = componentData?.errorProp;
       const p = {
         ...conf?.vBind,
-        disabled: Boolean(this.schema?.form?.vBind?.disabled || conf?.disabled)
+        disabled: this.schema?.form?.vBind?.disabled || conf?.disabled
       };
       if (form) {
         p.is = conf?.vBind?.is || 'form';

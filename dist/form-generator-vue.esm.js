@@ -141,7 +141,7 @@ const FIELD = {
   rules: 'rules'
 };
 
-var constants = {
+var tempLiterals = {
   computed: {
     SLOT: () => SLOT,
     CLASS: () => CLASS,
@@ -152,7 +152,7 @@ var constants = {
 
 //
 var script = {
-  mixins: [constants],
+  mixins: [tempLiterals],
   props: {
     models: {
       type: Array,
@@ -295,7 +295,7 @@ const __vue_component__ = /*#__PURE__*/normalizeComponent({
 
 //
 var script$1 = {
-  mixins: [constants],
+  mixins: [tempLiterals],
   props: {
     models: {
       type: Array,
@@ -416,7 +416,7 @@ var script$2 = {
     Row: __vue_component__,
     Column: __vue_component__$1
   },
-  mixins: [props, constants],
+  mixins: [props, tempLiterals],
   emits: ['input'],
 
   data() {
@@ -467,19 +467,19 @@ var script$2 = {
     //     : [];
     // },
     fieldsFlat() {
-      const obj = {};
+      const flat = {};
 
-      for (const fieldConf of this.schema[SCHEMA.fields]) {
-        if (UTILS.isArr(fieldConf)) {
-          for (const subFieldConf of fieldConf) {
-            obj[subFieldConf.model] = subFieldConf;
+      for (const conf of this.schema[SCHEMA.fields]) {
+        if (UTILS.isArr(conf)) {
+          for (const subConf of conf) {
+            flat[subConf.model] = subConf;
           }
         } else {
-          obj[fieldConf.model] = fieldConf;
+          flat[conf.model] = conf;
         }
       }
 
-      return obj;
+      return flat;
     } // debounceValidateField() {
     //   return UTILS.debounce((model) => {
     //     this.validateField(model);
@@ -593,13 +593,13 @@ var script$2 = {
       const {
         form,
         field
-      } = options;
-      const componentName = this.componentName(conf, options);
-      const componentData = this.componentData(componentName); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+      } = options; // const cName = this.componentName(conf);
+
+      const componentData = this.componentData(this.componentName(conf)); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
       // const errorPropName = componentData?.errorProp;
 
       const p = { ...(conf === null || conf === void 0 ? void 0 : conf.vBind),
-        disabled: Boolean(((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$vBi = _this$schema$form.vBind) === null || _this$schema$form$vBi === void 0 ? void 0 : _this$schema$form$vBi.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
+        disabled: ((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$vBi = _this$schema$form.vBind) === null || _this$schema$form$vBi === void 0 ? void 0 : _this$schema$form$vBi.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
       };
 
       if (form) {

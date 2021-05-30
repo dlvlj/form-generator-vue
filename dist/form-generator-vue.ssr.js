@@ -328,7 +328,7 @@ var FIELD = {
     hidden: 'hidden'
   },
   rules: 'rules'
-};var constants = {
+};var tempLiterals = {
   computed: {
     SLOT: function SLOT$1() {
       return SLOT;
@@ -345,7 +345,7 @@ var FIELD = {
   }
 };//
 var script = {
-  mixins: [constants],
+  mixins: [tempLiterals],
   props: {
     models: {
       type: Array,
@@ -468,7 +468,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-26c6e9a1";
+var __vue_module_identifier__ = "data-v-2e187256";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
@@ -483,7 +483,7 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
   staticRenderFns: __vue_staticRenderFns__
 }, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);//
 var script$1 = {
-  mixins: [constants],
+  mixins: [tempLiterals],
   props: {
     models: {
       type: Array,
@@ -529,7 +529,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-7dd802a0";
+var __vue_module_identifier__$1 = "data-v-71ea0837";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
@@ -605,7 +605,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     Row: __vue_component__,
     Column: __vue_component__$1
   },
-  mixins: [props, constants],
+  mixins: [props, tempLiterals],
   emits: ['input'],
   data: function data() {
     var _this$value,
@@ -676,23 +676,23 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     //     : [];
     // },
     fieldsFlat: function fieldsFlat() {
-      var obj = {};
+      var flat = {};
 
       var _iterator3 = _createForOfIteratorHelper(this.schema[SCHEMA.fields]),
           _step3;
 
       try {
         for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var fieldConf = _step3.value;
+          var conf = _step3.value;
 
-          if (UTILS.isArr(fieldConf)) {
-            var _iterator4 = _createForOfIteratorHelper(fieldConf),
+          if (UTILS.isArr(conf)) {
+            var _iterator4 = _createForOfIteratorHelper(conf),
                 _step4;
 
             try {
               for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-                var subFieldConf = _step4.value;
-                obj[subFieldConf.model] = subFieldConf;
+                var subConf = _step4.value;
+                flat[subConf.model] = subConf;
               }
             } catch (err) {
               _iterator4.e(err);
@@ -700,7 +700,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
               _iterator4.f();
             }
           } else {
-            obj[fieldConf.model] = fieldConf;
+            flat[conf.model] = conf;
           }
         }
       } catch (err) {
@@ -709,7 +709,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
         _iterator3.f();
       }
 
-      return obj;
+      return flat;
     } // debounceValidateField() {
     //   return UTILS.debounce((model) => {
     //     this.validateField(model);
@@ -824,13 +824,13 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form,
-          field = options.field;
-      var componentName = this.componentName(conf, options);
-      var componentData = this.componentData(componentName); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+          field = options.field; // const cName = this.componentName(conf);
+
+      var componentData = this.componentData(this.componentName(conf)); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
       // const errorPropName = componentData?.errorProp;
 
       var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.vBind), {}, {
-        disabled: Boolean(((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$vBi = _this$schema$form.vBind) === null || _this$schema$form$vBi === void 0 ? void 0 : _this$schema$form$vBi.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
+        disabled: ((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$vBi = _this$schema$form.vBind) === null || _this$schema$form$vBi === void 0 ? void 0 : _this$schema$form$vBi.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
       });
 
       if (form) {
@@ -1171,7 +1171,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-195814f3";
+var __vue_module_identifier__$2 = "data-v-aaef46dc";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
