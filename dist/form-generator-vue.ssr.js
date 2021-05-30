@@ -946,7 +946,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       var HIDDEN = true;
       return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? (_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
-    runFieldRules: function runFieldRules(rules, val) {
+    runFieldRules: function runFieldRules(val, rules) {
       var res;
 
       if (UTILS.isArr(rules)) {
@@ -979,7 +979,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     validateField: function validateField(conf) {
       var NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      var err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
+      var err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -1171,7 +1171,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-244e40c0";
+var __vue_module_identifier__$2 = "data-v-5a7817f8";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

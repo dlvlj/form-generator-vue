@@ -315,7 +315,7 @@ export default {
         ? conf.vBind?.[FIELD.vBind.hidden]
         : !HIDDEN;
     },
-    runFieldRules(rules, val) {
+    runFieldRules(val, rules) {
       let res;
       if (UTILS.isArr(rules)) {
         for (const rule of rules) {
@@ -335,7 +335,7 @@ export default {
       const NO_ERR = '';
       // const fieldRequired = this.fieldRequired(fieldConf);
       const err = conf?.[FIELD.av] || this.activeValidation || this.submit
-        ? this.runFieldRules(conf?.[FIELD.rules], this.fields[conf.model])
+        ? this.runFieldRules(this.fields[conf.model], conf?.[FIELD.rules])
         : NO_ERR;
       // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);

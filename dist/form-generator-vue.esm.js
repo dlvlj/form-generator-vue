@@ -721,7 +721,7 @@ var script$2 = {
       return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? (_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
 
-    runFieldRules(rules, val) {
+    runFieldRules(val, rules) {
       let res;
 
       if (UTILS.isArr(rules)) {
@@ -745,7 +745,7 @@ var script$2 = {
     validateField(conf) {
       const NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
 
-      const err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(conf === null || conf === void 0 ? void 0 : conf[FIELD.rules], this.fields[conf.model]) : NO_ERR; // if (!fieldRequired) {
+      const err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submit ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
