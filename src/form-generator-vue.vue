@@ -193,8 +193,15 @@ export default {
     // });
   },
   methods: {
-    logger(items) {
-      if (this.logs) { console.log(...items); }
+    logger(items, options = {}) {
+      const { warn } = options;
+      if (this.logs) {
+        if (warn) {
+          console.warn(...items);
+          return;
+        }
+        console.log(...items);
+      }
     },
     emitData() {
       this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
@@ -272,7 +279,9 @@ export default {
       const { form } = options;
       const e = conf?.[FIELD.vOn] || {};
       if (form) {
-        e.submit = conf?.vOn?.submit || this.handleSubmit;
+        e.submit = conf?.vOn?.submit
+        || (this.onSubmit && this.handleSubmit)
+        || ((ev) => { ev?.preventDefault(); this.logger(['submit handler not present.\n'], { warn: true }); });
       }
       return e;
     },

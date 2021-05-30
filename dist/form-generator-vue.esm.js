@@ -535,8 +535,17 @@ var script$2 = {
   },
 
   methods: {
-    logger(items) {
+    logger(items, options = {}) {
+      const {
+        warn
+      } = options;
+
       if (this.logs) {
+        if (warn) {
+          console.warn(...items);
+          return;
+        }
+
         console.log(...items);
       }
     },
@@ -651,7 +660,12 @@ var script$2 = {
       if (form) {
         var _conf$vOn;
 
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.handleSubmit;
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.onSubmit && this.handleSubmit || (ev => {
+          ev === null || ev === void 0 ? void 0 : ev.preventDefault();
+          this.logger(['submit hadler not present.\n'], {
+            warn: true
+          });
+        });
       }
 
       return e;
