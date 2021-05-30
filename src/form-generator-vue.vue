@@ -146,11 +146,11 @@ export default {
     // },
   },
   watch: {
-    disabled: {
-      handler() {
-        this.removeAllErrors();
-      },
-    },
+    // disabled: {
+    //   handler() {
+    //     this.removeAllErrors();
+    //   },
+    // },
     value: {
       handler() {
         for (const model in this.value?.[VMODEL.fields]) {
@@ -224,7 +224,7 @@ export default {
       // const errorPropName = componentData?.errorProp;
       const p = {
         ...conf?.vBind,
-        disabled: Boolean(this.disabled || conf?.disabled)
+        disabled: Boolean(this.schema?.form?.vBind?.disabled || conf?.disabled)
       };
       if (form) {
         p.is = conf?.vBind?.is || 'form';

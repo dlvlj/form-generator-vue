@@ -542,11 +542,11 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
         return [];
       }
     },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
+    // disabled: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false,
+    // },
     schema: {
       type: Object,
       default: function _default() {
@@ -701,11 +701,11 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
   },
   watch: {
-    disabled: {
-      handler: function handler() {
-        this.removeAllErrors();
-      }
-    },
+    // disabled: {
+    //   handler() {
+    //     this.removeAllErrors();
+    //   },
+    // },
     value: {
       handler: function handler() {
         for (var model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
@@ -799,6 +799,8 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       return [conf.model];
     },
     componentProps: function componentProps(conf) {
+      var _this$schema2, _this$schema2$form, _this$schema2$form$vB;
+
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form,
           field = options.field;
@@ -807,7 +809,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       // const errorPropName = componentData?.errorProp;
 
       var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.vBind), {}, {
-        disabled: Boolean(this.disabled || (conf === null || conf === void 0 ? void 0 : conf.disabled))
+        disabled: Boolean(((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : (_this$schema2$form$vB = _this$schema2$form.vBind) === null || _this$schema2$form$vB === void 0 ? void 0 : _this$schema2$form$vB.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
       });
 
       if (form) {
@@ -1139,7 +1141,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-7cad0b09";
+var __vue_module_identifier__$2 = "data-v-48934ab6";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

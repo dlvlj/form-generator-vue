@@ -360,11 +360,11 @@ var props = {
       required: false,
       default: () => []
     },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
+    // disabled: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false,
+    // },
     schema: {
       type: Object,
       default: () => ({})
@@ -480,12 +480,11 @@ var script$2 = {
 
   },
   watch: {
-    disabled: {
-      handler() {
-        this.removeAllErrors();
-      }
-
-    },
+    // disabled: {
+    //   handler() {
+    //     this.removeAllErrors();
+    //   },
+    // },
     value: {
       handler() {
         for (const model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
@@ -573,6 +572,8 @@ var script$2 = {
     },
 
     componentProps(conf, options = {}) {
+      var _this$schema2, _this$schema2$form, _this$schema2$form$vB;
+
       const {
         form,
         field
@@ -582,7 +583,7 @@ var script$2 = {
       // const errorPropName = componentData?.errorProp;
 
       const p = { ...(conf === null || conf === void 0 ? void 0 : conf.vBind),
-        disabled: Boolean(this.disabled || (conf === null || conf === void 0 ? void 0 : conf.disabled))
+        disabled: Boolean(((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : (_this$schema2$form$vB = _this$schema2$form.vBind) === null || _this$schema2$form$vB === void 0 ? void 0 : _this$schema2$form$vB.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
       };
 
       if (form) {

@@ -15,11 +15,11 @@ export default {
       required: false,
       default: () => [],
     },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+    // disabled: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false,
+    // },
     schema: {
       type: Object,
       default: () => ({}),
