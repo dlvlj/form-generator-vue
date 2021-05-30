@@ -144,7 +144,8 @@ var constants = {
   computed: {
     SLOT: () => SLOT,
     CLASS: () => CLASS,
-    UTILS: () => UTILS
+    UTILS: () => UTILS,
+    SCHEMA: () => SCHEMA
   }
 };
 
@@ -435,8 +436,7 @@ var script$2 = {
       if (UTILS.isArr(fieldConf)) {
         for (const subFieldConf of fieldConf) {
           addFieldsAndErrors(subFieldConf.model);
-        } // break;
-
+        }
       } else {
         addFieldsAndErrors(fieldConf.model);
       }
@@ -460,21 +460,19 @@ var script$2 = {
     // globalAvDelay() {
     //   return this.activeValidationDelay || 0;
     // },
-    allFieldsArray() {
-      var _this$schema;
-
-      return UTILS.isArr((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : _this$schema[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
-    },
-
-    allFieldsFlatObj() {
+    // allFieldsArray() {
+    //   return UTILS.isArr(this.schema?.[SCHEMA.fields])
+    //     ? this.schema[SCHEMA.fields]
+    //     : [];
+    // },
+    fieldsFlat() {
       const obj = {};
 
-      for (const fieldConf of this.allFieldsArray) {
+      for (const fieldConf of this.schema[SCHEMA.fields]) {
         if (UTILS.isArr(fieldConf)) {
           for (const subFieldConf of fieldConf) {
             obj[subFieldConf.model] = subFieldConf;
-          } // break;
-
+          }
         } else {
           obj[fieldConf.model] = fieldConf;
         }
@@ -507,7 +505,17 @@ var script$2 = {
 
       deep: true
     },
+    form: {
+      handler: 'emitData',
+      deep: true,
+      immediate: true
+    },
     fields: {
+      handler: 'emitData',
+      deep: true,
+      immediate: true
+    },
+    errors: {
       handler: 'emitData',
       deep: true,
       immediate: true
@@ -515,6 +523,7 @@ var script$2 = {
   },
 
   created() {
+    // fields watcher
     for (const model in this.fields) {
       const conf = this.getFieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
@@ -548,8 +557,10 @@ var script$2 = {
     emitData() {
       this.$emit('input', {
         form: this.form,
-        [VMODEL.fields]: this.fields,
-        [VMODEL.errors]: this.errors
+        [VMODEL.fields]: { ...this.fields
+        },
+        [VMODEL.errors]: { ...this.errors
+        }
       });
     },
 
@@ -576,7 +587,7 @@ var script$2 = {
     },
 
     componentProps(conf, options = {}) {
-      var _this$schema2, _this$schema2$form, _this$schema2$form$vB;
+      var _this$schema, _this$schema$form, _this$schema$form$vBi;
 
       const {
         form,
@@ -587,7 +598,7 @@ var script$2 = {
       // const errorPropName = componentData?.errorProp;
 
       const p = { ...(conf === null || conf === void 0 ? void 0 : conf.vBind),
-        disabled: Boolean(((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : (_this$schema2$form$vB = _this$schema2$form.vBind) === null || _this$schema2$form$vB === void 0 ? void 0 : _this$schema2$form$vB.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
+        disabled: Boolean(((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$vBi = _this$schema$form.vBind) === null || _this$schema$form$vBi === void 0 ? void 0 : _this$schema$form$vBi.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
       };
 
       if (form) {
@@ -686,7 +697,7 @@ var script$2 = {
     },
 
     getFieldConf(model) {
-      return this.allFieldsFlatObj[model];
+      return this.fieldsFlat[model];
     },
 
     // fieldDisabled(fieldConf) {
@@ -754,7 +765,7 @@ var script$2 = {
       // }
       // watcher handler end
       // On form submit
-      const fieldsStatus = {}; // Object.values(this.allFieldsFlatObj).forEach((conf) => {
+      const fieldsStatus = {}; // Object.values(this.fieldsFlat).forEach((conf) => {
       //   const err = this.validateField(conf);
       //   fieldsStatus[conf.model] = {
       //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
@@ -763,8 +774,8 @@ var script$2 = {
       //   };
       // });
 
-      for (const model in this.allFieldsFlatObj) {
-        const conf = this.allFieldsFlatObj[model];
+      for (const model in this.fieldsFlat) {
+        const conf = this.fieldsFlat[model];
         const err = this.validateField(conf);
         fieldsStatus[conf.model] = {
           // validationSuccess: !err ? true : !this.fieldRequired(conf),
@@ -837,7 +848,7 @@ var __vue_render__$2 = function () {
     class: [_vm.CLASS.header]
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
-  }, [_vm._l(_vm.allFieldsArray, function (conf, i) {
+  }, [_vm._l(_vm.schema[_vm.SCHEMA.fields], function (conf, i) {
     return [_vm.showRow(conf) ? _c('Row', {
       key: i,
       attrs: {

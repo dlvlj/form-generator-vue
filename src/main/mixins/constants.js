@@ -1,6 +1,6 @@
 import UTILS from '../utils';
 import {
-  SLOT, CLASS
+  SLOT, CLASS, SCHEMA
 } from '../utils/constants';
 
 export default {
@@ -8,5 +8,6 @@ export default {
     SLOT: () => SLOT,
     CLASS: () => CLASS,
     UTILS: () => UTILS,
+    SCHEMA: () => SCHEMA
   }
 };

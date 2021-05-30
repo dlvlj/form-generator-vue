@@ -12,7 +12,7 @@
     </div>
     <!-- body -->
     <div :class="[CLASS.body]">
-      <template v-for="(conf, i) in allFieldsArray">
+      <template v-for="(conf, i) in schema[SCHEMA.fields]">
         <Row
           v-if="showRow(conf)"
           :key="i"
@@ -100,7 +100,6 @@ export default {
         for (const subFieldConf of fieldConf) {
           addFieldsAndErrors(subFieldConf.model);
         }
-        // break;
       } else { addFieldsAndErrors(fieldConf.model); }
     }
 
@@ -121,20 +120,19 @@ export default {
     // globalAvDelay() {
     //   return this.activeValidationDelay || 0;
     // },
-    allFieldsArray() {
-      return UTILS.isArr(this.schema?.[SCHEMA.fields])
-        ? this.schema[SCHEMA.fields]
-        : [];
-    },
+    // allFieldsArray() {
+    //   return UTILS.isArr(this.schema?.[SCHEMA.fields])
+    //     ? this.schema[SCHEMA.fields]
+    //     : [];
+    // },
 
-    allFieldsFlatObj() {
+    fieldsFlat() {
       const obj = {};
-      for (const fieldConf of this.allFieldsArray) {
+      for (const fieldConf of this.schema[SCHEMA.fields]) {
         if (UTILS.isArr(fieldConf)) {
           for (const subFieldConf of fieldConf) {
             obj[subFieldConf.model] = subFieldConf;
           }
-          // break;
         } else { obj[fieldConf.model] = fieldConf; }
       }
       return obj;
@@ -160,13 +158,24 @@ export default {
       },
       deep: true,
     },
+    form: {
+      handler: 'emitData',
+      deep: true,
+      immediate: true,
+    },
     fields: {
+      handler: 'emitData',
+      deep: true,
+      immediate: true,
+    },
+    errors: {
       handler: 'emitData',
       deep: true,
       immediate: true,
     },
   },
   created() {
+    // fields watcher
     for (const model in this.fields) {
       const conf = this.getFieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
@@ -194,7 +203,7 @@ export default {
   },
   methods: {
     emitData() {
-      this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
+      this.$emit('input', { form: this.form, [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
     },
     resetForm() {
       this.submit = false;
@@ -284,7 +293,7 @@ export default {
       return cData?.name;
     },
     getFieldConf(model) {
-      return this.allFieldsFlatObj[model];
+      return this.fieldsFlat[model];
     },
     // fieldDisabled(fieldConf) {
     //   const DISABLED = true;
@@ -352,7 +361,7 @@ export default {
 
       // On form submit
       const fieldsStatus = {};
-      // Object.values(this.allFieldsFlatObj).forEach((conf) => {
+      // Object.values(this.fieldsFlat).forEach((conf) => {
       //   const err = this.validateField(conf);
       //   fieldsStatus[conf.model] = {
       //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
@@ -360,8 +369,8 @@ export default {
       //     schema: conf
       //   };
       // });
-      for (const model in this.allFieldsFlatObj) {
-        const conf = this.allFieldsFlatObj[model];
+      for (const model in this.fieldsFlat) {
+        const conf = this.fieldsFlat[model];
         const err = this.validateField(conf);
         fieldsStatus[conf.model] = {
           // validationSuccess: !err ? true : !this.fieldRequired(conf),

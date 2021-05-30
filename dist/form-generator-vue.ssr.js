@@ -337,6 +337,9 @@ var FIELD = {
     },
     UTILS: function UTILS$1() {
       return UTILS;
+    },
+    SCHEMA: function SCHEMA$1() {
+      return SCHEMA;
     }
   }
 };//
@@ -633,8 +636,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var subFieldConf = _step2.value;
               addFieldsAndErrors(subFieldConf.model);
-            } // break;
-
+            }
           } catch (err) {
             _iterator2.e(err);
           } finally {
@@ -667,15 +669,15 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     // globalAvDelay() {
     //   return this.activeValidationDelay || 0;
     // },
-    allFieldsArray: function allFieldsArray() {
-      var _this$schema;
-
-      return UTILS.isArr((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : _this$schema[SCHEMA.fields]) ? this.schema[SCHEMA.fields] : [];
-    },
-    allFieldsFlatObj: function allFieldsFlatObj() {
+    // allFieldsArray() {
+    //   return UTILS.isArr(this.schema?.[SCHEMA.fields])
+    //     ? this.schema[SCHEMA.fields]
+    //     : [];
+    // },
+    fieldsFlat: function fieldsFlat() {
       var obj = {};
 
-      var _iterator3 = _createForOfIteratorHelper(this.allFieldsArray),
+      var _iterator3 = _createForOfIteratorHelper(this.schema[SCHEMA.fields]),
           _step3;
 
       try {
@@ -690,8 +692,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
               for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
                 var subFieldConf = _step4.value;
                 obj[subFieldConf.model] = subFieldConf;
-              } // break;
-
+              }
             } catch (err) {
               _iterator4.e(err);
             } finally {
@@ -732,7 +733,17 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       },
       deep: true
     },
+    form: {
+      handler: 'emitData',
+      deep: true,
+      immediate: true
+    },
     fields: {
+      handler: 'emitData',
+      deep: true,
+      immediate: true
+    },
+    errors: {
       handler: 'emitData',
       deep: true,
       immediate: true
@@ -759,6 +770,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       });
     };
 
+    // fields watcher
     for (var model in this.fields) {
       _loop(model);
     } // Object.keys(this.fields).forEach((model) => {
@@ -781,7 +793,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
 
       this.$emit('input', (_this$$emit = {
         form: this.form
-      }, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
+      }, _defineProperty(_this$$emit, VMODEL.fields, _objectSpread2({}, this.fields)), _defineProperty(_this$$emit, VMODEL.errors, _objectSpread2({}, this.errors)), _this$$emit));
     },
     resetForm: function resetForm() {
       this.submit = false;
@@ -807,7 +819,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       return [conf.model];
     },
     componentProps: function componentProps(conf) {
-      var _this$schema2, _this$schema2$form, _this$schema2$form$vB;
+      var _this$schema, _this$schema$form, _this$schema$form$vBi;
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form,
@@ -817,7 +829,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       // const errorPropName = componentData?.errorProp;
 
       var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.vBind), {}, {
-        disabled: Boolean(((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : (_this$schema2$form$vB = _this$schema2$form.vBind) === null || _this$schema2$form$vB === void 0 ? void 0 : _this$schema2$form$vB.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
+        disabled: Boolean(((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$vBi = _this$schema$form.vBind) === null || _this$schema$form$vBi === void 0 ? void 0 : _this$schema$form$vBi.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled))
       });
 
       if (form) {
@@ -909,7 +921,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       return cData === null || cData === void 0 ? void 0 : cData.name;
     },
     getFieldConf: function getFieldConf(model) {
-      return this.allFieldsFlatObj[model];
+      return this.fieldsFlat[model];
     },
     // fieldDisabled(fieldConf) {
     //   const DISABLED = true;
@@ -983,7 +995,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       // }
       // watcher handler end
       // On form submit
-      var fieldsStatus = {}; // Object.values(this.allFieldsFlatObj).forEach((conf) => {
+      var fieldsStatus = {}; // Object.values(this.fieldsFlat).forEach((conf) => {
       //   const err = this.validateField(conf);
       //   fieldsStatus[conf.model] = {
       //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
@@ -992,8 +1004,8 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       //   };
       // });
 
-      for (var model in this.allFieldsFlatObj) {
-        var conf = this.allFieldsFlatObj[model];
+      for (var model in this.fieldsFlat) {
+        var conf = this.fieldsFlat[model];
 
         var _err = this.validateField(conf);
 
@@ -1095,7 +1107,7 @@ var __vue_render__$2 = function __vue_render__() {
     class: [_vm.CLASS.header]
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
-  }, [_vm._l(_vm.allFieldsArray, function (conf, i) {
+  }, [_vm._l(_vm.schema[_vm.SCHEMA.fields], function (conf, i) {
     return [_vm.showRow(conf) ? _c('Row', {
       key: i,
       attrs: {
@@ -1153,7 +1165,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-06373542";
+var __vue_module_identifier__$2 = "data-v-6ae4c66b";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;
