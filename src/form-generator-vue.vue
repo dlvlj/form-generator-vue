@@ -280,7 +280,7 @@ export default {
       if (form) {
         e.submit = conf?.vOn?.submit
         || (this.onSubmit && this.handleSubmit)
-        || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true }); });
+        || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this.logs }); });
       }
       return e;
     },
@@ -387,7 +387,7 @@ export default {
       e.preventDefault();
       this.submit = true;
       const { fieldsStatus, submitFail } = this.validateForm();
-      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
+      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], { show: this.logs });
       if (submitFail) {
         this.resetForm();
         if (UTILS.isFunc(this.onSubmitFail)) {

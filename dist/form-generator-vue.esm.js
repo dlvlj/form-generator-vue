@@ -76,10 +76,11 @@ const UTILS = {
 
   logger(items, options = {}) {
     const {
+      show,
       warn
     } = options;
 
-    if (this.logs) {
+    if (show) {
       if (warn) {
         console.warn(...items);
         return;
@@ -669,7 +670,8 @@ var script$2 = {
         e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.onSubmit && this.handleSubmit || (ev => {
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
           UTILS.logger(['submit handler not present.\n'], {
-            warn: true
+            warn: true,
+            show: this.logs
           });
         });
       }
@@ -798,7 +800,9 @@ var script$2 = {
         fieldsStatus,
         submitFail
       } = this.validateForm();
-      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus]);
+      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], {
+        show: this.logs
+      });
 
       if (submitFail) {
         this.resetForm();

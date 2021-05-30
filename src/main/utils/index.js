@@ -58,8 +58,8 @@ const UTILS = {
     };
   },
   logger(items, options = {}) {
-    const { warn } = options;
-    if (this.logs) {
+    const { show, warn } = options;
+    if (show) {
       if (warn) {
         console.warn(...items);
         return;
