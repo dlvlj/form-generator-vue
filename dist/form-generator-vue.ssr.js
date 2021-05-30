@@ -589,17 +589,18 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
   mixins: [props, constants],
   emits: ['input'],
   data: function data() {
-    var _this = this,
-        _this$value3;
+    var _this$value,
+        _this = this;
 
+    var form = (_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value.form;
     var fields = {};
     var errors = {};
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
-      var _this$value, _this$value$VMODEL$fi, _this$value2, _this$value2$VMODEL$e;
+      var _this$value2, _this$value2$VMODEL$f, _this$value3, _this$value3$VMODEL$e;
 
-      fields[model] = ((_this$value = _this.value) === null || _this$value === void 0 ? void 0 : (_this$value$VMODEL$fi = _this$value[VMODEL.fields]) === null || _this$value$VMODEL$fi === void 0 ? void 0 : _this$value$VMODEL$fi[model]) || '';
-      errors[model] = ((_this$value2 = _this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$e = _this$value2[VMODEL.errors]) === null || _this$value2$VMODEL$e === void 0 ? void 0 : _this$value2$VMODEL$e[model]) || '';
+      fields[model] = ((_this$value2 = _this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$f = _this$value2[VMODEL.fields]) === null || _this$value2$VMODEL$f === void 0 ? void 0 : _this$value2$VMODEL$f[model]) || '';
+      errors[model] = ((_this$value3 = _this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$VMODEL$e = _this$value3[VMODEL.errors]) === null || _this$value3$VMODEL$e === void 0 ? void 0 : _this$value3$VMODEL$e[model]) || '';
     };
 
     var _iterator = _createForOfIteratorHelper(this.schema[SCHEMA.fields]),
@@ -635,7 +636,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
     }
 
     return {
-      form: (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3.form,
+      form: form,
       fields: fields,
       errors: errors,
       submit: false
@@ -717,9 +718,7 @@ var __vue_component__$1 = /*#__PURE__*/normalizeComponent({
       deep: true
     },
     fields: {
-      handler: function handler() {
-        this.emitData();
-      },
+      handler: 'emitData',
       deep: true,
       immediate: true
     }
@@ -1133,7 +1132,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-106365e6";
+var __vue_module_identifier__$2 = "data-v-1d19fabb";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

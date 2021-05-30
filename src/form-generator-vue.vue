@@ -86,6 +86,7 @@ export default {
   mixins: [props, constants],
   emits: ['input'],
   data() {
+    const form = this.value?.form;
     const fields = {};
     const errors = {};
 
@@ -104,7 +105,7 @@ export default {
     }
 
     return {
-      form: this.value?.form,
+      form,
       fields,
       errors,
       submit: false,
@@ -160,9 +161,7 @@ export default {
       deep: true,
     },
     fields: {
-      handler() {
-        this.emitData();
-      },
+      handler: 'emitData',
       deep: true,
       immediate: true,
     },

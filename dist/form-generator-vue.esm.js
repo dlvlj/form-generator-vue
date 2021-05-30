@@ -407,16 +407,17 @@ var script$2 = {
   emits: ['input'],
 
   data() {
-    var _this$value3;
+    var _this$value;
 
+    const form = (_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value.form;
     const fields = {};
     const errors = {};
 
     const addFieldsAndErrors = model => {
-      var _this$value, _this$value$VMODEL$fi, _this$value2, _this$value2$VMODEL$e;
+      var _this$value2, _this$value2$VMODEL$f, _this$value3, _this$value3$VMODEL$e;
 
-      fields[model] = ((_this$value = this.value) === null || _this$value === void 0 ? void 0 : (_this$value$VMODEL$fi = _this$value[VMODEL.fields]) === null || _this$value$VMODEL$fi === void 0 ? void 0 : _this$value$VMODEL$fi[model]) || '';
-      errors[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$e = _this$value2[VMODEL.errors]) === null || _this$value2$VMODEL$e === void 0 ? void 0 : _this$value2$VMODEL$e[model]) || '';
+      fields[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$f = _this$value2[VMODEL.fields]) === null || _this$value2$VMODEL$f === void 0 ? void 0 : _this$value2$VMODEL$f[model]) || '';
+      errors[model] = ((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$VMODEL$e = _this$value3[VMODEL.errors]) === null || _this$value3$VMODEL$e === void 0 ? void 0 : _this$value3$VMODEL$e[model]) || '';
     };
 
     for (const fieldConf of this.schema[SCHEMA.fields]) {
@@ -431,7 +432,7 @@ var script$2 = {
     }
 
     return {
-      form: (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : _this$value3.form,
+      form,
       fields,
       errors,
       submit: false
@@ -498,10 +499,7 @@ var script$2 = {
       deep: true
     },
     fields: {
-      handler() {
-        this.emitData();
-      },
-
+      handler: 'emitData',
       deep: true,
       immediate: true
     }
