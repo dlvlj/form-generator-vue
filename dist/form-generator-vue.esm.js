@@ -622,16 +622,22 @@ var script$2 = {
       return this.components.find(component => (component === null || component === void 0 ? void 0 : component.name) === name);
     },
 
-    typeCoercion(fieldConf) {
-      var _fieldConf$vBind;
+    typeCoercion(conf) {
+      var _conf$vBind3;
 
-      if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
-        return;
-      }
+      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$vBind3 = conf.vBind) === null || _conf$vBind3 === void 0 ? void 0 : _conf$vBind3.type) === FIELD.type.number) {
+        if (!Number.isNaN(this.fields[conf.model])) {
+          return;
+        }
 
-      if ((fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.type) === FIELD.type.number && this.fields[fieldConf.model]) {
-        this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
-      }
+        this.fields[conf.model] = Number(this.fields[conf.model]);
+      } // if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
+      //   return;
+      // }
+      // if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
+      //   this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
+      // }
+
     },
 
     componentEvents(conf, options = {}) {
@@ -650,20 +656,20 @@ var script$2 = {
     },
 
     componentName(fieldConf) {
-      var _fieldConf$vBind2;
+      var _fieldConf$vBind;
 
-      if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is) {
-        var _fieldConf$vBind3;
+      if (fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind = fieldConf.vBind) === null || _fieldConf$vBind === void 0 ? void 0 : _fieldConf$vBind.is) {
+        var _fieldConf$vBind2;
 
-        return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.is;
+        return fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind2 = fieldConf.vBind) === null || _fieldConf$vBind2 === void 0 ? void 0 : _fieldConf$vBind2.is;
       }
 
       const componentData = this.components.find(({
         types
       }) => {
-        var _fieldConf$vBind4;
+        var _fieldConf$vBind3;
 
-        return types.includes(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4.type);
+        return types.includes(fieldConf === null || fieldConf === void 0 ? void 0 : (_fieldConf$vBind3 = fieldConf.vBind) === null || _fieldConf$vBind3 === void 0 ? void 0 : _fieldConf$vBind3.type);
       });
       return componentData === null || componentData === void 0 ? void 0 : componentData.name;
     },
@@ -686,10 +692,10 @@ var script$2 = {
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
     fieldHidden(fieldConf) {
-      var _fieldConf$vBind5;
+      var _fieldConf$vBind4;
 
       const HIDDEN = true;
-      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind5 = fieldConf.vBind) === null || _fieldConf$vBind5 === void 0 ? void 0 : _fieldConf$vBind5[FIELD.vBind.hidden] : !HIDDEN;
+      return (fieldConf === null || fieldConf === void 0 ? void 0 : fieldConf.vBind) && FIELD.vBind.hidden in fieldConf.vBind ? (_fieldConf$vBind4 = fieldConf.vBind) === null || _fieldConf$vBind4 === void 0 ? void 0 : _fieldConf$vBind4[FIELD.vBind.hidden] : !HIDDEN;
     },
 
     runFieldRules(rules, val) {

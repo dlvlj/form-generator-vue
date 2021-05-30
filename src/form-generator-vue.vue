@@ -252,13 +252,19 @@ export default {
         (component) => component?.name === name,
       );
     },
-    typeCoercion(fieldConf) {
-      if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
-        return;
+    typeCoercion(conf) {
+      if (this.fields[conf.model] && conf?.vBind?.type === FIELD.type.number) {
+        if (!Number.isNaN(this.fields[conf.model])) {
+          return;
+        }
+        this.fields[conf.model] = Number(this.fields[conf.model]);
       }
-      if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
-        this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
-      }
+      // if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
+      //   return;
+      // }
+      // if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
+      //   this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
+      // }
     },
     componentEvents(conf, options = {}) {
       const { form } = options;
