@@ -1101,9 +1101,9 @@ var __vue_render__$2 = function __vue_render__() {
       expression: "form"
     }
   }, 'component', _vm.componentProps(_vm.schema.form, {
-    form: _vm.schema.form
+    form: true
   }), false), _vm.componentEvents(_vm.schema.form, {
-    form: _vm.schema.form
+    form: true
   })), [_c('div', {
     class: [_vm.CLASS.header]
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
@@ -1166,7 +1166,7 @@ var __vue_inject_styles__$2 = undefined;
 var __vue_scope_id__$2 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$2 = "data-v-5ea53082";
+var __vue_module_identifier__$2 = "data-v-1018a566";
 /* functional template */
 
 var __vue_is_functional_template__$2 = false;

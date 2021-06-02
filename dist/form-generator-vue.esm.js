@@ -842,9 +842,9 @@ var __vue_render__$2 = function () {
       expression: "form"
     }
   }, 'component', _vm.componentProps(_vm.schema.form, {
-    form: _vm.schema.form
+    form: true
   }), false), _vm.componentEvents(_vm.schema.form, {
-    form: _vm.schema.form
+    form: true
   })), [_c('div', {
     class: [_vm.CLASS.header]
   }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {

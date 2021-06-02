@@ -2,9 +2,9 @@
   <component
     :is="componentName(schema.form)"
     v-model="form"
-    v-bind="componentProps(schema.form, {form: schema.form})"
+    v-bind="componentProps(schema.form, {form: true})"
     :class="[CLASS.form]"
-    v-on="componentEvents(schema.form, {form: schema.form})"
+    v-on="componentEvents(schema.form, {form: true})"
   >
     <!-- header -->
     <div :class="[CLASS.header]">
