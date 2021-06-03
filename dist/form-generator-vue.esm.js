@@ -1,3 +1,169 @@
+function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+    if (typeof shadowMode !== 'boolean') {
+        createInjectorSSR = createInjector;
+        createInjector = shadowMode;
+        shadowMode = false;
+    }
+    // Vue.extend constructor export interop.
+    const options = typeof script === 'function' ? script.options : script;
+    // render functions
+    if (template && template.render) {
+        options.render = template.render;
+        options.staticRenderFns = template.staticRenderFns;
+        options._compiled = true;
+        // functional template
+        if (isFunctionalTemplate) {
+            options.functional = true;
+        }
+    }
+    // scopedId
+    if (scopeId) {
+        options._scopeId = scopeId;
+    }
+    let hook;
+    if (moduleIdentifier) {
+        // server build
+        hook = function (context) {
+            // 2.3 injection
+            context =
+                context || // cached call
+                    (this.$vnode && this.$vnode.ssrContext) || // stateful
+                    (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
+            // 2.2 with runInNewContext: true
+            if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+                context = __VUE_SSR_CONTEXT__;
+            }
+            // inject component styles
+            if (style) {
+                style.call(this, createInjectorSSR(context));
+            }
+            // register component module identifier for async chunk inference
+            if (context && context._registeredComponents) {
+                context._registeredComponents.add(moduleIdentifier);
+            }
+        };
+        // used by ssr in case component is cached and beforeCreate
+        // never gets called
+        options._ssrRegister = hook;
+    }
+    else if (style) {
+        hook = shadowMode
+            ? function (context) {
+                style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
+            }
+            : function (context) {
+                style.call(this, createInjector(context));
+            };
+    }
+    if (hook) {
+        if (options.functional) {
+            // register for functional component in vue file
+            const originalRender = options.render;
+            options.render = function renderWithStyleInjection(h, context) {
+                hook.call(context);
+                return originalRender(h, context);
+            };
+        }
+        else {
+            // inject component registration as beforeCreate hook
+            const existing = options.beforeCreate;
+            options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+        }
+    }
+    return script;
+}
+
+/* script */
+
+/* template */
+var __vue_render__ = function () {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('div', [_vm._t("default")], 2);
+};
+
+var __vue_staticRenderFns__ = [];
+/* style */
+
+const __vue_inject_styles__ = undefined;
+/* scoped */
+
+const __vue_scope_id__ = undefined;
+/* module identifier */
+
+const __vue_module_identifier__ = undefined;
+/* functional template */
+
+const __vue_is_functional_template__ = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+const __vue_component__ = /*#__PURE__*/normalizeComponent({
+  render: __vue_render__,
+  staticRenderFns: __vue_staticRenderFns__
+}, __vue_inject_styles__, {}, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
+
+var props = {
+  props: {
+    value: {
+      type: Object,
+      default: null,
+      required: false
+    },
+    submit: {
+      type: Function,
+      required: false,
+      default: undefined
+    },
+    components: {
+      type: Array,
+      required: false,
+      default: () => []
+    },
+    // disabled: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false,
+    // },
+    schema: {
+      type: Object,
+      default: () => ({})
+    },
+    classes: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
+    submitFail: {
+      type: Function,
+      required: false,
+      default: undefined
+    },
+    activeValidation: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    // activeValidationDelay: {
+    //   type: Number,
+    //   required: false,
+    //   default: 0
+    // },
+    logs: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  }
+};
+
 const UTILS = {
   isUndef(val) {
     return typeof val === 'undefined';
@@ -141,282 +307,16 @@ const FIELD = {
   rules: 'rules'
 };
 
-var tempLiterals = {
-  computed: {
-    SLOT: () => SLOT,
-    CLASS: () => CLASS,
-    UTILS: () => UTILS,
-    SCHEMA: () => SCHEMA
-  }
-};
-
 //
 var script = {
-  mixins: [tempLiterals],
-  props: {
-    models: {
-      type: Array,
-      required: false,
-      default: () => []
-    },
-    classes: {
-      type: Object,
-      required: false,
-      default: () => ({})
-    }
-  }
-};
-
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-    if (typeof shadowMode !== 'boolean') {
-        createInjectorSSR = createInjector;
-        createInjector = shadowMode;
-        shadowMode = false;
-    }
-    // Vue.extend constructor export interop.
-    const options = typeof script === 'function' ? script.options : script;
-    // render functions
-    if (template && template.render) {
-        options.render = template.render;
-        options.staticRenderFns = template.staticRenderFns;
-        options._compiled = true;
-        // functional template
-        if (isFunctionalTemplate) {
-            options.functional = true;
-        }
-    }
-    // scopedId
-    if (scopeId) {
-        options._scopeId = scopeId;
-    }
-    let hook;
-    if (moduleIdentifier) {
-        // server build
-        hook = function (context) {
-            // 2.3 injection
-            context =
-                context || // cached call
-                    (this.$vnode && this.$vnode.ssrContext) || // stateful
-                    (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
-            // 2.2 with runInNewContext: true
-            if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-                context = __VUE_SSR_CONTEXT__;
-            }
-            // inject component styles
-            if (style) {
-                style.call(this, createInjectorSSR(context));
-            }
-            // register component module identifier for async chunk inference
-            if (context && context._registeredComponents) {
-                context._registeredComponents.add(moduleIdentifier);
-            }
-        };
-        // used by ssr in case component is cached and beforeCreate
-        // never gets called
-        options._ssrRegister = hook;
-    }
-    else if (style) {
-        hook = shadowMode
-            ? function (context) {
-                style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
-            }
-            : function (context) {
-                style.call(this, createInjector(context));
-            };
-    }
-    if (hook) {
-        if (options.functional) {
-            // register for functional component in vue file
-            const originalRender = options.render;
-            options.render = function renderWithStyleInjection(h, context) {
-                hook.call(context);
-                return originalRender(h, context);
-            };
-        }
-        else {
-            // inject component registration as beforeCreate hook
-            const existing = options.beforeCreate;
-            options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-        }
-    }
-    return script;
-}
-
-/* script */
-const __vue_script__ = script;
-/* template */
-
-var __vue_render__ = function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-
-  var _c = _vm._self._c || _h;
-
-  return _c('div', {
-    class: [_vm.CLASS.rowContainer]
-  }, [_vm._t(_vm.SLOT.beforeRow, null, {
-    "models": _vm.models
-  }), _vm._v(" "), _c('div', {
-    key: _vm.i,
-    class: [_vm.CLASS.row, _vm.classes.row]
-  }, [_vm._t(_vm.SLOT.rowStart, null, {
-    "models": _vm.models
-  }), _vm._v(" "), _vm._t("default"), _vm._v(" "), _vm._t(_vm.SLOT.rowEnd, null, {
-    "models": _vm.models
-  })], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterRow, null, {
-    "models": _vm.models
-  })], 2);
-};
-
-var __vue_staticRenderFns__ = [];
-/* style */
-
-const __vue_inject_styles__ = undefined;
-/* scoped */
-
-const __vue_scope_id__ = undefined;
-/* module identifier */
-
-const __vue_module_identifier__ = undefined;
-/* functional template */
-
-const __vue_is_functional_template__ = false;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-const __vue_component__ = /*#__PURE__*/normalizeComponent({
-  render: __vue_render__,
-  staticRenderFns: __vue_staticRenderFns__
-}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
-
-//
-var script$1 = {
-  mixins: [tempLiterals],
-  props: {
-    models: {
-      type: Array,
-      required: false,
-      default: () => []
-    },
-    classes: {
-      type: Object,
-      required: false,
-      default: () => ({})
-    }
-  }
-};
-
-/* script */
-const __vue_script__$1 = script$1;
-/* template */
-
-var __vue_render__$1 = function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-
-  var _c = _vm._self._c || _h;
-
-  return _c('div', {
-    class: [_vm.CLASS.colContainer]
-  }, [_vm._t(_vm.SLOT.beforeCol, null, {
-    "models": _vm.models
-  }), _vm._v(" "), _c('div', {
-    class: [_vm.CLASS.col, _vm.models[0], _vm.classes.col]
-  }, [_vm._t(_vm.SLOT.beforeComponent(_vm.models[0])), _vm._v(" "), _vm._t("default"), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(_vm.models[0]))], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterCol, null, {
-    "models": _vm.models
-  })], 2);
-};
-
-var __vue_staticRenderFns__$1 = [];
-/* style */
-
-const __vue_inject_styles__$1 = undefined;
-/* scoped */
-
-const __vue_scope_id__$1 = undefined;
-/* module identifier */
-
-const __vue_module_identifier__$1 = undefined;
-/* functional template */
-
-const __vue_is_functional_template__$1 = false;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-const __vue_component__$1 = /*#__PURE__*/normalizeComponent({
-  render: __vue_render__$1,
-  staticRenderFns: __vue_staticRenderFns__$1
-}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
-
-var props = {
-  props: {
-    value: {
-      type: Object,
-      default: null,
-      required: false
-    },
-    submit: {
-      type: Function,
-      required: false,
-      default: undefined
-    },
-    components: {
-      type: Array,
-      required: false,
-      default: () => []
-    },
-    // disabled: {
-    //   type: Boolean,
-    //   required: false,
-    //   default: false,
-    // },
-    schema: {
-      type: Object,
-      default: () => ({})
-    },
-    classes: {
-      type: Object,
-      required: false,
-      default: () => ({})
-    },
-    submitFail: {
-      type: Function,
-      required: false,
-      default: undefined
-    },
-    activeValidation: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    // activeValidationDelay: {
-    //   type: Number,
-    //   required: false,
-    //   default: 0
-    // },
-    logs: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  }
-};
-
-//
-var script$2 = {
   components: {
+    Body: __vue_component__,
+    RowContainer: __vue_component__,
     Row: __vue_component__,
-    Column: __vue_component__$1
+    ColumnContainer: __vue_component__,
+    Column: __vue_component__
   },
-  mixins: [props, tempLiterals],
+  mixins: [props],
   emits: ['input'],
 
   data() {
@@ -452,9 +352,10 @@ var script$2 = {
   },
 
   computed: {
-    // SLOT: () => SLOT,
-    // CLASS: () => CLASS,
-    // UTILS: () => UTILS,
+    SLOT: () => SLOT,
+    CLASS: () => CLASS,
+    UTILS: () => UTILS,
+
     // globalAv() {
     //   return this.activeValidation || false;
     // },
@@ -821,10 +722,10 @@ var script$2 = {
 };
 
 /* script */
-const __vue_script__$2 = script$2;
+const __vue_script__ = script;
 /* template */
 
-var __vue_render__$2 = function () {
+var __vue_render__$1 = function () {
   var _vm = this;
 
   var _h = _vm.$createElement;
@@ -845,22 +746,26 @@ var __vue_render__$2 = function () {
     form: true
   }), false), _vm.componentEvents(_vm.schema.form, {
     form: true
-  })), [_vm._t(_vm.SLOT.header), _vm._v(" "), _c('div', {
+  })), [_vm._t(_vm.SLOT.header), _vm._v(" "), _c('Body', {
     class: [_vm.CLASS.body]
-  }, [_vm._l(_vm.schema[_vm.SCHEMA.fields], function (conf, i) {
-    return [_vm.showRow(conf) ? _c('Row', {
+  }, [_vm._l(_vm.schema.fields, function (conf, i) {
+    return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      attrs: {
-        "models": _vm.slotProps(conf),
-        "classes": _vm.classes
-      }
-    }, [!_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('Column', {
+      class: [_vm.CLASS.rowContainer]
+    }, [_vm._t(_vm.SLOT.beforeRow, null, {
+      "models": _vm.slotProps(conf)
+    }), _vm._v(" "), _c('Row', {
+      class: [_vm.CLASS.row, _vm.classes.row]
+    }, [_vm._t(_vm.SLOT.rowStart, null, {
+      "models": _vm.slotProps(conf)
+    }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
       key: conf.model,
-      attrs: {
-        "models": _vm.slotProps(conf),
-        "classes": _vm.classes
-      }
-    }, [_c(_vm.componentName(conf), _vm._g(_vm._b({
+      class: [_vm.CLASS.colContainer]
+    }, [_vm._t(_vm.SLOT.beforeCol, null, {
+      "models": _vm.slotProps(conf)
+    }), _vm._v(" "), _c('Column', {
+      class: [_vm.CLASS.col, conf.model, _vm.classes.col]
+    }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
         value: _vm.fields[conf.model],
@@ -871,14 +776,17 @@ var __vue_render__$2 = function () {
       }
     }, 'component', _vm.componentProps(conf, {
       field: true
-    }), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2)], 1) : _vm._e()] : _vm._l(conf, function (subConf) {
-      return [_vm.showCol(subConf) ? _c('Column', {
+    }), false), _vm.componentEvents(conf)), [_vm._t(conf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(conf.model))], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterCol, null, {
+      "models": _vm.slotProps(conf)
+    })], 2) : _vm._e()] : _vm._l(conf, function (subConf) {
+      return [_vm.showCol(subConf) ? _c('ColumnContainer', {
         key: subConf.model,
-        attrs: {
-          "models": _vm.slotProps(conf),
-          "classes": _vm.classes
-        }
-      }, [_c(_vm.componentName(subConf), _vm._g(_vm._b({
+        class: [_vm.CLASS.colContainer]
+      }, [_vm._t(_vm.SLOT.beforeCol, null, {
+        "models": _vm.slotProps(subConf)
+      }), _vm._v(" "), _c('Column', {
+        class: [_vm.CLASS.col, subConf.models, _vm.classes.col]
+      }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {
           value: _vm.fields[subConf.model],
@@ -889,47 +797,53 @@ var __vue_render__$2 = function () {
         }
       }, 'component', _vm.componentProps(subConf, {
         field: true
-      }), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2)], 1) : _vm._e()];
+      }), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterComponent(subConf.model))], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterCol, null, {
+        "models": _vm.slotProps(subConf)
+      })], 2) : _vm._e()];
+    }), _vm._v(" "), _vm._t(_vm.SLOT.rowEnd, null, {
+      "models": _vm.slotProps(conf)
+    })], 2), _vm._v(" "), _vm._t(_vm.SLOT.afterRow, null, {
+      "models": _vm.slotProps(conf)
     })], 2) : _vm._e()];
   })], 2), _vm._v(" "), _vm._t(_vm.SLOT.footer)], 2);
 };
 
-var __vue_staticRenderFns__$2 = [];
+var __vue_staticRenderFns__$1 = [];
 /* style */
 
-const __vue_inject_styles__$2 = undefined;
+const __vue_inject_styles__$1 = undefined;
 /* scoped */
 
-const __vue_scope_id__$2 = undefined;
+const __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-const __vue_module_identifier__$2 = undefined;
+const __vue_module_identifier__$1 = undefined;
 /* functional template */
 
-const __vue_is_functional_template__$2 = false;
+const __vue_is_functional_template__$1 = false;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-const __vue_component__$2 = /*#__PURE__*/normalizeComponent({
-  render: __vue_render__$2,
-  staticRenderFns: __vue_staticRenderFns__$2
-}, __vue_inject_styles__$2, __vue_script__$2, __vue_scope_id__$2, __vue_is_functional_template__$2, __vue_module_identifier__$2, false, undefined, undefined, undefined);
+const __vue_component__$1 = /*#__PURE__*/normalizeComponent({
+  render: __vue_render__$1,
+  staticRenderFns: __vue_staticRenderFns__$1
+}, __vue_inject_styles__$1, __vue_script__, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
 
 // Import vue component
 
 const install = function installFormGeneratorVue(Vue) {
   if (install.installed) return;
   install.installed = true;
-  Vue.component('FormGeneratorVue', __vue_component__$2);
+  Vue.component('FormGeneratorVue', __vue_component__$1);
 }; // Create module definition for Vue.use()
 // to be registered via Vue.use() as well as Vue.component()
 
 
-__vue_component__$2.install = install; // Export component by default
+__vue_component__$1.install = install; // Export component by default
 // also be used as directives, etc. - eg. import { RollupDemoDirective } from 'rollup-demo';
 // export const RollupDemoDirective = component;
 
-export default __vue_component__$2;
+export default __vue_component__$1;
