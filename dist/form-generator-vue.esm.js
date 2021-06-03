@@ -94,9 +94,9 @@ const UTILS = {
 
 const CLASS = {
   form: 'fgv-form',
-  header: 'fgv-header',
+  // header: 'fgv-header',
   body: 'fgv-body',
-  footer: 'fgv-footer',
+  // footer: 'fgv-footer',
   row: 'fgv-row',
   rowContainer: 'fgv-row-container',
   colContainer: 'fgv-col-container',
@@ -845,9 +845,7 @@ var __vue_render__$2 = function () {
     form: true
   }), false), _vm.componentEvents(_vm.schema.form, {
     form: true
-  })), [_c('div', {
-    class: [_vm.CLASS.header]
-  }, [_vm._t(_vm.SLOT.header)], 2), _vm._v(" "), _c('div', {
+  })), [_vm._t(_vm.SLOT.header), _vm._v(" "), _c('div', {
     class: [_vm.CLASS.body]
   }, [_vm._l(_vm.schema[_vm.SCHEMA.fields], function (conf, i) {
     return [_vm.showRow(conf) ? _c('Row', {
@@ -893,9 +891,7 @@ var __vue_render__$2 = function () {
         field: true
       }), false), _vm.componentEvents(subConf)), [_vm._t(subConf.model)], 2)], 1) : _vm._e()];
     })], 2) : _vm._e()];
-  })], 2), _vm._v(" "), _c('div', {
-    class: _vm.CLASS.footer
-  }, [_vm._t(_vm.SLOT.footer)], 2)]);
+  })], 2), _vm._v(" "), _vm._t(_vm.SLOT.footer)], 2);
 };
 
 var __vue_staticRenderFns__$2 = [];

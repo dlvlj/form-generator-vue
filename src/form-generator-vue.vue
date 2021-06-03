@@ -7,9 +7,8 @@
     v-on="componentEvents(schema.form, {form: true})"
   >
     <!-- header -->
-    <div :class="[CLASS.header]">
-      <slot :name="SLOT.header" />
-    </div>
+    <slot :name="SLOT.header" />
+
     <!-- body -->
     <div :class="[CLASS.body]">
       <template v-for="(conf, i) in schema[SCHEMA.fields]">
@@ -61,10 +60,9 @@
         </Row>
       </template>
     </div>
+
     <!-- footer -->
-    <div :class="CLASS.footer">
-      <slot :name="SLOT.footer" />
-    </div>
+    <slot :name="SLOT.footer" />
   </component>
 </template>
 

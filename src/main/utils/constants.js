@@ -1,9 +1,9 @@
 export const HELPER_COMPONENT = '_helper';
 export const CLASS = {
   form: 'fgv-form',
-  header: 'fgv-header',
+  // header: 'fgv-header',
   body: 'fgv-body',
-  footer: 'fgv-footer',
+  // footer: 'fgv-footer',
   row: 'fgv-row',
   rowContainer: 'fgv-row-container',
   colContainer: 'fgv-col-container',
