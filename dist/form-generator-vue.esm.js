@@ -258,6 +258,7 @@ const UTILS = {
 
 };
 
+const ERROR_TYPES = ['string', 'object'];
 const CLASS = {
   form: 'fgv-form',
   // header: 'fgv-header',
@@ -533,7 +534,7 @@ var script = {
       //   return;
       // }
       // prop is not rmoved from errors if set undefined
-      this.errors[model] = !UTILS.isUndef(err) ? err : '';
+      this.errors[model] = ERROR_TYPES.includes(typeof err) ? err : '';
     },
 
     componentData(name) {
@@ -623,30 +624,34 @@ var script = {
     },
 
     runFieldRules(val, rules) {
-      let res;
+      let err;
 
       if (UTILS.isArr(rules)) {
         for (const rule of rules) {
           // valid return values: string
-          res = rule;
+          err = rule;
 
           if (UTILS.isFunc(rule)) {
-            res = UTILS.handleFunc(rule, val);
+            err = rule(val);
           }
 
-          if (![undefined, null, true].includes(res)) {
+          if (ERROR_TYPES.includes(typeof err)) {
             break;
           }
         }
       }
 
-      return res;
+      if (UTILS.isFunc(rules)) {
+        err = rules(val);
+      }
+
+      return err;
     },
 
     validateField(conf) {
-      const NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
-
-      const err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submitClick ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
+      // const fieldRequired = this.fieldRequired(fieldConf);
+      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this.activeValidation;
+      const err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 

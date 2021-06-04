@@ -443,7 +443,8 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
       (_console2 = console).log.apply(_console2, _toConsumableArray(items));
     }
   }
-};var CLASS = {
+};var ERROR_TYPES = ['string', 'object'];
+var CLASS = {
   form: 'fgv-form',
   // header: 'fgv-header',
   body: 'fgv-body',
@@ -765,7 +766,7 @@ var FIELD = {
       //   return;
       // }
       // prop is not rmoved from errors if set undefined
-      this.errors[model] = !UTILS.isUndef(err) ? err : '';
+      this.errors[model] = ERROR_TYPES.includes(_typeof(err)) ? err : '';
     },
     componentData: function componentData(name) {
       return this.components.find(function (c) {
@@ -851,7 +852,7 @@ var FIELD = {
       return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? (_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
     },
     runFieldRules: function runFieldRules(val, rules) {
-      var res;
+      var err;
 
       if (UTILS.isArr(rules)) {
         var _iterator5 = _createForOfIteratorHelper(rules),
@@ -861,13 +862,13 @@ var FIELD = {
           for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
             var rule = _step5.value;
             // valid return values: string
-            res = rule;
+            err = rule;
 
             if (UTILS.isFunc(rule)) {
-              res = UTILS.handleFunc(rule, val);
+              err = rule(val);
             }
 
-            if (![undefined, null, true].includes(res)) {
+            if (ERROR_TYPES.includes(_typeof(err))) {
               break;
             }
           }
@@ -878,12 +879,16 @@ var FIELD = {
         }
       }
 
-      return res;
+      if (UTILS.isFunc(rules)) {
+        err = rules(val);
+      }
+
+      return err;
     },
     validateField: function validateField(conf) {
-      var NO_ERR = ''; // const fieldRequired = this.fieldRequired(fieldConf);
-
-      var err = (conf === null || conf === void 0 ? void 0 : conf[FIELD.av]) || this.activeValidation || this.submitClick ? this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]) : NO_ERR; // if (!fieldRequired) {
+      // const fieldRequired = this.fieldRequired(fieldConf);
+      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this.activeValidation;
+      var err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -1080,7 +1085,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-13e87632";
+var __vue_module_identifier__$1 = "data-v-03dd6dcb";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

@@ -1,3 +1,4 @@
+export const ERROR_TYPES = ['string', 'object'];
 export const HELPER_COMPONENT = '_helper';
 export const CLASS = {
   form: 'fgv-form',
