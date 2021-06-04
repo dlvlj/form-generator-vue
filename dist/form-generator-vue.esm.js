@@ -460,10 +460,8 @@ var script = {
     emitData() {
       this.$emit('input', {
         form: this.form,
-        [VMODEL.fields]: { ...this.fields
-        },
-        [VMODEL.errors]: { ...this.errors
-        }
+        [VMODEL.fields]: this.fields,
+        [VMODEL.errors]: this.errors
       });
     },
 
@@ -655,8 +653,7 @@ var script = {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
-      this.setError(conf.model, err);
-      return err;
+      this.setError(conf.model, err); // return err;
     },
 
     validateForm() {
@@ -672,7 +669,8 @@ var script = {
       // }
       // watcher handler end
       // On form submit
-      const fieldsStatus = {}; // Object.values(this.fieldsFlat).forEach((conf) => {
+      // const fieldsStatus = {};
+      // Object.values(this.fieldsFlat).forEach((conf) => {
       //   const err = this.validateField(conf);
       //   fieldsStatus[conf.model] = {
       //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
@@ -680,13 +678,13 @@ var script = {
       //     schema: conf
       //   };
       // });
+      const fieldsStatus = {};
 
-      for (const model in this.fieldsFlat) {
+      for (const model in this.fields) {
         const conf = this.fieldsFlat[model];
-        const err = this.validateField(conf);
+        this.validateField(conf);
         fieldsStatus[conf.model] = {
-          // validationSuccess: !err ? true : !this.fieldRequired(conf),
-          validationSuccess: !err,
+          validationSuccess: !this.errors[model],
           schema: conf
         };
       }
@@ -710,12 +708,11 @@ var script = {
       });
 
       if (submitFail) {
-        this.resetForm();
-
         if (this.submitFail) {
           await this.submitFail();
         }
 
+        this.resetForm();
         return;
       }
 

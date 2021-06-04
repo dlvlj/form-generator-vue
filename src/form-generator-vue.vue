@@ -255,7 +255,7 @@ export default {
   },
   methods: {
     emitData() {
-      this.$emit('input', { form: this.form, [VMODEL.fields]: { ...this.fields }, [VMODEL.errors]: { ...this.errors } });
+      this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
     },
     resetForm() {
       this.submitClick = false;
@@ -397,7 +397,7 @@ export default {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
       this.setError(conf.model, err);
-      return err;
+      // return err;
     },
     validateForm() {
       // watcher handler
@@ -416,7 +416,7 @@ export default {
       // watcher handler end
 
       // On form submit
-      const fieldsStatus = {};
+      // const fieldsStatus = {};
       // Object.values(this.fieldsFlat).forEach((conf) => {
       //   const err = this.validateField(conf);
       //   fieldsStatus[conf.model] = {
@@ -425,12 +425,12 @@ export default {
       //     schema: conf
       //   };
       // });
-      for (const model in this.fieldsFlat) {
+      const fieldsStatus = {};
+      for (const model in this.fields) {
         const conf = this.fieldsFlat[model];
-        const err = this.validateField(conf);
+        this.validateField(conf);
         fieldsStatus[conf.model] = {
-          // validationSuccess: !err ? true : !this.fieldRequired(conf),
-          validationSuccess: !err,
+          validationSuccess: !this.errors[model],
           schema: conf
         };
       }
@@ -445,10 +445,10 @@ export default {
       const { fieldsStatus, submitFail } = this.validateForm();
       UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], { show: this.logs });
       if (submitFail) {
-        this.resetForm();
         if (this.submitFail) {
           await this.submitFail();
         }
+        this.resetForm();
         return;
       }
       await this.submit();

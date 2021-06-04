@@ -698,7 +698,7 @@ var FIELD = {
 
       this.$emit('input', (_this$$emit = {
         form: this.form
-      }, _defineProperty(_this$$emit, VMODEL.fields, _objectSpread2({}, this.fields)), _defineProperty(_this$$emit, VMODEL.errors, _objectSpread2({}, this.errors)), _this$$emit));
+      }, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
     },
     resetForm: function resetForm() {
       this.submitClick = false;
@@ -892,8 +892,7 @@ var FIELD = {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
-      this.setError(conf.model, err);
-      return err;
+      this.setError(conf.model, err); // return err;
     },
     validateForm: function validateForm() {
       // watcher handler
@@ -908,7 +907,8 @@ var FIELD = {
       // }
       // watcher handler end
       // On form submit
-      var fieldsStatus = {}; // Object.values(this.fieldsFlat).forEach((conf) => {
+      // const fieldsStatus = {};
+      // Object.values(this.fieldsFlat).forEach((conf) => {
       //   const err = this.validateField(conf);
       //   fieldsStatus[conf.model] = {
       //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
@@ -916,15 +916,13 @@ var FIELD = {
       //     schema: conf
       //   };
       // });
+      var fieldsStatus = {};
 
-      for (var model in this.fieldsFlat) {
+      for (var model in this.fields) {
         var conf = this.fieldsFlat[model];
-
-        var _err = this.validateField(conf);
-
+        this.validateField(conf);
         fieldsStatus[conf.model] = {
-          // validationSuccess: !err ? true : !this.fieldRequired(conf),
-          validationSuccess: !_err,
+          validationSuccess: !this.errors[model],
           schema: conf
         };
       }
@@ -960,17 +958,17 @@ var FIELD = {
                   break;
                 }
 
-                _this5.resetForm();
-
                 if (!_this5.submitFail) {
-                  _context.next = 9;
+                  _context.next = 8;
                   break;
                 }
 
-                _context.next = 9;
+                _context.next = 8;
                 return _this5.submitFail();
 
-              case 9:
+              case 8:
+                _this5.resetForm();
+
                 return _context.abrupt("return");
 
               case 10:
@@ -1085,7 +1083,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-03dd6dcb";
+var __vue_module_identifier__$1 = "data-v-b914668c";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
