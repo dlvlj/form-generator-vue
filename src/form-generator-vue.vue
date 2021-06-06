@@ -22,7 +22,7 @@
             :models="slotProps(conf)"
           />
           <Row
-            :class="[CLASS.row, `${CLASS.row}-${i}`, classes.row]"
+            :class="[CLASS.row, `${CLASS.row}-${i}`]"
           >
             <slot
               :name="SLOT.rowStart"
@@ -43,7 +43,6 @@
                   :class="[
                     CLASS.col,
                     conf.model,
-                    classes.col,
                   ]"
                 >
                   <slot :name="SLOT.beforeComponent(conf.model)" />
@@ -80,8 +79,7 @@
                 <Column
                   :class="[
                     CLASS.col,
-                    subConf.models,
-                    classes.col,
+                    subConf.model,
                   ]"
                 >
                   <slot :name="SLOT.beforeComponent(subConf.model)" />

@@ -24,11 +24,11 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    classes: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
+    // classes: {
+    //   type: Object,
+    //   required: false,
+    //   default: () => ({}),
+    // },
     submitFail: {
       type: Function,
       required: false,
