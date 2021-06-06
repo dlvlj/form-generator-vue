@@ -618,7 +618,7 @@ var script = {
       var _conf$vBind7;
 
       const HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? (_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? Boolean((_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden]) : !HIDDEN;
     },
 
     runFieldRules(val, rules) {

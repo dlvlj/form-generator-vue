@@ -849,7 +849,7 @@ var FIELD = {
       var _conf$vBind7;
 
       var HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? (_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden] : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? Boolean((_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden]) : !HIDDEN;
     },
     runFieldRules: function runFieldRules(val, rules) {
       var err;
@@ -1084,7 +1084,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-1ff19642";
+var __vue_module_identifier__$1 = "data-v-1de9cf8e";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
