@@ -923,12 +923,13 @@ var FIELD = {
         this.validateField(conf);
         fieldsStatus[conf.model] = {
           validationSuccess: !this.errors[model],
+          hidden: this.fieldHidden(conf),
           schema: conf
         };
       }
 
       var submitFail = Object.keys(fieldsStatus).find(function (model) {
-        return !fieldsStatus[model].validationSuccess;
+        return !fieldsStatus[model].validationSuccess && !fieldsStatus[model].hidden;
       });
       return {
         fieldsStatus: fieldsStatus,
@@ -1083,7 +1084,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-b914668c";
+var __vue_module_identifier__$1 = "data-v-1ff19642";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

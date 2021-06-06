@@ -685,11 +685,12 @@ var script = {
         this.validateField(conf);
         fieldsStatus[conf.model] = {
           validationSuccess: !this.errors[model],
+          hidden: this.fieldHidden(conf),
           schema: conf
         };
       }
 
-      const submitFail = Object.keys(fieldsStatus).find(model => !fieldsStatus[model].validationSuccess);
+      const submitFail = Object.keys(fieldsStatus).find(model => !fieldsStatus[model].validationSuccess && !fieldsStatus[model].hidden);
       return {
         fieldsStatus,
         submitFail
