@@ -756,11 +756,11 @@ var __vue_render__$1 = function () {
   }, [_vm._l(_vm.schema.fields, function (conf, i) {
     return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      class: [_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + i]
+      class: [_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)]
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + i]
+      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)]
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {

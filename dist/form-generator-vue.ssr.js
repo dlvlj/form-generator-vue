@@ -1018,11 +1018,11 @@ var __vue_render__$1 = function __vue_render__() {
   }, [_vm._l(_vm.schema.fields, function (conf, i) {
     return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      class: [_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + i]
+      class: [_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)]
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + i]
+      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)]
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
@@ -1084,7 +1084,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-225a4b06";
+var __vue_module_identifier__$1 = "data-v-041e1706";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

@@ -15,14 +15,14 @@
         <RowContainer
           v-if="showRow(conf)"
           :key="i"
-          :class="[CLASS.rowContainer, `${CLASS.rowContainer}-${i}`]"
+          :class="[CLASS.rowContainer, `${CLASS.rowContainer}-${i + 1}`]"
         >
           <slot
             :name="SLOT.beforeRow"
             :models="slotProps(conf)"
           />
           <Row
-            :class="[CLASS.row, `${CLASS.row}-${i}`]"
+            :class="[CLASS.row, `${CLASS.row}-${i + 1}`]"
           >
             <slot
               :name="SLOT.rowStart"
