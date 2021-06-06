@@ -756,16 +756,16 @@ var __vue_render__$1 = function () {
   }, [_vm._l(_vm.schema.fields, function (conf, i) {
     return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      class: [_vm.CLASS.rowContainer]
+      class: [_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + i]
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: [_vm.CLASS.row, _vm.classes.row]
+      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + i, _vm.classes.row]
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
       key: conf.model,
-      class: [_vm.CLASS.colContainer]
+      class: [_vm.CLASS.colContainer, conf.model]
     }, [_vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Column', {
@@ -786,7 +786,7 @@ var __vue_render__$1 = function () {
     })], 2) : _vm._e()] : _vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _c('ColumnContainer', {
         key: subConf.model,
-        class: [_vm.CLASS.colContainer]
+        class: [_vm.CLASS.colContainer, subConf.model]
       }, [_vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
       }), _vm._v(" "), _c('Column', {

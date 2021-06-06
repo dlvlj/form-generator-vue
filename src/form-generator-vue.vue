@@ -15,14 +15,14 @@
         <RowContainer
           v-if="showRow(conf)"
           :key="i"
-          :class="[CLASS.rowContainer]"
+          :class="[CLASS.rowContainer, `${CLASS.rowContainer}-${i}`]"
         >
           <slot
             :name="SLOT.beforeRow"
             :models="slotProps(conf)"
           />
           <Row
-            :class="[CLASS.row, classes.row]"
+            :class="[CLASS.row, `${CLASS.row}-${i}`, classes.row]"
           >
             <slot
               :name="SLOT.rowStart"
@@ -33,7 +33,7 @@
               <ColumnContainer
                 v-if="showCol(conf)"
                 :key="conf.model"
-                :class="[CLASS.colContainer]"
+                :class="[CLASS.colContainer, conf.model]"
               >
                 <slot
                   :name="SLOT.beforeCol"
@@ -71,7 +71,7 @@
               <ColumnContainer
                 v-if="showCol(subConf)"
                 :key="subConf.model"
-                :class="[CLASS.colContainer]"
+                :class="[CLASS.colContainer, subConf.model]"
               >
                 <slot
                   :name="SLOT.beforeCol"
