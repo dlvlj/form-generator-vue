@@ -392,7 +392,7 @@ export default {
         ? conf?.[FIELD.av] : this.activeValidation;
 
       const err = (this.submitClick || av)
-       && this.runFieldRules(this.fields[conf.model], conf?.[FIELD.rules]);
+       && this.runFieldRules(this.fields[conf.model], this?.schema?.rules?.[conf.model]);
       // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);

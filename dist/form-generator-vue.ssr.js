@@ -886,9 +886,11 @@ var FIELD = {
       return err;
     },
     validateField: function validateField(conf) {
+      var _this$schema2, _this$schema2$rules;
+
       // const fieldRequired = this.fieldRequired(fieldConf);
       var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this.activeValidation;
-      var err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], conf === null || conf === void 0 ? void 0 : conf[FIELD.rules]); // if (!fieldRequired) {
+      var err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$rules = _this$schema2.rules) === null || _this$schema2$rules === void 0 ? void 0 : _this$schema2$rules[conf.model]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -1084,7 +1086,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-1de9cf8e";
+var __vue_module_identifier__$1 = "data-v-9aac2d7a";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
