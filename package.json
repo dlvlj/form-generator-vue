@@ -1,8 +1,9 @@
 {
   "name": "form-generator-vue",
-  "version": "2.0.1",
-  "description": "",
-  "license": "BSD-3-Clause",
+  "version": "2.0.2",
+  "description": "Form generator component for vue.",
+  "license": "MIT",
+  "homepage": "https://github.com/divijbhardwaj/form-generator-vue/",
   "main": "dist/form-generator-vue.ssr.js",
   "browser": "dist/form-generator-vue.esm.js",
   "module": "dist/form-generator-vue.esm.js",
@@ -22,13 +23,9 @@
     "vue",
     "nuxt",
     "form",
-    "form-schema",
-    "schema-form-generator",
     "generator",
     "form-generator",
-    "form-builder",
-    "vue-form",
-    "nuxt-form"
+    "form-builder"
   ],
   "dependencies": {},
   "devDependencies": {
@@ -57,5 +54,9 @@
   },
   "engines": {
     "node": ">=10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/divijbhardwaj/form-generator-vue.git"
   }
 }
