@@ -364,7 +364,7 @@ export default {
       const HIDDEN = true;
       return conf?.vBind
        && FIELD.vBind.hidden in conf.vBind
-        ? conf.vBind?.[FIELD.vBind.hidden]
+        ? Boolean(conf.vBind?.[FIELD.vBind.hidden])
         : !HIDDEN;
     },
     runFieldRules(val, rules) {
