@@ -45,7 +45,7 @@ export const FIELD = {
     text: 'text',
     number: 'number',
   },
-  vBind: {
+  props: {
     required: 'required',
     disabled: 'disabled',
     hidden: 'hidden'

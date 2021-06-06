@@ -281,15 +281,15 @@ export default {
       // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
       // const errorPropName = componentData?.errorProp;
       const p = {
-        ...conf?.vBind,
-        disabled: this.schema?.form?.vBind?.disabled || conf?.disabled
+        ...conf?.props,
+        disabled: this.schema?.form?.props?.disabled || conf?.disabled
       };
       if (form) {
-        p.is = conf?.vBind?.is || 'form';
+        p.is = conf?.props?.is || 'form';
       }
       if (field) {
         if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
-        p.type = conf?.vBind?.type || FIELD.type.text;
+        p.type = conf?.props?.type || FIELD.type.text;
       }
       return p;
     },
@@ -313,7 +313,7 @@ export default {
       );
     },
     typeCoercion(conf) {
-      if (this.fields[conf.model] && conf?.vBind?.type === FIELD.type.number) {
+      if (this.fields[conf.model] && conf?.props?.type === FIELD.type.number) {
         if (!Number.isNaN(this.fields[conf.model])) {
           return;
         }
@@ -337,11 +337,11 @@ export default {
       return e;
     },
     componentName(conf) {
-      if (conf?.vBind?.is) {
-        return conf?.vBind?.is;
+      if (conf?.props?.is) {
+        return conf?.props?.is;
       }
       const cData = this.components
-        .find(({ types }) => types.includes(conf?.vBind?.type));
+        .find(({ types }) => types.includes(conf?.props?.type));
       return cData?.name;
     },
     getFieldConf(model) {
@@ -362,9 +362,9 @@ export default {
     // },
     fieldHidden(conf) {
       const HIDDEN = true;
-      return conf?.vBind
-       && FIELD.vBind.hidden in conf.vBind
-        ? Boolean(conf.vBind?.[FIELD.vBind.hidden])
+      return conf?.props
+       && FIELD.props.hidden in conf.props
+        ? Boolean(conf.props?.[FIELD.props.hidden])
         : !HIDDEN;
     },
     runFieldRules(val, rules) {

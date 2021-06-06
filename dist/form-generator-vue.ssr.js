@@ -489,7 +489,7 @@ var FIELD = {
     text: 'text',
     number: 'number'
   },
-  vBind: {
+  props: {
     required: 'required',
     disabled: 'disabled',
     hidden: 'hidden'
@@ -724,7 +724,7 @@ var FIELD = {
       return [conf.model];
     },
     componentProps: function componentProps(conf) {
-      var _this$schema, _this$schema$form, _this$schema$form$vBi;
+      var _this$schema, _this$schema$form, _this$schema$form$pro;
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form,
@@ -733,24 +733,24 @@ var FIELD = {
       var componentData = this.componentData(this.componentName(conf)); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
       // const errorPropName = componentData?.errorProp;
 
-      var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.vBind), {}, {
-        disabled: ((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$vBi = _this$schema$form.vBind) === null || _this$schema$form$vBi === void 0 ? void 0 : _this$schema$form$vBi.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
+      var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.props), {}, {
+        disabled: ((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$pro = _this$schema$form.props) === null || _this$schema$form$pro === void 0 ? void 0 : _this$schema$form$pro.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
       });
 
       if (form) {
-        var _conf$vBind;
+        var _conf$props;
 
-        p.is = (conf === null || conf === void 0 ? void 0 : (_conf$vBind = conf.vBind) === null || _conf$vBind === void 0 ? void 0 : _conf$vBind.is) || 'form';
+        p.is = (conf === null || conf === void 0 ? void 0 : (_conf$props = conf.props) === null || _conf$props === void 0 ? void 0 : _conf$props.is) || 'form';
       }
 
       if (field) {
-        var _conf$vBind2;
+        var _conf$props2;
 
         if (componentData === null || componentData === void 0 ? void 0 : componentData.errorProp) {
           p[componentData.errorProp] = this.errors[conf.model];
         }
 
-        p.type = (conf === null || conf === void 0 ? void 0 : (_conf$vBind2 = conf.vBind) === null || _conf$vBind2 === void 0 ? void 0 : _conf$vBind2.type) || FIELD.type.text;
+        p.type = (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.type) || FIELD.type.text;
       }
 
       return p;
@@ -774,9 +774,9 @@ var FIELD = {
       });
     },
     typeCoercion: function typeCoercion(conf) {
-      var _conf$vBind3;
+      var _conf$props3;
 
-      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$vBind3 = conf.vBind) === null || _conf$vBind3 === void 0 ? void 0 : _conf$vBind3.type) === FIELD.type.number) {
+      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.type) === FIELD.type.number) {
         if (!Number.isNaN(this.fields[conf.model])) {
           return;
         }
@@ -813,19 +813,19 @@ var FIELD = {
       return e;
     },
     componentName: function componentName(conf) {
-      var _conf$vBind4;
+      var _conf$props4;
 
-      if (conf === null || conf === void 0 ? void 0 : (_conf$vBind4 = conf.vBind) === null || _conf$vBind4 === void 0 ? void 0 : _conf$vBind4.is) {
-        var _conf$vBind5;
+      if (conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is) {
+        var _conf$props5;
 
-        return conf === null || conf === void 0 ? void 0 : (_conf$vBind5 = conf.vBind) === null || _conf$vBind5 === void 0 ? void 0 : _conf$vBind5.is;
+        return conf === null || conf === void 0 ? void 0 : (_conf$props5 = conf.props) === null || _conf$props5 === void 0 ? void 0 : _conf$props5.is;
       }
 
       var cData = this.components.find(function (_ref2) {
-        var _conf$vBind6;
+        var _conf$props6;
 
         var types = _ref2.types;
-        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$vBind6 = conf.vBind) === null || _conf$vBind6 === void 0 ? void 0 : _conf$vBind6.type);
+        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$props6 = conf.props) === null || _conf$props6 === void 0 ? void 0 : _conf$props6.type);
       });
       return cData === null || cData === void 0 ? void 0 : cData.name;
     },
@@ -846,10 +846,10 @@ var FIELD = {
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
     fieldHidden: function fieldHidden(conf) {
-      var _conf$vBind7;
+      var _conf$props7;
 
       var HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.vBind) && FIELD.vBind.hidden in conf.vBind ? Boolean((_conf$vBind7 = conf.vBind) === null || _conf$vBind7 === void 0 ? void 0 : _conf$vBind7[FIELD.vBind.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props7 = conf.props) === null || _conf$props7 === void 0 ? void 0 : _conf$props7[FIELD.props.hidden]) : !HIDDEN;
     },
     runFieldRules: function runFieldRules(val, rules) {
       var err;
@@ -1086,7 +1086,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-9aac2d7a";
+var __vue_module_identifier__$1 = "data-v-8370dbc0";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
