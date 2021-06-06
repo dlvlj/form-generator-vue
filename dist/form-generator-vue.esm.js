@@ -136,11 +136,11 @@ var props = {
       type: Object,
       default: () => ({})
     },
-    classes: {
-      type: Object,
-      required: false,
-      default: () => ({})
-    },
+    // classes: {
+    //   type: Object,
+    //   required: false,
+    //   default: () => ({}),
+    // },
     submitFail: {
       type: Function,
       required: false,
@@ -760,7 +760,7 @@ var __vue_render__$1 = function () {
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + i, _vm.classes.row]
+      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + i]
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
@@ -769,7 +769,7 @@ var __vue_render__$1 = function () {
     }, [_vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Column', {
-      class: [_vm.CLASS.col, conf.model, _vm.classes.col]
+      class: [_vm.CLASS.col, conf.model]
     }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
@@ -790,7 +790,7 @@ var __vue_render__$1 = function () {
       }, [_vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
       }), _vm._v(" "), _c('Column', {
-        class: [_vm.CLASS.col, subConf.models, _vm.classes.col]
+        class: [_vm.CLASS.col, subConf.model]
       }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {
