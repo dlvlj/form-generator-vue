@@ -15,7 +15,7 @@
         <RowContainer
           v-if="showRow(conf)"
           :key="i"
-          :class="i==0 ? classes([CLASS.rowContainer, `${CLASS.rowContainer}-${i + 1}`]):[]"
+          :class="classes([CLASS.rowContainer, `${CLASS.rowContainer}-${i + 1}`])"
         >
           <slot
             :name="SLOT.beforeRow"
