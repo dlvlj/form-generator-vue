@@ -34,20 +34,20 @@ export default {
       required: false,
       default: undefined
     },
-    activeValidation: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
+    // activeValidation: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: true
+    // },
     // activeValidationDelay: {
     //   type: Number,
     //   required: false,
     //   default: 0
     // },
-    logs: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
+    // logs: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false
+    // }
   }
 };

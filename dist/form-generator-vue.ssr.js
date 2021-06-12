@@ -334,22 +334,22 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
       type: Function,
       required: false,
       default: undefined
-    },
-    activeValidation: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
+    } // activeValidation: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: true
+    // },
     // activeValidationDelay: {
     //   type: Number,
     //   required: false,
     //   default: 0
     // },
-    logs: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
+    // logs: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false
+    // }
+
   }
 };var UTILS = {
   isUndef: function isUndef(val) {
@@ -552,8 +552,8 @@ var FIELD = {
     return {
       form: form,
       fields: fields,
-      errors: errors,
-      submitClick: false
+      errors: errors // submitClick: false,
+
     };
   },
   computed: {
@@ -690,6 +690,13 @@ var FIELD = {
     // });
 
   },
+  mounted: function mounted() {
+    var _this$schema, _this$schema$options;
+
+    if (this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$options = _this$schema.options) === null || _this$schema$options === void 0 ? void 0 : _this$schema$options.onLoadValidation) {
+      this.validateForm();
+    }
+  },
   methods: {
     classes: function classes(classArr) {
       var _this3 = this;
@@ -722,9 +729,9 @@ var FIELD = {
         form: this.form
       }, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
     },
-    resetForm: function resetForm() {
-      this.submitClick = false;
-    },
+    // resetForm() {
+    //   this.submitClick = false;
+    // },
     showRow: function showRow(conf) {
       var _this4 = this;
 
@@ -746,7 +753,7 @@ var FIELD = {
       return [conf.model];
     },
     componentProps: function componentProps(conf) {
-      var _this$schema, _this$schema$form, _this$schema$form$pro;
+      var _this$schema2, _this$schema2$form, _this$schema2$form$pr;
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form,
@@ -756,7 +763,7 @@ var FIELD = {
       // const errorPropName = componentData?.errorProp;
 
       var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.props), {}, {
-        disabled: ((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$pro = _this$schema$form.props) === null || _this$schema$form$pro === void 0 ? void 0 : _this$schema$form$pro.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
+        disabled: ((_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : (_this$schema2$form$pr = _this$schema2$form.props) === null || _this$schema2$form$pr === void 0 ? void 0 : _this$schema2$form$pr.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
       });
 
       if (form) {
@@ -823,11 +830,13 @@ var FIELD = {
         var _conf$vOn;
 
         e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.submit && this.handleSubmit || function (ev) {
+          var _this5$schema, _this5$schema$options;
+
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
 
           UTILS.logger(['submit handler not present.\n'], {
             warn: true,
-            show: _this5.logs
+            show: _this5 === null || _this5 === void 0 ? void 0 : (_this5$schema = _this5.schema) === null || _this5$schema === void 0 ? void 0 : (_this5$schema$options = _this5$schema.options) === null || _this5$schema$options === void 0 ? void 0 : _this5$schema$options.logs
           });
         };
       }
@@ -907,12 +916,12 @@ var FIELD = {
 
       return err;
     },
-    validateField: function validateField(conf) {
-      var _this$schema2, _this$schema2$rules;
+    validateField: function validateField(conf, formValidating) {
+      var _this$schema3, _this$schema3$options, _this$schema4, _this$schema4$rules;
 
       // const fieldRequired = this.fieldRequired(fieldConf);
-      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this.activeValidation;
-      var err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$rules = _this$schema2.rules) === null || _this$schema2$rules === void 0 ? void 0 : _this$schema2$rules[conf.model]); // if (!fieldRequired) {
+      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$options = _this$schema3.options) === null || _this$schema3$options === void 0 ? void 0 : _this$schema3$options.activeValidation;
+      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$rules = _this$schema4.rules) === null || _this$schema4$rules === void 0 ? void 0 : _this$schema4$rules[conf.model]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -944,7 +953,7 @@ var FIELD = {
 
       for (var model in this.fields) {
         var conf = this.fieldsFlat[model];
-        this.validateField(conf);
+        this.validateField(conf, true);
         fieldsStatus[conf.model] = {
           validationSuccess: !this.errors[model],
           hidden: this.fieldHidden(conf),
@@ -964,46 +973,43 @@ var FIELD = {
       var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var _this6$schema, _this6$schema$options;
+
         var _this6$validateForm, fieldsStatus, submitFail;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                e === null || e === void 0 ? void 0 : e.preventDefault();
-                _this6.submitClick = true;
+                e === null || e === void 0 ? void 0 : e.preventDefault(); // this.submitClick = true;
+
                 _this6$validateForm = _this6.validateForm(), fieldsStatus = _this6$validateForm.fieldsStatus, submitFail = _this6$validateForm.submitFail;
 
                 UTILS.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus], {
-                  show: _this6.logs
+                  show: _this6 === null || _this6 === void 0 ? void 0 : (_this6$schema = _this6.schema) === null || _this6$schema === void 0 ? void 0 : (_this6$schema$options = _this6$schema.options) === null || _this6$schema$options === void 0 ? void 0 : _this6$schema$options.logs
                 });
 
                 if (!submitFail) {
-                  _context.next = 10;
-                  break;
-                }
-
-                if (!_this6.submitFail) {
                   _context.next = 8;
                   break;
                 }
 
-                _context.next = 8;
+                if (!_this6.submitFail) {
+                  _context.next = 7;
+                  break;
+                }
+
+                _context.next = 7;
                 return _this6.submitFail();
 
-              case 8:
-                _this6.resetForm();
-
+              case 7:
                 return _context.abrupt("return");
 
-              case 10:
-                _context.next = 12;
+              case 8:
+                _context.next = 10;
                 return _this6.submit();
 
-              case 12:
-                _this6.resetForm();
-
-              case 13:
+              case 10:
               case "end":
                 return _context.stop();
             }
@@ -1108,7 +1114,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-70f6c9b6";
+var __vue_module_identifier__$1 = "data-v-e2e26eae";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

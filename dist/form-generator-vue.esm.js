@@ -145,22 +145,22 @@ var props = {
       type: Function,
       required: false,
       default: undefined
-    },
-    activeValidation: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
+    } // activeValidation: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: true
+    // },
     // activeValidationDelay: {
     //   type: Number,
     //   required: false,
     //   default: 0
     // },
-    logs: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
+    // logs: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false
+    // }
+
   }
 };
 
@@ -347,8 +347,8 @@ var script = {
     return {
       form,
       fields,
-      errors,
-      submitClick: false
+      errors // submitClick: false,
+
     };
   },
 
@@ -456,17 +456,25 @@ var script = {
 
   },
 
+  mounted() {
+    var _this$schema, _this$schema$options;
+
+    if (this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$options = _this$schema.options) === null || _this$schema$options === void 0 ? void 0 : _this$schema$options.onLoadValidation) {
+      this.validateForm();
+    }
+  },
+
   methods: {
     classes(classArr, subArr = false) {
       return classArr.reduce((acc, c) => {
-        var _this$schema, _this$schema$class;
+        var _this$schema2, _this$schema2$class;
 
-        if (this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$class = _this$schema.class) === null || _this$schema$class === void 0 ? void 0 : _this$schema$class[c]) {
+        if (this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$class = _this$schema2.class) === null || _this$schema2$class === void 0 ? void 0 : _this$schema2$class[c]) {
           acc.push(...this.schema.class[c]);
           const ar = this.schema.class[c].filter(cl => {
-            var _this$schema2;
+            var _this$schema3;
 
-            return Object.keys(this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : _this$schema2.class).includes(cl);
+            return Object.keys(this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : _this$schema3.class).includes(cl);
           });
 
           if (ar.length) {
@@ -486,10 +494,9 @@ var script = {
       });
     },
 
-    resetForm() {
-      this.submitClick = false;
-    },
-
+    // resetForm() {
+    //   this.submitClick = false;
+    // },
     showRow(conf) {
       return UTILS.isArr(conf) ? conf.length && conf.some(c => this.showCol(c)) : this.showCol(conf);
     },
@@ -509,7 +516,7 @@ var script = {
     },
 
     componentProps(conf, options = {}) {
-      var _this$schema3, _this$schema3$form, _this$schema3$form$pr;
+      var _this$schema4, _this$schema4$form, _this$schema4$form$pr;
 
       const {
         form,
@@ -520,7 +527,7 @@ var script = {
       // const errorPropName = componentData?.errorProp;
 
       const p = { ...(conf === null || conf === void 0 ? void 0 : conf.props),
-        disabled: ((_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$form = _this$schema3.form) === null || _this$schema3$form === void 0 ? void 0 : (_this$schema3$form$pr = _this$schema3$form.props) === null || _this$schema3$form$pr === void 0 ? void 0 : _this$schema3$form$pr.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
+        disabled: ((_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$form = _this$schema4.form) === null || _this$schema4$form === void 0 ? void 0 : (_this$schema4$form$pr = _this$schema4$form.props) === null || _this$schema4$form$pr === void 0 ? void 0 : _this$schema4$form$pr.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
       };
 
       if (form) {
@@ -588,10 +595,12 @@ var script = {
         var _conf$vOn;
 
         e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.submit && this.handleSubmit || (ev => {
+          var _this$schema5, _this$schema5$options;
+
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
           UTILS.logger(['submit handler not present.\n'], {
             warn: true,
-            show: this.logs
+            show: this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$options = _this$schema5.options) === null || _this$schema5$options === void 0 ? void 0 : _this$schema5$options.logs
           });
         });
       }
@@ -667,12 +676,12 @@ var script = {
       return err;
     },
 
-    validateField(conf) {
-      var _this$schema4, _this$schema4$rules;
+    validateField(conf, formValidating) {
+      var _this$schema6, _this$schema6$options, _this$schema7, _this$schema7$rules;
 
       // const fieldRequired = this.fieldRequired(fieldConf);
-      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this.activeValidation;
-      const err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$rules = _this$schema4.rules) === null || _this$schema4$rules === void 0 ? void 0 : _this$schema4$rules[conf.model]); // if (!fieldRequired) {
+      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : (_this$schema6$options = _this$schema6.options) === null || _this$schema6$options === void 0 ? void 0 : _this$schema6$options.activeValidation;
+      const err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema7 = this.schema) === null || _this$schema7 === void 0 ? void 0 : (_this$schema7$rules = _this$schema7.rules) === null || _this$schema7$rules === void 0 ? void 0 : _this$schema7$rules[conf.model]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -705,7 +714,7 @@ var script = {
 
       for (const model in this.fields) {
         const conf = this.fieldsFlat[model];
-        this.validateField(conf);
+        this.validateField(conf, true);
         fieldsStatus[conf.model] = {
           validationSuccess: !this.errors[model],
           hidden: this.fieldHidden(conf),
@@ -721,27 +730,28 @@ var script = {
     },
 
     async handleSubmit(e) {
-      e === null || e === void 0 ? void 0 : e.preventDefault();
-      this.submitClick = true;
+      var _this$schema8, _this$schema8$options;
+
+      e === null || e === void 0 ? void 0 : e.preventDefault(); // this.submitClick = true;
+
       const {
         fieldsStatus,
         submitFail
       } = this.validateForm();
       UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], {
-        show: this.logs
+        show: this === null || this === void 0 ? void 0 : (_this$schema8 = this.schema) === null || _this$schema8 === void 0 ? void 0 : (_this$schema8$options = _this$schema8.options) === null || _this$schema8$options === void 0 ? void 0 : _this$schema8$options.logs
       });
 
       if (submitFail) {
         if (this.submitFail) {
           await this.submitFail();
-        }
+        } // this.resetForm();
 
-        this.resetForm();
+
         return;
       }
 
-      await this.submit();
-      this.resetForm();
+      await this.submit(); // this.resetForm();
     }
 
   }

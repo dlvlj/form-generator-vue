@@ -165,7 +165,7 @@ export default {
       form,
       fields,
       errors,
-      submitClick: false,
+      // submitClick: false,
     };
   },
   computed: {
@@ -259,6 +259,11 @@ export default {
     //   }, { deep: true });
     // });
   },
+  mounted() {
+    if (this?.schema?.options?.onLoadValidation) {
+      this.validateForm();
+    }
+  },
   methods: {
     classes(classArr, subArr = false) {
       return classArr.reduce((acc, c) => {
@@ -277,9 +282,9 @@ export default {
     emitData() {
       this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
     },
-    resetForm() {
-      this.submitClick = false;
-    },
+    // resetForm() {
+    //   this.submitClick = false;
+    // },
     showRow(conf) {
       return UTILS.isArr(conf)
         ? conf.length && conf.some((c) => this.showCol(c))
@@ -352,7 +357,7 @@ export default {
       if (form) {
         e.submit = conf?.vOn?.submit
         || (this.submit && this.handleSubmit)
-        || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this.logs }); });
+        || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.schema?.options?.logs }); });
       }
       return e;
     },
@@ -406,12 +411,12 @@ export default {
       }
       return err;
     },
-    validateField(conf) {
+    validateField(conf, formValidating) {
       // const fieldRequired = this.fieldRequired(fieldConf);
       const av = FIELD.av in conf
-        ? conf?.[FIELD.av] : this.activeValidation;
+        ? conf?.[FIELD.av] : this?.schema?.options?.activeValidation;
 
-      const err = (this.submitClick || av)
+      const err = (formValidating || av)
        && this.runFieldRules(this.fields[conf.model], this?.schema?.rules?.[conf.model]);
       // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
@@ -448,7 +453,7 @@ export default {
       const fieldsStatus = {};
       for (const model in this.fields) {
         const conf = this.fieldsFlat[model];
-        this.validateField(conf);
+        this.validateField(conf, true);
         fieldsStatus[conf.model] = {
           validationSuccess: !this.errors[model],
           hidden: this.fieldHidden(conf),
@@ -462,18 +467,18 @@ export default {
     },
     async handleSubmit(e) {
       e?.preventDefault();
-      this.submitClick = true;
+      // this.submitClick = true;
       const { fieldsStatus, submitFail } = this.validateForm();
-      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], { show: this.logs });
+      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], { show: this?.schema?.options?.logs });
       if (submitFail) {
         if (this.submitFail) {
           await this.submitFail();
         }
-        this.resetForm();
+        // this.resetForm();
         return;
       }
       await this.submit();
-      this.resetForm();
+      // this.resetForm();
     },
   },
 };
