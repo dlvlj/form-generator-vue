@@ -3,26 +3,26 @@
     :is="componentName(schema.form)"
     v-model="form"
     v-bind="componentProps(schema.form, {form: true})"
-    :class="[CLASS.form]"
+    :class="classes([CLASS.form])"
     v-on="componentEvents(schema.form, {form: true})"
   >
     <!-- header -->
     <slot :name="SLOT.header" />
 
     <!-- body -->
-    <Body :class="[CLASS.body]">
+    <Body :class="classes([CLASS.body])">
       <template v-for="(conf, i) in schema.fields">
         <RowContainer
           v-if="showRow(conf)"
           :key="i"
-          :class="[CLASS.rowContainer, `${CLASS.rowContainer}-${i + 1}`]"
+          :class="i==0 ? classes([CLASS.rowContainer, `${CLASS.rowContainer}-${i + 1}`]):[]"
         >
           <slot
             :name="SLOT.beforeRow"
             :models="slotProps(conf)"
           />
           <Row
-            :class="[CLASS.row, `${CLASS.row}-${i + 1}`]"
+            :class="classes([CLASS.row, `${CLASS.row}-${i + 1}`])"
           >
             <slot
               :name="SLOT.rowStart"
@@ -33,17 +33,17 @@
               <ColumnContainer
                 v-if="showCol(conf)"
                 :key="conf.model"
-                :class="[CLASS.colContainer, conf.model]"
+                :class="classes([CLASS.colContainer, conf.model])"
               >
                 <slot
                   :name="SLOT.beforeCol"
                   :models="slotProps(conf)"
                 />
                 <Column
-                  :class="[
+                  :class="classes([
                     CLASS.col,
                     conf.model,
-                  ]"
+                  ])"
                 >
                   <slot :name="SLOT.beforeComponent(conf.model)" />
                   <component
@@ -70,17 +70,17 @@
               <ColumnContainer
                 v-if="showCol(subConf)"
                 :key="subConf.model"
-                :class="[CLASS.colContainer, subConf.model]"
+                :class="classes([CLASS.colContainer, subConf.model])"
               >
                 <slot
                   :name="SLOT.beforeCol"
                   :models="slotProps(subConf)"
                 />
                 <Column
-                  :class="[
+                  :class="classes([
                     CLASS.col,
                     subConf.model,
-                  ]"
+                  ])"
                 >
                   <slot :name="SLOT.beforeComponent(subConf.model)" />
                   <component
@@ -252,6 +252,20 @@ export default {
     // });
   },
   methods: {
+    classes(classArr, subArr = false) {
+      return classArr.reduce((acc, c) => {
+        if (this?.schema?.class?.[c]) {
+          acc.push(...this.schema.class[c]);
+          const ar = this.schema.class[c]
+            .filter((cl) => Object.keys(this?.schema?.class).includes(cl));
+          if (ar.length) {
+            acc.push(...this.classes(ar, true));
+          }
+        }
+        return acc;
+      },
+      !subArr ? [...classArr] : []);
+    },
     emitData() {
       this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
     },

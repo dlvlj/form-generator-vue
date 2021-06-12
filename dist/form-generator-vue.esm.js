@@ -457,6 +457,27 @@ var script = {
   },
 
   methods: {
+    classes(classArr, subArr = false) {
+      return classArr.reduce((acc, c) => {
+        var _this$schema, _this$schema$class;
+
+        if (this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$class = _this$schema.class) === null || _this$schema$class === void 0 ? void 0 : _this$schema$class[c]) {
+          acc.push(...this.schema.class[c]);
+          const ar = this.schema.class[c].filter(cl => {
+            var _this$schema2;
+
+            return Object.keys(this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : _this$schema2.class).includes(cl);
+          });
+
+          if (ar.length) {
+            acc.push(...this.classes(ar, true));
+          }
+        }
+
+        return acc;
+      }, !subArr ? [...classArr] : []);
+    },
+
     emitData() {
       this.$emit('input', {
         form: this.form,
@@ -488,7 +509,7 @@ var script = {
     },
 
     componentProps(conf, options = {}) {
-      var _this$schema, _this$schema$form, _this$schema$form$pro;
+      var _this$schema3, _this$schema3$form, _this$schema3$form$pr;
 
       const {
         form,
@@ -499,7 +520,7 @@ var script = {
       // const errorPropName = componentData?.errorProp;
 
       const p = { ...(conf === null || conf === void 0 ? void 0 : conf.props),
-        disabled: ((_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : (_this$schema$form$pro = _this$schema$form.props) === null || _this$schema$form$pro === void 0 ? void 0 : _this$schema$form$pro.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
+        disabled: ((_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$form = _this$schema3.form) === null || _this$schema3$form === void 0 ? void 0 : (_this$schema3$form$pr = _this$schema3$form.props) === null || _this$schema3$form$pr === void 0 ? void 0 : _this$schema3$form$pr.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
       };
 
       if (form) {
@@ -647,11 +668,11 @@ var script = {
     },
 
     validateField(conf) {
-      var _this$schema2, _this$schema2$rules;
+      var _this$schema4, _this$schema4$rules;
 
       // const fieldRequired = this.fieldRequired(fieldConf);
       const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this.activeValidation;
-      const err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$rules = _this$schema2.rules) === null || _this$schema2$rules === void 0 ? void 0 : _this$schema2$rules[conf.model]); // if (!fieldRequired) {
+      const err = (this.submitClick || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$rules = _this$schema4.rules) === null || _this$schema4$rules === void 0 ? void 0 : _this$schema4$rules[conf.model]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -739,7 +760,7 @@ var __vue_render__$1 = function () {
 
   return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: [_vm.CLASS.form],
+    class: _vm.classes([_vm.CLASS.form]),
     model: {
       value: _vm.form,
       callback: function ($$v) {
@@ -752,24 +773,24 @@ var __vue_render__$1 = function () {
   }), false), _vm.componentEvents(_vm.schema.form, {
     form: true
   })), [_vm._t(_vm.SLOT.header), _vm._v(" "), _c('Body', {
-    class: [_vm.CLASS.body]
+    class: _vm.classes([_vm.CLASS.body])
   }, [_vm._l(_vm.schema.fields, function (conf, i) {
     return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      class: [_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)]
+      class: i == 0 ? _vm.classes([_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)]) : []
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)]
+      class: _vm.classes([_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)])
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
       key: conf.model,
-      class: [_vm.CLASS.colContainer, conf.model]
+      class: _vm.classes([_vm.CLASS.colContainer, conf.model])
     }, [_vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Column', {
-      class: [_vm.CLASS.col, conf.model]
+      class: _vm.classes([_vm.CLASS.col, conf.model])
     }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
@@ -786,11 +807,11 @@ var __vue_render__$1 = function () {
     })], 2) : _vm._e()] : _vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _c('ColumnContainer', {
         key: subConf.model,
-        class: [_vm.CLASS.colContainer, subConf.model]
+        class: _vm.classes([_vm.CLASS.colContainer, subConf.model])
       }, [_vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
       }), _vm._v(" "), _c('Column', {
-        class: [_vm.CLASS.col, subConf.model]
+        class: _vm.classes([_vm.CLASS.col, subConf.model])
       }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {

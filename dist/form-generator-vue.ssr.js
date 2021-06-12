@@ -691,6 +691,30 @@ var FIELD = {
 
   },
   methods: {
+    classes: function classes(classArr) {
+      var _this3 = this;
+
+      var subArr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      return classArr.reduce(function (acc, c) {
+        var _this3$schema, _this3$schema$class;
+
+        if (_this3 === null || _this3 === void 0 ? void 0 : (_this3$schema = _this3.schema) === null || _this3$schema === void 0 ? void 0 : (_this3$schema$class = _this3$schema.class) === null || _this3$schema$class === void 0 ? void 0 : _this3$schema$class[c]) {
+          acc.push.apply(acc, _toConsumableArray(_this3.schema.class[c]));
+
+          var ar = _this3.schema.class[c].filter(function (cl) {
+            var _this3$schema2;
+
+            return Object.keys(_this3 === null || _this3 === void 0 ? void 0 : (_this3$schema2 = _this3.schema) === null || _this3$schema2 === void 0 ? void 0 : _this3$schema2.class).includes(cl);
+          });
+
+          if (ar.length) {
+            acc.push.apply(acc, _toConsumableArray(_this3.classes(ar, true)));
+          }
+        }
+
+        return acc;
+      }, !subArr ? _toConsumableArray(classArr) : []);
+    },
     emitData: function emitData() {
       var _this$$emit;
 
@@ -702,10 +726,10 @@ var FIELD = {
       this.submitClick = false;
     },
     showRow: function showRow(conf) {
-      var _this3 = this;
+      var _this4 = this;
 
       return UTILS.isArr(conf) ? conf.length && conf.some(function (c) {
-        return _this3.showCol(c);
+        return _this4.showCol(c);
       }) : this.showCol(conf);
     },
     showCol: function showCol(conf) {
@@ -789,7 +813,7 @@ var FIELD = {
 
     },
     componentEvents: function componentEvents(conf) {
-      var _this4 = this;
+      var _this5 = this;
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form;
@@ -803,7 +827,7 @@ var FIELD = {
 
           UTILS.logger(['submit handler not present.\n'], {
             warn: true,
-            show: _this4.logs
+            show: _this5.logs
           });
         };
       }
@@ -937,21 +961,21 @@ var FIELD = {
       };
     },
     handleSubmit: function handleSubmit(e) {
-      var _this5 = this;
+      var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this5$validateForm, fieldsStatus, submitFail;
+        var _this6$validateForm, fieldsStatus, submitFail;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 e === null || e === void 0 ? void 0 : e.preventDefault();
-                _this5.submitClick = true;
-                _this5$validateForm = _this5.validateForm(), fieldsStatus = _this5$validateForm.fieldsStatus, submitFail = _this5$validateForm.submitFail;
+                _this6.submitClick = true;
+                _this6$validateForm = _this6.validateForm(), fieldsStatus = _this6$validateForm.fieldsStatus, submitFail = _this6$validateForm.submitFail;
 
                 UTILS.logger(["[SUBMIT ".concat(submitFail ? 'FAIL' : 'SUCCESS', "]"), fieldsStatus], {
-                  show: _this5.logs
+                  show: _this6.logs
                 });
 
                 if (!submitFail) {
@@ -959,25 +983,25 @@ var FIELD = {
                   break;
                 }
 
-                if (!_this5.submitFail) {
+                if (!_this6.submitFail) {
                   _context.next = 8;
                   break;
                 }
 
                 _context.next = 8;
-                return _this5.submitFail();
+                return _this6.submitFail();
 
               case 8:
-                _this5.resetForm();
+                _this6.resetForm();
 
                 return _context.abrupt("return");
 
               case 10:
                 _context.next = 12;
-                return _this5.submit();
+                return _this6.submit();
 
               case 12:
-                _this5.resetForm();
+                _this6.resetForm();
 
               case 13:
               case "end":
@@ -1001,7 +1025,7 @@ var __vue_render__$1 = function __vue_render__() {
 
   return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: [_vm.CLASS.form],
+    class: _vm.classes([_vm.CLASS.form]),
     model: {
       value: _vm.form,
       callback: function callback($$v) {
@@ -1014,24 +1038,24 @@ var __vue_render__$1 = function __vue_render__() {
   }), false), _vm.componentEvents(_vm.schema.form, {
     form: true
   })), [_vm._t(_vm.SLOT.header), _vm._v(" "), _c('Body', {
-    class: [_vm.CLASS.body]
+    class: _vm.classes([_vm.CLASS.body])
   }, [_vm._l(_vm.schema.fields, function (conf, i) {
     return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      class: [_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)]
+      class: i == 0 ? _vm.classes([_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)]) : []
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: [_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)]
+      class: _vm.classes([_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)])
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
       key: conf.model,
-      class: [_vm.CLASS.colContainer, conf.model]
+      class: _vm.classes([_vm.CLASS.colContainer, conf.model])
     }, [_vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Column', {
-      class: [_vm.CLASS.col, conf.model]
+      class: _vm.classes([_vm.CLASS.col, conf.model])
     }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
@@ -1048,11 +1072,11 @@ var __vue_render__$1 = function __vue_render__() {
     })], 2) : _vm._e()] : _vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _c('ColumnContainer', {
         key: subConf.model,
-        class: [_vm.CLASS.colContainer, subConf.model]
+        class: _vm.classes([_vm.CLASS.colContainer, subConf.model])
       }, [_vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
       }), _vm._v(" "), _c('Column', {
-        class: [_vm.CLASS.col, subConf.model]
+        class: _vm.classes([_vm.CLASS.col, subConf.model])
       }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {
@@ -1084,7 +1108,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-041e1706";
+var __vue_module_identifier__$1 = "data-v-238319a4";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
