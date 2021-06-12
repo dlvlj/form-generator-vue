@@ -33,7 +33,10 @@
               <ColumnContainer
                 v-if="showCol(conf)"
                 :key="conf.model"
-                :class="classes([CLASS.colContainer, conf.model])"
+                :class="classes([
+                  CLASS.colContainer,
+                  `${CLASS.colContainer}-${conf.model}`
+                ])"
               >
                 <slot
                   :name="SLOT.beforeCol"
@@ -42,6 +45,7 @@
                 <Column
                   :class="classes([
                     CLASS.col,
+                    `${CLASS.col}-${conf.model}`,
                     conf.model,
                   ])"
                 >
@@ -70,7 +74,10 @@
               <ColumnContainer
                 v-if="showCol(subConf)"
                 :key="subConf.model"
-                :class="classes([CLASS.colContainer, subConf.model])"
+                :class="classes([
+                  CLASS.colContainer,
+                  `${CLASS.colContainer}-${subConf.model}`
+                ])"
               >
                 <slot
                   :name="SLOT.beforeCol"
@@ -79,6 +86,7 @@
                 <Column
                   :class="classes([
                     CLASS.col,
+                    `${CLASS.col}-${subConf.model}`,
                     subConf.model,
                   ])"
                 >

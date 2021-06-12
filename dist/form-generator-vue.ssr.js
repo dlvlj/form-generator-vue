@@ -1051,11 +1051,11 @@ var __vue_render__$1 = function __vue_render__() {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
       key: conf.model,
-      class: _vm.classes([_vm.CLASS.colContainer, conf.model])
+      class: _vm.classes([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + conf.model])
     }, [_vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Column', {
-      class: _vm.classes([_vm.CLASS.col, conf.model])
+      class: _vm.classes([_vm.CLASS.col, _vm.CLASS.col + "-" + conf.model, conf.model])
     }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
@@ -1072,11 +1072,11 @@ var __vue_render__$1 = function __vue_render__() {
     })], 2) : _vm._e()] : _vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _c('ColumnContainer', {
         key: subConf.model,
-        class: _vm.classes([_vm.CLASS.colContainer, subConf.model])
+        class: _vm.classes([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + subConf.model])
       }, [_vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
       }), _vm._v(" "), _c('Column', {
-        class: _vm.classes([_vm.CLASS.col, subConf.model])
+        class: _vm.classes([_vm.CLASS.col, _vm.CLASS.col + "-" + subConf.model, subConf.model])
       }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {
@@ -1108,7 +1108,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-04b4f5fe";
+var __vue_module_identifier__$1 = "data-v-70f6c9b6";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
