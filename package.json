@@ -1,7 +1,7 @@
 {
   "name": "form-generator-vue",
   "version": "2.0.2",
-  "description": "Form generator component for vue.",
+  "description": "Form generator component for vue. Build forms using components from multiple component libraries.",
   "license": "MIT",
   "homepage": "https://github.com/divijbhardwaj/form-generator-vue/",
   "main": "dist/form-generator-vue.ssr.js",
