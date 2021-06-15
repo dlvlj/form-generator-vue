@@ -589,12 +589,12 @@ var script = {
       const {
         form
       } = options;
-      const e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.vOn]) || {};
+      const e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.on]) || {};
 
       if (form) {
-        var _conf$vOn;
+        var _conf$on;
 
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.submit && this.handleSubmit || (ev => {
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit) || this.submit && this.handleSubmit || (ev => {
           var _this$schema5, _this$schema5$options;
 
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();

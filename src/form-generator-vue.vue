@@ -353,9 +353,9 @@ export default {
     },
     componentEvents(conf, options = {}) {
       const { form } = options;
-      const e = conf?.[FIELD.vOn] || {};
+      const e = conf?.[FIELD.on] || {};
       if (form) {
-        e.submit = conf?.vOn?.submit
+        e.submit = conf?.on?.submit
         || (this.submit && this.handleSubmit)
         || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.schema?.options?.logs }); });
       }

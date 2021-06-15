@@ -824,12 +824,12 @@ var FIELD = {
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form;
-      var e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.vOn]) || {};
+      var e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.on]) || {};
 
       if (form) {
-        var _conf$vOn;
+        var _conf$on;
 
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$vOn = conf.vOn) === null || _conf$vOn === void 0 ? void 0 : _conf$vOn.submit) || this.submit && this.handleSubmit || function (ev) {
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit) || this.submit && this.handleSubmit || function (ev) {
           var _this5$schema, _this5$schema$options;
 
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
@@ -1114,7 +1114,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-e2e26eae";
+var __vue_module_identifier__$1 = "data-v-3c4dcd12";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
