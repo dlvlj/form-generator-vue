@@ -5,11 +5,11 @@ export default {
       default: null,
       required: false,
     },
-    submit: {
-      type: Function,
-      required: false,
-      default: undefined
-    },
+    // submit: {
+    //   type: Function,
+    //   required: false,
+    //   default: undefined
+    // },
     components: {
       type: Array,
       required: false,
@@ -29,11 +29,11 @@ export default {
     //   required: false,
     //   default: () => ({}),
     // },
-    submitFail: {
-      type: Function,
-      required: false,
-      default: undefined
-    },
+    // submitFail: {
+    //   type: Function,
+    //   required: false,
+    //   default: undefined
+    // },
     // activeValidation: {
     //   type: Boolean,
     //   required: false,

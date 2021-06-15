@@ -117,11 +117,11 @@ var props = {
       default: null,
       required: false
     },
-    submit: {
-      type: Function,
-      required: false,
-      default: undefined
-    },
+    // submit: {
+    //   type: Function,
+    //   required: false,
+    //   default: undefined
+    // },
     components: {
       type: Array,
       required: false,
@@ -135,17 +135,17 @@ var props = {
     schema: {
       type: Object,
       default: () => ({})
-    },
-    // classes: {
+    } // classes: {
     //   type: Object,
     //   required: false,
     //   default: () => ({}),
     // },
-    submitFail: {
-      type: Function,
-      required: false,
-      default: undefined
-    } // activeValidation: {
+    // submitFail: {
+    //   type: Function,
+    //   required: false,
+    //   default: undefined
+    // },
+    // activeValidation: {
     //   type: Boolean,
     //   required: false,
     //   default: true
@@ -460,7 +460,7 @@ var script = {
     var _this$schema, _this$schema$options;
 
     if (this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$options = _this$schema.options) === null || _this$schema$options === void 0 ? void 0 : _this$schema$options.onLoadValidation) {
-      this.validateForm();
+      this.validate();
     }
   },
 
@@ -487,8 +487,17 @@ var script = {
     },
 
     emitData() {
+      var _this$schema4, _this$schema4$form, _this$schema5, _this$schema5$form;
+
+      const formModel = UTILS.isStr(this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$form = _this$schema4.form) === null || _this$schema4$form === void 0 ? void 0 : _this$schema4$form.model) ? this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$form = _this$schema5.form) === null || _this$schema5$form === void 0 ? void 0 : _this$schema5$form.model : undefined;
+      const valid = !Object.keys(this.errors).find(e => this.errors[e] && !this.fieldHidden(this.fieldsFlat[e])); // console.log(valid, errorField);
+      // && this.fieldHidden(this.fieldsFlat[errorField]);
+
       this.$emit('input', {
-        form: this.form,
+        valid,
+        ...(formModel ? {
+          [formModel]: this.form
+        } : {}),
         [VMODEL.fields]: this.fields,
         [VMODEL.errors]: this.errors
       });
@@ -516,7 +525,7 @@ var script = {
     },
 
     componentProps(conf, options = {}) {
-      var _this$schema4, _this$schema4$form, _this$schema4$form$pr;
+      var _this$schema6, _this$schema6$form, _this$schema6$form$pr;
 
       const {
         form,
@@ -527,7 +536,7 @@ var script = {
       // const errorPropName = componentData?.errorProp;
 
       const p = { ...(conf === null || conf === void 0 ? void 0 : conf.props),
-        disabled: ((_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$form = _this$schema4.form) === null || _this$schema4$form === void 0 ? void 0 : (_this$schema4$form$pr = _this$schema4$form.props) === null || _this$schema4$form$pr === void 0 ? void 0 : _this$schema4$form$pr.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
+        disabled: ((_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : (_this$schema6$form = _this$schema6.form) === null || _this$schema6$form === void 0 ? void 0 : (_this$schema6$form$pr = _this$schema6$form.props) === null || _this$schema6$form$pr === void 0 ? void 0 : _this$schema6$form$pr.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
       };
 
       if (form) {
@@ -549,11 +558,19 @@ var script = {
       return p;
     },
 
-    // removeAllErrors() {
-    //   for (const model in this.errors) {
-    //     this.errors[model] = '';
-    //   }
-    // },
+    resetValidation() {
+      for (const model in this.errors) {
+        this.errors[model] = '';
+      }
+    },
+
+    reset() {
+      for (const model in this.fields) {
+        this.fields[model] = '';
+        this.errors[model] = '';
+      }
+    },
+
     setError(model, err) {
       // if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
       //   this.errors[model] = noErr;
@@ -594,13 +611,14 @@ var script = {
       if (form) {
         var _conf$on;
 
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit) || this.submit && this.handleSubmit || (ev => {
-          var _this$schema5, _this$schema5$options;
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit // || (this.submit && this.handleSubmit)
+        ) || (ev => {
+          var _this$schema7, _this$schema7$options;
 
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
           UTILS.logger(['submit handler not present.\n'], {
             warn: true,
-            show: this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$options = _this$schema5.options) === null || _this$schema5$options === void 0 ? void 0 : _this$schema5$options.logs
+            show: this === null || this === void 0 ? void 0 : (_this$schema7 = this.schema) === null || _this$schema7 === void 0 ? void 0 : (_this$schema7$options = _this$schema7.options) === null || _this$schema7$options === void 0 ? void 0 : _this$schema7$options.logs
           });
         });
       }
@@ -677,18 +695,18 @@ var script = {
     },
 
     validateField(conf, formValidating) {
-      var _this$schema6, _this$schema6$options, _this$schema7, _this$schema7$rules;
+      var _this$schema8, _this$schema8$options, _this$schema9, _this$schema9$rules;
 
       // const fieldRequired = this.fieldRequired(fieldConf);
-      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : (_this$schema6$options = _this$schema6.options) === null || _this$schema6$options === void 0 ? void 0 : _this$schema6$options.activeValidation;
-      const err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema7 = this.schema) === null || _this$schema7 === void 0 ? void 0 : (_this$schema7$rules = _this$schema7.rules) === null || _this$schema7$rules === void 0 ? void 0 : _this$schema7$rules[conf.model]); // if (!fieldRequired) {
+      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema8 = this.schema) === null || _this$schema8 === void 0 ? void 0 : (_this$schema8$options = _this$schema8.options) === null || _this$schema8$options === void 0 ? void 0 : _this$schema8$options.activeValidation;
+      const err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema9 = this.schema) === null || _this$schema9 === void 0 ? void 0 : (_this$schema9$rules = _this$schema9.rules) === null || _this$schema9$rules === void 0 ? void 0 : _this$schema9$rules[conf.model]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
       this.setError(conf.model, err); // return err;
     },
 
-    validateForm() {
+    validate() {
       // watcher handler
       // if (fieldConf && isWatcher) {
       // const fieldAv = fieldConf[FIELD.av] || this.globalAv;
@@ -710,49 +728,39 @@ var script = {
       //     schema: conf
       //   };
       // });
-      const fieldsStatus = {};
-
+      // const fieldsStatus = {};
       for (const model in this.fields) {
-        const conf = this.fieldsFlat[model];
-        this.validateField(conf, true);
-        fieldsStatus[conf.model] = {
-          validationSuccess: !this.errors[model],
-          hidden: this.fieldHidden(conf),
-          schema: conf
-        };
-      }
+        var _this$fieldsFlat;
 
-      const submitFail = Object.keys(fieldsStatus).find(model => !fieldsStatus[model].validationSuccess && !fieldsStatus[model].hidden);
-      return {
-        fieldsStatus,
-        submitFail
-      };
-    },
+        // const conf = this.fieldsFlat[model];
+        this.validateField((_this$fieldsFlat = this.fieldsFlat) === null || _this$fieldsFlat === void 0 ? void 0 : _this$fieldsFlat[model], true); // fieldsStatus[conf.model] = {
+        //   valid: !this.errors[model],
+        //   hidden: this.fieldHidden(conf),
+        //   schema: conf
+        // };
+      } // const valid = !Object.keys(fieldsStatus).find(
+      //   (model) => !fieldsStatus[model].valid && !fieldsStatus[model].hidden
+      // );
+      // return { valid, fieldsStatus };
 
-    async handleSubmit(e) {
-      var _this$schema8, _this$schema8$options;
+    } // async handleSubmit(e) {
+    //   e?.preventDefault();
+    //   // this.submitClick = true;
+    //   const { fieldsStatus, submitFail } = this.validateForm();
+    //   UTILS.
+    // logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`,
+    //  fieldsStatus], { show: this?.schema?.options?.logs });
+    //   if (submitFail) {
+    //     if (this.submitFail) {
+    //       await this.submitFail();
+    //     }
+    //     // this.resetForm();
+    //     return;
+    //   }
+    //   await this.submit();
+    //   // this.resetForm();
+    // },
 
-      e === null || e === void 0 ? void 0 : e.preventDefault(); // this.submitClick = true;
-
-      const {
-        fieldsStatus,
-        submitFail
-      } = this.validateForm();
-      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], {
-        show: this === null || this === void 0 ? void 0 : (_this$schema8 = this.schema) === null || _this$schema8 === void 0 ? void 0 : (_this$schema8$options = _this$schema8.options) === null || _this$schema8$options === void 0 ? void 0 : _this$schema8$options.logs
-      });
-
-      if (submitFail) {
-        if (this.submitFail) {
-          await this.submitFail();
-        } // this.resetForm();
-
-
-        return;
-      }
-
-      await this.submit(); // this.resetForm();
-    }
 
   }
 };

@@ -261,7 +261,7 @@ export default {
   },
   mounted() {
     if (this?.schema?.options?.onLoadValidation) {
-      this.validateForm();
+      this.validate();
     }
   },
   methods: {
@@ -280,7 +280,18 @@ export default {
       !subArr ? [...classArr] : []);
     },
     emitData() {
-      this.$emit('input', { form: this.form, [VMODEL.fields]: this.fields, [VMODEL.errors]: this.errors });
+      const formModel = UTILS.isStr(this?.schema?.form?.model)
+        ? this?.schema?.form?.model : undefined;
+      const valid = !Object.keys(this.errors)
+        .find((e) => this.errors[e] && !this.fieldHidden(this.fieldsFlat[e]));
+      // console.log(valid, errorField);
+      // && this.fieldHidden(this.fieldsFlat[errorField]);
+      this.$emit('input', {
+        valid,
+        ...(formModel ? { [formModel]: this.form } : {}),
+        [VMODEL.fields]: this.fields,
+        [VMODEL.errors]: this.errors
+      });
     },
     // resetForm() {
     //   this.submitClick = false;
@@ -318,11 +329,17 @@ export default {
       }
       return p;
     },
-    // removeAllErrors() {
-    //   for (const model in this.errors) {
-    //     this.errors[model] = '';
-    //   }
-    // },
+    resetValidation() {
+      for (const model in this.errors) {
+        this.errors[model] = '';
+      }
+    },
+    reset() {
+      for (const model in this.fields) {
+        this.fields[model] = '';
+        this.errors[model] = '';
+      }
+    },
     setError(model, err) {
       // if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
       //   this.errors[model] = noErr;
@@ -356,7 +373,7 @@ export default {
       const e = conf?.[FIELD.on] || {};
       if (form) {
         e.submit = conf?.on?.submit
-        || (this.submit && this.handleSubmit)
+        // || (this.submit && this.handleSubmit)
         || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.schema?.options?.logs }); });
       }
       return e;
@@ -424,7 +441,7 @@ export default {
       this.setError(conf.model, err);
       // return err;
     },
-    validateForm() {
+    validate() {
       // watcher handler
       // if (fieldConf && isWatcher) {
       // const fieldAv = fieldConf[FIELD.av] || this.globalAv;
@@ -450,36 +467,38 @@ export default {
       //     schema: conf
       //   };
       // });
-      const fieldsStatus = {};
+      // const fieldsStatus = {};
       for (const model in this.fields) {
-        const conf = this.fieldsFlat[model];
-        this.validateField(conf, true);
-        fieldsStatus[conf.model] = {
-          validationSuccess: !this.errors[model],
-          hidden: this.fieldHidden(conf),
-          schema: conf
-        };
+        // const conf = this.fieldsFlat[model];
+        this.validateField(this.fieldsFlat?.[model], true);
+        // fieldsStatus[conf.model] = {
+        //   valid: !this.errors[model],
+        //   hidden: this.fieldHidden(conf),
+        //   schema: conf
+        // };
       }
-      const submitFail = Object.keys(fieldsStatus).find(
-        (model) => !fieldsStatus[model].validationSuccess && !fieldsStatus[model].hidden
-      );
-      return { fieldsStatus, submitFail };
+      // const valid = !Object.keys(fieldsStatus).find(
+      //   (model) => !fieldsStatus[model].valid && !fieldsStatus[model].hidden
+      // );
+      // return { valid, fieldsStatus };
     },
-    async handleSubmit(e) {
-      e?.preventDefault();
-      // this.submitClick = true;
-      const { fieldsStatus, submitFail } = this.validateForm();
-      UTILS.logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`, fieldsStatus], { show: this?.schema?.options?.logs });
-      if (submitFail) {
-        if (this.submitFail) {
-          await this.submitFail();
-        }
-        // this.resetForm();
-        return;
-      }
-      await this.submit();
-      // this.resetForm();
-    },
+    // async handleSubmit(e) {
+    //   e?.preventDefault();
+    //   // this.submitClick = true;
+    //   const { fieldsStatus, submitFail } = this.validateForm();
+    //   UTILS.
+    // logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`,
+    //  fieldsStatus], { show: this?.schema?.options?.logs });
+    //   if (submitFail) {
+    //     if (this.submitFail) {
+    //       await this.submitFail();
+    //     }
+    //     // this.resetForm();
+    //     return;
+    //   }
+    //   await this.submit();
+    //   // this.resetForm();
+    // },
   },
 };
 </script>
