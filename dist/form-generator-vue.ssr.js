@@ -481,7 +481,7 @@ var VMODEL = {
 var FIELD = {
   av: SCHEMA.av,
   avDelay: SCHEMA.avDelay,
-  vOn: 'vOn',
+  on: 'on',
   component: 'component',
   type: {
     text: 'text',
