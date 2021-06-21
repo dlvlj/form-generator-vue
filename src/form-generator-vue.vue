@@ -287,8 +287,8 @@ export default {
       // console.log(valid, errorField);
       // && this.fieldHidden(this.fieldsFlat[errorField]);
       this.$emit('input', {
-        valid,
         ...(formModel ? { [formModel]: this.form } : {}),
+        valid,
         [VMODEL.fields]: this.fields,
         [VMODEL.errors]: this.errors
       });

@@ -700,9 +700,9 @@ var FIELD = {
       }); // console.log(valid, errorField);
       // && this.fieldHidden(this.fieldsFlat[errorField]);
 
-      this.$emit('input', _objectSpread2(_objectSpread2({
+      this.$emit('input', _objectSpread2(_objectSpread2({}, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, (_objectSpread2$1 = {
         valid: valid
-      }, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, VMODEL.fields, this.fields), _defineProperty(_objectSpread2$1, VMODEL.errors, this.errors), _objectSpread2$1)));
+      }, _defineProperty(_objectSpread2$1, VMODEL.fields, this.fields), _defineProperty(_objectSpread2$1, VMODEL.errors, this.errors), _objectSpread2$1)));
     },
     // resetForm() {
     //   this.submitClick = false;
@@ -1050,7 +1050,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-3e31df60";
+var __vue_module_identifier__$1 = "data-v-3f2a43f8";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

@@ -493,11 +493,10 @@ var script = {
       const valid = !Object.keys(this.errors).find(e => this.errors[e] && !this.fieldHidden(this.fieldsFlat[e])); // console.log(valid, errorField);
       // && this.fieldHidden(this.fieldsFlat[errorField]);
 
-      this.$emit('input', {
-        valid,
-        ...(formModel ? {
+      this.$emit('input', { ...(formModel ? {
           [formModel]: this.form
         } : {}),
+        valid,
         [VMODEL.fields]: this.fields,
         [VMODEL.errors]: this.errors
       });
