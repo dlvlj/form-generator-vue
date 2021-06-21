@@ -122,11 +122,11 @@ var props = {
     //   required: false,
     //   default: undefined
     // },
-    components: {
-      type: Array,
-      required: false,
-      default: () => []
-    },
+    // components: {
+    //   type: Array,
+    //   required: false,
+    //   default: () => [],
+    // },
     // disabled: {
     //   type: Boolean,
     //   required: false,
@@ -620,20 +620,11 @@ var script = {
     componentName(conf) {
       var _conf$props3;
 
-      if ((conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag)) {
-        var _conf$props4;
-
-        return (conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is) || (conf === null || conf === void 0 ? void 0 : conf.tag);
-      }
-
-      const cData = this.components.find(({
-        types
-      }) => {
-        var _conf$props5;
-
-        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$props5 = conf.props) === null || _conf$props5 === void 0 ? void 0 : _conf$props5.type);
-      });
-      return cData === null || cData === void 0 ? void 0 : cData.name;
+      // if (conf?.props?.is || conf?.tag) {
+      return (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag); // }
+      // const cData = this.components
+      //   .find(({ types }) => types.includes(conf?.props?.type));
+      // return cData?.name;
     },
 
     getFieldConf(model) {
@@ -654,10 +645,10 @@ var script = {
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
     fieldHidden(conf) {
-      var _conf$props6;
+      var _conf$props4;
 
       const HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props6 = conf.props) === null || _conf$props6 === void 0 ? void 0 : _conf$props6[FIELD.props.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4[FIELD.props.hidden]) : !HIDDEN;
     },
 
     runFieldRules(val, rules) {

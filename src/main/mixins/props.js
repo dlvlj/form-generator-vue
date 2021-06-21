@@ -10,11 +10,11 @@ export default {
     //   required: false,
     //   default: undefined
     // },
-    components: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
+    // components: {
+    //   type: Array,
+    //   required: false,
+    //   default: () => [],
+    // },
     // disabled: {
     //   type: Boolean,
     //   required: false,

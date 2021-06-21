@@ -379,12 +379,12 @@ export default {
       return e;
     },
     componentName(conf) {
-      if (conf?.props?.is || conf?.tag) {
-        return conf?.props?.is || conf?.tag;
-      }
-      const cData = this.components
-        .find(({ types }) => types.includes(conf?.props?.type));
-      return cData?.name;
+      // if (conf?.props?.is || conf?.tag) {
+      return conf?.props?.is || conf?.tag;
+      // }
+      // const cData = this.components
+      //   .find(({ types }) => types.includes(conf?.props?.type));
+      // return cData?.name;
     },
     getFieldConf(model) {
       return this.fieldsFlat[model];

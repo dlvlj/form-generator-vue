@@ -271,13 +271,11 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
     //   required: false,
     //   default: undefined
     // },
-    components: {
-      type: Array,
-      required: false,
-      default: function _default() {
-        return [];
-      }
-    },
+    // components: {
+    //   type: Array,
+    //   required: false,
+    //   default: () => [],
+    // },
     // disabled: {
     //   type: Boolean,
     //   required: false,
@@ -817,19 +815,11 @@ var FIELD = {
     componentName: function componentName(conf) {
       var _conf$props3;
 
-      if ((conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag)) {
-        var _conf$props4;
-
-        return (conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is) || (conf === null || conf === void 0 ? void 0 : conf.tag);
-      }
-
-      var cData = this.components.find(function (_ref3) {
-        var _conf$props5;
-
-        var types = _ref3.types;
-        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$props5 = conf.props) === null || _conf$props5 === void 0 ? void 0 : _conf$props5.type);
-      });
-      return cData === null || cData === void 0 ? void 0 : cData.name;
+      // if (conf?.props?.is || conf?.tag) {
+      return (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag); // }
+      // const cData = this.components
+      //   .find(({ types }) => types.includes(conf?.props?.type));
+      // return cData?.name;
     },
     getFieldConf: function getFieldConf(model) {
       return this.fieldsFlat[model];
@@ -848,10 +838,10 @@ var FIELD = {
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
     fieldHidden: function fieldHidden(conf) {
-      var _conf$props6;
+      var _conf$props4;
 
       var HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props6 = conf.props) === null || _conf$props6 === void 0 ? void 0 : _conf$props6[FIELD.props.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4[FIELD.props.hidden]) : !HIDDEN;
     },
     runFieldRules: function runFieldRules(val, rules) {
       var err;
@@ -1050,7 +1040,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-87f4fb3c";
+var __vue_module_identifier__$1 = "data-v-302ec194";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
