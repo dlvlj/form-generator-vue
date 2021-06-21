@@ -570,10 +570,11 @@ var script = {
       this.errors[model] = ERROR_TYPES.includes(typeof err) ? err : '';
     },
 
-    componentData(name) {
-      return this.components.find(c => (c === null || c === void 0 ? void 0 : c.name) === name);
-    },
-
+    // componentData(name) {
+    //   return this.components.find(
+    //     (c) => c?.name === name,
+    //   );
+    // },
     typeCoercion(conf) {
       var _conf$props2;
 
@@ -619,10 +620,10 @@ var script = {
     componentName(conf) {
       var _conf$props3;
 
-      if (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) {
+      if ((conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag)) {
         var _conf$props4;
 
-        return conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is;
+        return (conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is) || (conf === null || conf === void 0 ? void 0 : conf.tag);
       }
 
       const cData = this.components.find(({

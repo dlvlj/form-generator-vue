@@ -767,11 +767,11 @@ var FIELD = {
       // prop is not rmoved from errors if set undefined
       this.errors[model] = ERROR_TYPES.includes(_typeof(err)) ? err : '';
     },
-    componentData: function componentData(name) {
-      return this.components.find(function (c) {
-        return (c === null || c === void 0 ? void 0 : c.name) === name;
-      });
-    },
+    // componentData(name) {
+    //   return this.components.find(
+    //     (c) => c?.name === name,
+    //   );
+    // },
     typeCoercion: function typeCoercion(conf) {
       var _conf$props2;
 
@@ -817,10 +817,10 @@ var FIELD = {
     componentName: function componentName(conf) {
       var _conf$props3;
 
-      if (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) {
+      if ((conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag)) {
         var _conf$props4;
 
-        return conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is;
+        return (conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is) || (conf === null || conf === void 0 ? void 0 : conf.tag);
       }
 
       var cData = this.components.find(function (_ref3) {
@@ -1050,7 +1050,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-3f2a43f8";
+var __vue_module_identifier__$1 = "data-v-87f4fb3c";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

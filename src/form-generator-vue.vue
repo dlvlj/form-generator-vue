@@ -349,11 +349,11 @@ export default {
       // prop is not rmoved from errors if set undefined
       this.errors[model] = ERROR_TYPES.includes(typeof err) ? err : '';
     },
-    componentData(name) {
-      return this.components.find(
-        (c) => c?.name === name,
-      );
-    },
+    // componentData(name) {
+    //   return this.components.find(
+    //     (c) => c?.name === name,
+    //   );
+    // },
     typeCoercion(conf) {
       if (this.fields[conf.model] && conf?.props?.type === FIELD.type.number) {
         if (!Number.isNaN(this.fields[conf.model])) {
@@ -379,8 +379,8 @@ export default {
       return e;
     },
     componentName(conf) {
-      if (conf?.props?.is) {
-        return conf?.props?.is;
+      if (conf?.props?.is || conf?.tag) {
+        return conf?.props?.is || conf?.tag;
       }
       const cData = this.components
         .find(({ types }) => types.includes(conf?.props?.type));
