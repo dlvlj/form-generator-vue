@@ -728,34 +728,23 @@ var FIELD = {
       return [conf.model];
     },
     componentProps: function componentProps(conf) {
-      var _this$schema4, _this$schema4$form, _this$schema4$form$pr;
-
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var form = options.form,
-          field = options.field; // const cName = this.componentName(conf);
-
-      var componentData = this.componentData(this.componentName(conf)); // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
+      var form = options.form; // const cName = this.componentName(conf);
+      // const componentData = this.componentData(this.componentName(conf));
+      // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
       // const errorPropName = componentData?.errorProp;
 
-      var p = _objectSpread2(_objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.props), {}, {
-        disabled: ((_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$form = _this$schema4.form) === null || _this$schema4$form === void 0 ? void 0 : (_this$schema4$form$pr = _this$schema4$form.props) === null || _this$schema4$form$pr === void 0 ? void 0 : _this$schema4$form$pr.disabled) || (conf === null || conf === void 0 ? void 0 : conf.disabled)
-      });
+      var p = _objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.props);
 
       if (form) {
         var _conf$props;
 
         p.is = (conf === null || conf === void 0 ? void 0 : (_conf$props = conf.props) === null || _conf$props === void 0 ? void 0 : _conf$props.is) || 'form';
-      }
+      } // if (field) {
+      //   if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
+      //   p.type = conf?.props?.type || FIELD.type.text;
+      // }
 
-      if (field) {
-        var _conf$props2;
-
-        if (componentData === null || componentData === void 0 ? void 0 : componentData.errorProp) {
-          p[componentData.errorProp] = this.errors[conf.model];
-        }
-
-        p.type = (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.type) || FIELD.type.text;
-      }
 
       return p;
     },
@@ -784,9 +773,9 @@ var FIELD = {
       });
     },
     typeCoercion: function typeCoercion(conf) {
-      var _conf$props3;
+      var _conf$props2;
 
-      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.type) === FIELD.type.number) {
+      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.type) === FIELD.type.number) {
         if (!Number.isNaN(this.fields[conf.model])) {
           return;
         }
@@ -826,19 +815,19 @@ var FIELD = {
       return e;
     },
     componentName: function componentName(conf) {
-      var _conf$props4;
+      var _conf$props3;
 
-      if (conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is) {
-        var _conf$props5;
+      if (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) {
+        var _conf$props4;
 
-        return conf === null || conf === void 0 ? void 0 : (_conf$props5 = conf.props) === null || _conf$props5 === void 0 ? void 0 : _conf$props5.is;
+        return conf === null || conf === void 0 ? void 0 : (_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4.is;
       }
 
       var cData = this.components.find(function (_ref3) {
-        var _conf$props6;
+        var _conf$props5;
 
         var types = _ref3.types;
-        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$props6 = conf.props) === null || _conf$props6 === void 0 ? void 0 : _conf$props6.type);
+        return types.includes(conf === null || conf === void 0 ? void 0 : (_conf$props5 = conf.props) === null || _conf$props5 === void 0 ? void 0 : _conf$props5.type);
       });
       return cData === null || cData === void 0 ? void 0 : cData.name;
     },
@@ -859,10 +848,10 @@ var FIELD = {
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
     fieldHidden: function fieldHidden(conf) {
-      var _conf$props7;
+      var _conf$props6;
 
       var HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props7 = conf.props) === null || _conf$props7 === void 0 ? void 0 : _conf$props7[FIELD.props.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props6 = conf.props) === null || _conf$props6 === void 0 ? void 0 : _conf$props6[FIELD.props.hidden]) : !HIDDEN;
     },
     runFieldRules: function runFieldRules(val, rules) {
       var err;
@@ -899,11 +888,11 @@ var FIELD = {
       return err;
     },
     validateField: function validateField(conf, formValidating) {
-      var _this$schema5, _this$schema5$options, _this$schema6, _this$schema6$rules;
+      var _this$schema4, _this$schema4$options, _this$schema5, _this$schema5$rules;
 
       // const fieldRequired = this.fieldRequired(fieldConf);
-      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$options = _this$schema5.options) === null || _this$schema5$options === void 0 ? void 0 : _this$schema5$options.activeValidation;
-      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : (_this$schema6$rules = _this$schema6.rules) === null || _this$schema6$rules === void 0 ? void 0 : _this$schema6$rules[conf.model]); // if (!fieldRequired) {
+      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$options = _this$schema4.options) === null || _this$schema4$options === void 0 ? void 0 : _this$schema4$options.activeValidation;
+      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$rules = _this$schema5.rules) === null || _this$schema5$rules === void 0 ? void 0 : _this$schema5$rules[conf.model]); // if (!fieldRequired) {
       //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
       // } else this.setError(fieldConf.model, err, NO_ERR);
 
@@ -1061,7 +1050,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-10d00c54";
+var __vue_module_identifier__$1 = "data-v-3e31df60";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

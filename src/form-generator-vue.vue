@@ -311,22 +311,22 @@ export default {
       return [conf.model];
     },
     componentProps(conf, options = {}) {
-      const { form, field } = options;
+      const { form } = options;
       // const cName = this.componentName(conf);
-      const componentData = this.componentData(this.componentName(conf));
+      // const componentData = this.componentData(this.componentName(conf));
       // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
       // const errorPropName = componentData?.errorProp;
       const p = {
         ...conf?.props,
-        disabled: this.schema?.form?.props?.disabled || conf?.disabled
+        // disabled: this.schema?.form?.props?.disabled || conf?.disabled
       };
       if (form) {
         p.is = conf?.props?.is || 'form';
       }
-      if (field) {
-        if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
-        p.type = conf?.props?.type || FIELD.type.text;
-      }
+      // if (field) {
+      //   if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
+      //   p.type = conf?.props?.type || FIELD.type.text;
+      // }
       return p;
     },
     resetValidation() {
