@@ -258,7 +258,7 @@ const UTILS = {
 
 };
 
-const ERROR_TYPES = ['string', 'object'];
+const canSetErr = v => v && !['boolean'].includes(typeof v) || !v && ['string', 'boolean'].includes(typeof v);
 const CLASS = {
   form: 'fgv-form',
   // header: 'fgv-header',
@@ -567,7 +567,7 @@ var script = {
       //   return;
       // }
       // prop is not rmoved from errors if set undefined
-      this.errors[model] = ERROR_TYPES.includes(typeof err) ? err : '';
+      this.errors[model] = canSetErr(err) ? err : '';
     },
 
     // componentData(name) {
@@ -663,7 +663,7 @@ var script = {
             err = rule(val);
           }
 
-          if (ERROR_TYPES.includes(typeof err)) {
+          if (canSetErr(err)) {
             break;
           }
         }

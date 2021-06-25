@@ -130,7 +130,7 @@ import Div from './main/components/Div.vue';
 import props from './main/mixins/props';
 import UTILS from './main/utils';
 import {
-  SCHEMA, VMODEL, FIELD, SLOT, CLASS, ERROR_TYPES
+  SCHEMA, VMODEL, FIELD, SLOT, CLASS, canSetErr
 } from './main/utils/constants';
 
 export default {
@@ -347,7 +347,7 @@ export default {
       // }
 
       // prop is not rmoved from errors if set undefined
-      this.errors[model] = ERROR_TYPES.includes(typeof err) ? err : '';
+      this.errors[model] = canSetErr(err) ? err : '';
     },
     // componentData(name) {
     //   return this.components.find(
@@ -418,7 +418,7 @@ export default {
           if (UTILS.isFunc(rule)) {
             err = rule(val);
           }
-          if (ERROR_TYPES.includes(typeof err)) {
+          if (canSetErr(err)) {
             break;
           }
         }
