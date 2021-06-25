@@ -3,7 +3,7 @@ import Div from './main/components/Div.vue';
 import props from './main/mixins/props';
 import UTILS from './main/utils';
 import {
-  SCHEMA, VMODEL, FIELD, SLOT, CLASS, canSetErr
+  SCHEMA, VMODEL, FIELD, SLOT, CLASS
 } from './main/utils/constants';
 
 export default {
@@ -163,8 +163,9 @@ export default {
         this.errors[model] = '';
       }
     },
+    canSetErr: (v) => (v && !['boolean'].includes(typeof v)) || (!v && ['string', 'boolean'].includes(typeof v)),
     setError(model, err) {
-      this.errors[model] = canSetErr(err) ? err : '';
+      this.errors[model] = this.canSetErr(err) ? err : '';
     },
     typeCoercion(conf) {
       if (this.fields[conf.model] && conf?.props?.type === FIELD.type.number) {
@@ -204,7 +205,7 @@ export default {
           if (UTILS.isFunc(rule)) {
             err = rule(val);
           }
-          if (canSetErr(err)) {
+          if (this.canSetErr(err)) {
             break;
           }
         }

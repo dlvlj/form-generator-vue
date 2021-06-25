@@ -258,7 +258,6 @@ const UTILS = {
 
 };
 
-const canSetErr = v => v && !['boolean'].includes(typeof v) || !v && ['string', 'boolean'].includes(typeof v);
 const CLASS = {
   form: 'fgv-form',
   // header: 'fgv-header',
@@ -511,8 +510,10 @@ var script = {
       }
     },
 
+    canSetErr: v => v && !['boolean'].includes(typeof v) || !v && ['string', 'boolean'].includes(typeof v),
+
     setError(model, err) {
-      this.errors[model] = canSetErr(err) ? err : '';
+      this.errors[model] = this.canSetErr(err) ? err : '';
     },
 
     typeCoercion(conf) {
@@ -578,7 +579,7 @@ var script = {
             err = rule(val);
           }
 
-          if (canSetErr(err)) {
+          if (this.canSetErr(err)) {
             break;
           }
         }

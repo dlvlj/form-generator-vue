@@ -403,10 +403,7 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
       (_console2 = console).log.apply(_console2, _toConsumableArray(items));
     }
   }
-};var canSetErr = function canSetErr(v) {
-  return v && !['boolean'].includes(_typeof(v)) || !v && ['string', 'boolean'].includes(_typeof(v));
-};
-var CLASS = {
+};var CLASS = {
   form: 'fgv-form',
   // header: 'fgv-header',
   body: 'fgv-body',
@@ -712,8 +709,11 @@ var FIELD = {
         this.errors[model] = '';
       }
     },
+    canSetErr: function canSetErr(v) {
+      return v && !['boolean'].includes(_typeof(v)) || !v && ['string', 'boolean'].includes(_typeof(v));
+    },
     setError: function setError(model, err) {
-      this.errors[model] = canSetErr(err) ? err : '';
+      this.errors[model] = this.canSetErr(err) ? err : '';
     },
     typeCoercion: function typeCoercion(conf) {
       var _conf$props2;
@@ -780,7 +780,7 @@ var FIELD = {
               err = rule(val);
             }
 
-            if (canSetErr(err)) {
+            if (this.canSetErr(err)) {
               break;
             }
           }
@@ -843,7 +843,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-402c1316";
+var __vue_module_identifier__$1 = "data-v-5433df03";
 /* functional template */
 
 var __vue_is_functional_template__$1 = undefined;

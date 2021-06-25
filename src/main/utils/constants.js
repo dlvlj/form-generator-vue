@@ -1,5 +1,4 @@
 export const HELPER_COMPONENT = '_helper';
-export const canSetErr = (v) => (v && !['boolean'].includes(typeof v)) || (!v && ['string', 'boolean'].includes(typeof v));
 export const CLASS = {
   form: 'fgv-form',
   // header: 'fgv-header',
