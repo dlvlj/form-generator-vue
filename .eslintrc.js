@@ -25,7 +25,8 @@ module.exports = {
     'guard-for-in': 'off',
     eqeqeq: 'off',
     'consistent-return': 'off',
-    'no-restricted-syntax': 'off'
+    'no-restricted-syntax': 'off',
+    'import/named': 'off'
     // 'no-console': 'off'
   },
 };

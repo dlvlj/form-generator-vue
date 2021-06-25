@@ -403,7 +403,9 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
       (_console2 = console).log.apply(_console2, _toConsumableArray(items));
     }
   }
-};var ERROR_TYPES = ['string', 'object'];
+};var canSetErr = function canSetErr(v) {
+  return v && !['boolean'].includes(_typeof(v)) || !v && ['string', 'boolean'].includes(_typeof(v));
+};
 var CLASS = {
   form: 'fgv-form',
   // header: 'fgv-header',
@@ -711,7 +713,7 @@ var FIELD = {
       }
     },
     setError: function setError(model, err) {
-      this.errors[model] = ERROR_TYPES.includes(_typeof(err)) ? err : '';
+      this.errors[model] = canSetErr(err) ? err : '';
     },
     typeCoercion: function typeCoercion(conf) {
       var _conf$props2;
@@ -778,7 +780,7 @@ var FIELD = {
               err = rule(val);
             }
 
-            if (ERROR_TYPES.includes(_typeof(err))) {
+            if (canSetErr(err)) {
               break;
             }
           }
@@ -841,7 +843,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-5ca1a5a7";
+var __vue_module_identifier__$1 = "data-v-402c1316";
 /* functional template */
 
 var __vue_is_functional_template__$1 = undefined;
