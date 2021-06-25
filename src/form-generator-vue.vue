@@ -1,5 +1,4 @@
 <script>
-import Div from './main/components/Div.vue';
 import props from './main/mixins/props';
 import UTILS from './main/utils';
 import {
@@ -7,13 +6,6 @@ import {
 } from './main/utils/constants';
 
 export default {
-  components: {
-    Body: Div,
-    RowContainer: Div,
-    Row: Div,
-    ColumnContainer: Div,
-    Column: Div
-  },
   mixins: [props],
   emits: ['input'],
   data() {
