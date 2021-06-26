@@ -261,16 +261,18 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
   return UTILS.isArr(s === null || s === void 0 ? void 0 : s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || (s === null || s === void 0 ? void 0 : s.model);
 };
 
-var createModel = function createModel(schema) {
+var createModel = function createModel(schema, val) {
   var models = {};
 
   (function init(s) {
     if (s === null || s === void 0 ? void 0 : s.model) {
-      models[modelName(s.model)] = {
-        value: '',
-        error: ''
+      var _val$modelName, _val$modelName2;
+
+      models[modelName(s)] = {
+        value: val === null || val === void 0 ? void 0 : (_val$modelName = val[modelName(s)]) === null || _val$modelName === void 0 ? void 0 : _val$modelName.value,
+        error: val === null || val === void 0 ? void 0 : (_val$modelName2 = val[modelName(s)]) === null || _val$modelName2 === void 0 ? void 0 : _val$modelName2.error
       };
-      Object.defineProperty(models[modelName(s.model)], 'options', {
+      Object.defineProperty(models[modelName(s)], 'options', {
         value: (s === null || s === void 0 ? void 0 : s.options) || {},
         enumerable: false
       });
@@ -290,7 +292,7 @@ var script = {
   mixins: [props],
   emits: ['input'],
   data: function data() {
-    var models = createModel(this.schema);
+    var models = createModel(this.schema, this.value);
     return {
       models: models
     };
@@ -311,6 +313,8 @@ var script = {
 
     Object.keys(this.models).forEach(function (m) {
       _this.$watch("models.".concat(m, ".value"), function () {
+        console.log('watcher');
+
         _this.validateModel(m);
       }, {
         deep: true
@@ -331,8 +335,8 @@ var script = {
         this.models[m].error = v === null || v === void 0 ? void 0 : v[m].error;
       }
     },
-    watchModels: function watchModels() {
-      this.$emit('input', this.models);
+    watchModels: function watchModels(v) {
+      this.$emit('input', v);
     },
     resetValidation: function resetValidation() {
       for (var m in this.models) {
@@ -398,36 +402,45 @@ var script = {
     }
   },
   render: function render(createElement) {
-    var _this2 = this,
-        _this$schema4,
-        _this$schema5,
-        _this$schema6;
+    var _self$schema, _self$schema2, _self$schema3;
+
+    var self = this;
+
+    var data = function data(d, s) {
+      var dat = _objectSpread2({}, d);
+
+      if (s === null || s === void 0 ? void 0 : s.model) {
+        var _self$models, _self$models$modelNam;
+
+        var prps = {
+          value: (_self$models = self.models) === null || _self$models === void 0 ? void 0 : (_self$models$modelNam = _self$models[modelName(s)]) === null || _self$models$modelNam === void 0 ? void 0 : _self$models$modelNam.value
+        };
+        var on = {
+          input: function input(e) {
+            var _e$target;
+
+            self.models[modelName(s)].value = (e === null || e === void 0 ? void 0 : (_e$target = e.target) === null || _e$target === void 0 ? void 0 : _e$target.value) || e;
+          }
+        };
+        dat.domProps = _objectSpread2(_objectSpread2({}, props), d.domProps);
+        dat.props = _objectSpread2(_objectSpread2({}, prps), d === null || d === void 0 ? void 0 : d.props);
+        dat.on = _objectSpread2(_objectSpread2({}, on), d === null || d === void 0 ? void 0 : d.on);
+      }
+
+      return dat;
+    };
 
     var nestDom = function nestDom(arr) {
       if (arr && UTILS.isArr(arr)) {
-        return arr.map(function (_ref) {
-          var tag = _ref.tag,
-              data = _ref.data,
-              children = _ref.children;
-          return createElement(tag, data, nestDom(children));
+        return arr.map(function (s) {
+          return createElement(s.tag, data((s === null || s === void 0 ? void 0 : s.data) || {}, s), nestDom(s.children));
         });
       }
 
       return [];
     };
 
-    var data = function data(d, s) {
-      var _this2$models, _this2$models$modelNa;
-
-      var dat = d;
-      var prps = {
-        value: (_this2$models = _this2.models) === null || _this2$models === void 0 ? void 0 : (_this2$models$modelNa = _this2$models[modelName(s === null || s === void 0 ? void 0 : s.model)]) === null || _this2$models$modelNa === void 0 ? void 0 : _this2$models$modelNa.value
-      };
-      dat.domProps = _objectSpread2(_objectSpread2({}, prps), d.domProps);
-      dat.props = _objectSpread2(_objectSpread2({}, prps), d.props);
-    };
-
-    return createElement((_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : _this$schema4.tag, data((_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : _this$schema5.data, this.schema), nestDom((_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : _this$schema6.children));
+    return createElement((_self$schema = self.schema) === null || _self$schema === void 0 ? void 0 : _self$schema.tag, data(((_self$schema2 = self.schema) === null || _self$schema2 === void 0 ? void 0 : _self$schema2.data) || {}, self.schema), nestDom((_self$schema3 = self.schema) === null || _self$schema3 === void 0 ? void 0 : _self$schema3.children));
   }
 };function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
     if (typeof shadowMode !== 'boolean') {
@@ -514,7 +527,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-91e94bc4";
+var __vue_module_identifier__ = "data-v-46788aff";
 /* functional template */
 
 var __vue_is_functional_template__ = undefined;

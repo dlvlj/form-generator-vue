@@ -3,12 +3,15 @@ import props from './main/mixins/props';
 import UTILS from './main/utils';
 
 const modelName = (s) => (UTILS.isArr(s?.model) && s.model?.[0]) || s?.model;
-const createModel = (schema) => {
+const createModel = (schema, val) => {
   const models = {};
   (function init(s) {
     if (s?.model) {
-      models[modelName(s.model)] = { value: '', error: '' };
-      Object.defineProperty(models[modelName(s.model)], 'options', { value: s?.options || {}, enumerable: false });
+      models[modelName(s)] = {
+        value: val?.[modelName(s)]?.value,
+        error: val?.[modelName(s)]?.error
+      };
+      Object.defineProperty(models[modelName(s)], 'options', { value: s?.options || {}, enumerable: false });
     }
     if (s?.children) {
       s?.children.forEach((i) => init(i));
@@ -21,7 +24,7 @@ export default {
   mixins: [props],
   emits: ['input'],
   data() {
-    const models = createModel(this.schema);
+    const models = createModel(this.schema, this.value);
     return {
       models
     };
@@ -40,6 +43,7 @@ export default {
   created() {
     Object.keys(this.models).forEach((m) => {
       this.$watch(`models.${m}.value`, () => {
+        console.log('watcher');
         this.validateModel(m);
       }, { deep: true });
     });
@@ -56,8 +60,8 @@ export default {
         this.models[m].error = v?.[m].error;
       }
     },
-    watchModels() {
-      this.$emit('input', this.models);
+    watchModels(v) {
+      this.$emit('input', v);
     },
     resetValidation() {
       for (const m in this.models) {
@@ -107,32 +111,45 @@ export default {
     },
   },
   render(createElement) {
+    const self = this;
+    const data = (d, s) => {
+      const dat = { ...d };
+      if (s?.model) {
+        const prps = {
+          value: self.models?.[modelName(s)]?.value,
+        };
+        const on = {
+          input: (e) => {
+            self.models[modelName(s)].value = e?.target?.value || e;
+          }
+        };
+        dat.domProps = {
+          ...props,
+          ...d.domProps
+        };
+        dat.props = {
+          ...prps,
+          ...d?.props
+        };
+        dat.on = {
+          ...on,
+          ...d?.on,
+        };
+      }
+      return dat;
+    };
     const nestDom = (arr) => {
       if (arr && UTILS.isArr(arr)) {
         return arr.map(
-          ({ tag, data, children }) => createElement(tag, data, nestDom(children))
+          (s) => createElement(s.tag, data(s?.data || {}, s), nestDom(s.children))
         );
       }
       return [];
     };
-    const data = (d, s) => {
-      const dat = d;
-      const prps = {
-        value: this.models?.[modelName(s?.model)]?.value,
-      };
-      dat.domProps = {
-        ...prps,
-        ...d.domProps
-      };
-      dat.props = {
-        ...prps,
-        ...d.props
-      };
-    };
     return createElement(
-      this.schema?.tag,
-      data(this.schema?.data, this.schema),
-      nestDom(this.schema?.children)
+      self.schema?.tag,
+      data(self.schema?.data || {}, self.schema),
+      nestDom(self.schema?.children)
     );
   },
 };

@@ -112,16 +112,18 @@ const modelName = s => {
   return UTILS.isArr(s === null || s === void 0 ? void 0 : s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || (s === null || s === void 0 ? void 0 : s.model);
 };
 
-const createModel = schema => {
+const createModel = (schema, val) => {
   const models = {};
 
   (function init(s) {
     if (s === null || s === void 0 ? void 0 : s.model) {
-      models[modelName(s.model)] = {
-        value: '',
-        error: ''
+      var _val$modelName, _val$modelName2;
+
+      models[modelName(s)] = {
+        value: val === null || val === void 0 ? void 0 : (_val$modelName = val[modelName(s)]) === null || _val$modelName === void 0 ? void 0 : _val$modelName.value,
+        error: val === null || val === void 0 ? void 0 : (_val$modelName2 = val[modelName(s)]) === null || _val$modelName2 === void 0 ? void 0 : _val$modelName2.error
       };
-      Object.defineProperty(models[modelName(s.model)], 'options', {
+      Object.defineProperty(models[modelName(s)], 'options', {
         value: (s === null || s === void 0 ? void 0 : s.options) || {},
         enumerable: false
       });
@@ -140,7 +142,7 @@ var script = {
   emits: ['input'],
 
   data() {
-    const models = createModel(this.schema);
+    const models = createModel(this.schema, this.value);
     return {
       models
     };
@@ -161,6 +163,7 @@ var script = {
   created() {
     Object.keys(this.models).forEach(m => {
       this.$watch(`models.${m}.value`, () => {
+        console.log('watcher');
         this.validateModel(m);
       }, {
         deep: true
@@ -184,8 +187,8 @@ var script = {
       }
     },
 
-    watchModels() {
-      this.$emit('input', this.models);
+    watchModels(v) {
+      this.$emit('input', v);
     },
 
     resetValidation() {
@@ -248,36 +251,50 @@ var script = {
   },
 
   render(createElement) {
-    var _this$schema4, _this$schema5, _this$schema6;
+    var _self$schema, _self$schema2, _self$schema3;
+
+    const self = this;
+
+    const data = (d, s) => {
+      const dat = { ...d
+      };
+
+      if (s === null || s === void 0 ? void 0 : s.model) {
+        var _self$models, _self$models$modelNam;
+
+        const prps = {
+          value: (_self$models = self.models) === null || _self$models === void 0 ? void 0 : (_self$models$modelNam = _self$models[modelName(s)]) === null || _self$models$modelNam === void 0 ? void 0 : _self$models$modelNam.value
+        };
+        const on = {
+          input: e => {
+            var _e$target;
+
+            self.models[modelName(s)].value = (e === null || e === void 0 ? void 0 : (_e$target = e.target) === null || _e$target === void 0 ? void 0 : _e$target.value) || e;
+          }
+        };
+        dat.domProps = { ...props,
+          ...d.domProps
+        };
+        dat.props = { ...prps,
+          ...(d === null || d === void 0 ? void 0 : d.props)
+        };
+        dat.on = { ...on,
+          ...(d === null || d === void 0 ? void 0 : d.on)
+        };
+      }
+
+      return dat;
+    };
 
     const nestDom = arr => {
       if (arr && UTILS.isArr(arr)) {
-        return arr.map(({
-          tag,
-          data,
-          children
-        }) => createElement(tag, data, nestDom(children)));
+        return arr.map(s => createElement(s.tag, data((s === null || s === void 0 ? void 0 : s.data) || {}, s), nestDom(s.children)));
       }
 
       return [];
     };
 
-    const data = (d, s) => {
-      var _this$models, _this$models$modelNam;
-
-      const dat = d;
-      const prps = {
-        value: (_this$models = this.models) === null || _this$models === void 0 ? void 0 : (_this$models$modelNam = _this$models[modelName(s === null || s === void 0 ? void 0 : s.model)]) === null || _this$models$modelNam === void 0 ? void 0 : _this$models$modelNam.value
-      };
-      dat.domProps = { ...prps,
-        ...d.domProps
-      };
-      dat.props = { ...prps,
-        ...d.props
-      };
-    };
-
-    return createElement((_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : _this$schema4.tag, data((_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : _this$schema5.data, this.schema), nestDom((_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : _this$schema6.children));
+    return createElement((_self$schema = self.schema) === null || _self$schema === void 0 ? void 0 : _self$schema.tag, data(((_self$schema2 = self.schema) === null || _self$schema2 === void 0 ? void 0 : _self$schema2.data) || {}, self.schema), nestDom((_self$schema3 = self.schema) === null || _self$schema3 === void 0 ? void 0 : _self$schema3.children));
   }
 
 };
