@@ -106,40 +106,21 @@ const UTILS = {
 
 };
 
-const SCHEMA = {
-  fields: 'fields',
-  av: 'activeValidation',
-  avDelay: 'activeValidationDelay',
-  logs: 'logs'
-};
-const FIELD = {
-  av: SCHEMA.av,
-  avDelay: SCHEMA.avDelay,
-  on: 'on',
-  component: 'component',
-  type: {
-    text: 'text',
-    number: 'number'
-  },
-  props: {
-    required: 'required',
-    disabled: 'disabled',
-    hidden: 'hidden'
-  },
-  rules: 'rules'
-};
-
 const createModel = schema => {
   const models = {};
 
   (function init(s) {
     if (s === null || s === void 0 ? void 0 : s.model) {
-      var _s$model;
+      var _s$model, _s$model2;
 
-      models[UTILS.isArr(s) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
+      models[UTILS.isArr(s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
         value: '',
         error: ''
       };
+      Object.defineProperty(models[UTILS.isArr(s.model) && ((_s$model2 = s.model) === null || _s$model2 === void 0 ? void 0 : _s$model2[0]) || s.model], 'options', {
+        value: (s === null || s === void 0 ? void 0 : s.options) || {},
+        enumerable: false
+      });
     }
 
     if (s === null || s === void 0 ? void 0 : s.children) {
@@ -175,7 +156,7 @@ var script = {
 
   created() {
     Object.keys(this.models).forEach(m => {
-      this.$watch(`models.${m}`, () => {
+      this.$watch(`models.${m}.value`, () => {
         this.validateModel(m);
       }, {
         deep: true
@@ -194,8 +175,8 @@ var script = {
   methods: {
     watchValue(v) {
       for (const m in v) {
-        this.models[m].value = v === null || v === void 0 ? void 0 : v[m];
-        this.models[m].error = v === null || v === void 0 ? void 0 : v[m];
+        this.models[m].value = v === null || v === void 0 ? void 0 : v[m].value;
+        this.models[m].error = v === null || v === void 0 ? void 0 : v[m].error;
       }
     },
 
@@ -216,10 +197,10 @@ var script = {
       }
     },
 
-    canSetErr: v => v && !['boolean'].includes(typeof v) || !v && ['string', 'boolean'].includes(typeof v),
+    validErr: v => v && !['boolean'].includes(typeof v) || !v && ['string', 'boolean'].includes(typeof v),
 
     setError(m, e) {
-      this.models[m].error = this.canSetErr(e) ? e : '';
+      this.models[m].error = this.validErr(e) ? e : '';
     },
 
     runModelRules(val, rules) {
@@ -233,7 +214,7 @@ var script = {
             err = rule(val);
           }
 
-          if (this.canSetErr(err)) {
+          if (this.validErr(err)) {
             break;
           }
         }
@@ -247,10 +228,10 @@ var script = {
     },
 
     validateModel(m, validate) {
-      var _conf, _this$schema2, _this$schema2$options, _this$schema3, _this$schema3$rules;
+      var _this$models$m$option, _this$models$m$option2, _this$schema2, _this$schema2$options, _this$schema3, _this$schema3$rules;
 
-      const av = FIELD.av in conf ? (_conf = conf) === null || _conf === void 0 ? void 0 : _conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$options = _this$schema2.options) === null || _this$schema2$options === void 0 ? void 0 : _this$schema2$options.activeValidation;
-      const err = (validate || av) && this.runModelRules(this.models[m].value, this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$rules = _this$schema3.rules) === null || _this$schema3$rules === void 0 ? void 0 : _this$schema3$rules[m]);
+      const validationOption = ((_this$models$m$option = this.models[m].options) === null || _this$models$m$option === void 0 ? void 0 : _this$models$m$option.activeValidation) ? (_this$models$m$option2 = this.models[m].options) === null || _this$models$m$option2 === void 0 ? void 0 : _this$models$m$option2.activeValidation : this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$options = _this$schema2.options) === null || _this$schema2$options === void 0 ? void 0 : _this$schema2$options.activeValidation;
+      const err = (validate || validationOption) && this.runModelRules(this.models[m].value, this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$rules = _this$schema3.rules) === null || _this$schema3$rules === void 0 ? void 0 : _this$schema3$rules[m]);
       this.setError(m, err);
     },
 
@@ -263,22 +244,25 @@ var script = {
   },
 
   render(createElement) {
-    var _this$schema4;
+    const {
+      tag: rootTag,
+      data: rootData,
+      children: rootChildren
+    } = this.schema;
 
-    function createFields(arr) {
+    const nestDom = arr => {
       if (arr && UTILS.isArr(arr)) {
         return arr.map(({
           tag,
           data,
           children
-        }) => createElement(tag, data, createFields(children)));
+        }) => createElement(tag, data, nestDom(children)));
       }
 
       return [];
-    }
+    };
 
-    const fields = createFields(this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : _this$schema4.fields);
-    return createElement('form', {}, fields);
+    return createElement(rootTag, rootData, nestDom(rootChildren));
   }
 
 };

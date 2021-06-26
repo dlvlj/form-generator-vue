@@ -1,15 +1,13 @@
 <script>
 import props from './main/mixins/props';
 import UTILS from './main/utils';
-import {
-  FIELD
-} from './main/utils/constants';
 
 const createModel = (schema) => {
   const models = {};
   (function init(s) {
     if (s?.model) {
-      models[(UTILS.isArr(s) && s.model?.[0]) || s.model] = { value: '', error: '' };
+      models[(UTILS.isArr(s.model) && s.model?.[0]) || s.model] = { value: '', error: '' };
+      Object.defineProperty(models[(UTILS.isArr(s.model) && s.model?.[0]) || s.model], 'options', { value: s?.options || {}, enumerable: false });
     }
     if (s?.children) {
       s?.children.forEach((i) => init(i));
@@ -40,7 +38,7 @@ export default {
   },
   created() {
     Object.keys(this.models).forEach((m) => {
-      this.$watch(`models.${m}`, () => {
+      this.$watch(`models.${m}.value`, () => {
         this.validateModel(m);
       }, { deep: true });
     });
@@ -53,8 +51,8 @@ export default {
   methods: {
     watchValue(v) {
       for (const m in v) {
-        this.models[m].value = v?.[m];
-        this.models[m].error = v?.[m];
+        this.models[m].value = v?.[m].value;
+        this.models[m].error = v?.[m].error;
       }
     },
     watchModels() {
@@ -71,9 +69,9 @@ export default {
         this.models[m].value = '';
       }
     },
-    canSetErr: (v) => (v && !['boolean'].includes(typeof v)) || (!v && ['string', 'boolean'].includes(typeof v)),
+    validErr: (v) => (v && !['boolean'].includes(typeof v)) || (!v && ['string', 'boolean'].includes(typeof v)),
     setError(m, e) {
-      this.models[m].error = this.canSetErr(e) ? e : '';
+      this.models[m].error = this.validErr(e) ? e : '';
     },
     runModelRules(val, rules) {
       let err;
@@ -83,7 +81,7 @@ export default {
           if (UTILS.isFunc(rule)) {
             err = rule(val);
           }
-          if (this.canSetErr(err)) {
+          if (this.validErr(err)) {
             break;
           }
         }
@@ -94,10 +92,10 @@ export default {
       return err;
     },
     validateModel(m, validate) {
-      const av = FIELD.av in conf
-        ? conf?.[FIELD.av] : this?.schema?.options?.activeValidation;
+      const validationOption = this.models[m].options?.activeValidation
+        ? this.models[m].options?.activeValidation : this?.schema?.options?.activeValidation;
 
-      const err = (validate || av)
+      const err = (validate || validationOption)
        && this.runModelRules(this.models[m].value, this?.schema?.rules?.[m]);
       this.setError(m, err);
     },
@@ -108,16 +106,16 @@ export default {
     },
   },
   render(createElement) {
-    function createFields(arr) {
+    const { tag: rootTag, data: rootData, children: rootChildren } = this.schema;
+    const nestDom = (arr) => {
       if (arr && UTILS.isArr(arr)) {
         return arr.map(
-          ({ tag, data, children }) => createElement(tag, data, createFields(children))
+          ({ tag, data, children }) => createElement(tag, data, nestDom(children))
         );
       }
       return [];
-    }
-    const fields = createFields(this?.schema?.fields);
-    return createElement('form', {}, fields);
+    };
+    return createElement(rootTag, rootData, nestDom(rootChildren));
   },
 };
 </script>

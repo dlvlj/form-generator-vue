@@ -206,38 +206,21 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       (_console2 = console).log.apply(_console2, _toConsumableArray(items));
     }
   }
-};var SCHEMA = {
-  fields: 'fields',
-  av: 'activeValidation',
-  avDelay: 'activeValidationDelay',
-  logs: 'logs'
-};
-var FIELD = {
-  av: SCHEMA.av,
-  avDelay: SCHEMA.avDelay,
-  on: 'on',
-  component: 'component',
-  type: {
-    text: 'text',
-    number: 'number'
-  },
-  props: {
-    required: 'required',
-    disabled: 'disabled',
-    hidden: 'hidden'
-  },
-  rules: 'rules'
 };var createModel = function createModel(schema) {
   var models = {};
 
   (function init(s) {
     if (s === null || s === void 0 ? void 0 : s.model) {
-      var _s$model;
+      var _s$model, _s$model2;
 
-      models[UTILS.isArr(s) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
+      models[UTILS.isArr(s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
         value: '',
         error: ''
       };
+      Object.defineProperty(models[UTILS.isArr(s.model) && ((_s$model2 = s.model) === null || _s$model2 === void 0 ? void 0 : _s$model2[0]) || s.model], 'options', {
+        value: (s === null || s === void 0 ? void 0 : s.options) || {},
+        enumerable: false
+      });
     }
 
     if (s === null || s === void 0 ? void 0 : s.children) {
@@ -274,7 +257,7 @@ var script = {
     var _this = this;
 
     Object.keys(this.models).forEach(function (m) {
-      _this.$watch("models.".concat(m), function () {
+      _this.$watch("models.".concat(m, ".value"), function () {
         _this.validateModel(m);
       }, {
         deep: true
@@ -291,8 +274,8 @@ var script = {
   methods: {
     watchValue: function watchValue(v) {
       for (var m in v) {
-        this.models[m].value = v === null || v === void 0 ? void 0 : v[m];
-        this.models[m].error = v === null || v === void 0 ? void 0 : v[m];
+        this.models[m].value = v === null || v === void 0 ? void 0 : v[m].value;
+        this.models[m].error = v === null || v === void 0 ? void 0 : v[m].error;
       }
     },
     watchModels: function watchModels() {
@@ -309,11 +292,11 @@ var script = {
         this.models[m].value = '';
       }
     },
-    canSetErr: function canSetErr(v) {
+    validErr: function validErr(v) {
       return v && !['boolean'].includes(_typeof(v)) || !v && ['string', 'boolean'].includes(_typeof(v));
     },
     setError: function setError(m, e) {
-      this.models[m].error = this.canSetErr(e) ? e : '';
+      this.models[m].error = this.validErr(e) ? e : '';
     },
     runModelRules: function runModelRules(val, rules) {
       var err;
@@ -331,7 +314,7 @@ var script = {
               err = rule(val);
             }
 
-            if (this.canSetErr(err)) {
+            if (this.validErr(err)) {
               break;
             }
           }
@@ -349,10 +332,10 @@ var script = {
       return err;
     },
     validateModel: function validateModel(m, validate) {
-      var _conf, _this$schema2, _this$schema2$options, _this$schema3, _this$schema3$rules;
+      var _this$models$m$option, _this$models$m$option2, _this$schema2, _this$schema2$options, _this$schema3, _this$schema3$rules;
 
-      var av = FIELD.av in conf ? (_conf = conf) === null || _conf === void 0 ? void 0 : _conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$options = _this$schema2.options) === null || _this$schema2$options === void 0 ? void 0 : _this$schema2$options.activeValidation;
-      var err = (validate || av) && this.runModelRules(this.models[m].value, this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$rules = _this$schema3.rules) === null || _this$schema3$rules === void 0 ? void 0 : _this$schema3$rules[m]);
+      var validationOption = ((_this$models$m$option = this.models[m].options) === null || _this$models$m$option === void 0 ? void 0 : _this$models$m$option.activeValidation) ? (_this$models$m$option2 = this.models[m].options) === null || _this$models$m$option2 === void 0 ? void 0 : _this$models$m$option2.activeValidation : this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$options = _this$schema2.options) === null || _this$schema2$options === void 0 ? void 0 : _this$schema2$options.activeValidation;
+      var err = (validate || validationOption) && this.runModelRules(this.models[m].value, this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$rules = _this$schema3.rules) === null || _this$schema3$rules === void 0 ? void 0 : _this$schema3$rules[m]);
       this.setError(m, err);
     },
     validate: function validate() {
@@ -362,23 +345,25 @@ var script = {
     }
   },
   render: function render(createElement) {
-    var _this$schema4;
+    var _this$schema4 = this.schema,
+        rootTag = _this$schema4.tag,
+        rootData = _this$schema4.data,
+        rootChildren = _this$schema4.children;
 
-    function createFields(arr) {
+    var nestDom = function nestDom(arr) {
       if (arr && UTILS.isArr(arr)) {
         return arr.map(function (_ref) {
           var tag = _ref.tag,
               data = _ref.data,
               children = _ref.children;
-          return createElement(tag, data, createFields(children));
+          return createElement(tag, data, nestDom(children));
         });
       }
 
       return [];
-    }
+    };
 
-    var fields = createFields(this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : _this$schema4.fields);
-    return createElement('form', {}, fields);
+    return createElement(rootTag, rootData, nestDom(rootChildren));
   }
 };function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
     if (typeof shadowMode !== 'boolean') {
@@ -465,7 +450,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5ca3d5b9";
+var __vue_module_identifier__ = "data-v-64b8c70a";
 /* functional template */
 
 var __vue_is_functional_template__ = undefined;
