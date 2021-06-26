@@ -236,7 +236,7 @@ export default {
     // fields watcher
     for (const model in this.fields) {
       const conf = this.getFieldConf(model);
-      this.$watch(`fields.${model}`, (newVal, oldVal) => {
+      this.$watch(`fields.${model}`, () => {
         // this.typeCoercion(conf);
         // when only data type is changed.
         // if (newVal == oldVal && typeof newVal !== typeof oldVal) {

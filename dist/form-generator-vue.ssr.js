@@ -622,7 +622,7 @@ var FIELD = {
     var _loop = function _loop(model) {
       var conf = _this2.getFieldConf(model);
 
-      _this2.$watch("fields.".concat(model), function (newVal, oldVal) {
+      _this2.$watch("fields.".concat(model), function () {
         // this.typeCoercion(conf);
         // when only data type is changed.
         // if (newVal == oldVal && typeof newVal !== typeof oldVal) {
@@ -1037,7 +1037,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-14a13616";
+var __vue_module_identifier__$1 = "data-v-1075c6b4";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
