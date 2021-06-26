@@ -14,6 +14,55 @@
   return _typeof(obj);
 }
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -206,18 +255,22 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       (_console2 = console).log.apply(_console2, _toConsumableArray(items));
     }
   }
-};var createModel = function createModel(schema) {
+};var modelName = function modelName(s) {
+  var _s$model;
+
+  return UTILS.isArr(s === null || s === void 0 ? void 0 : s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || (s === null || s === void 0 ? void 0 : s.model);
+};
+
+var createModel = function createModel(schema) {
   var models = {};
 
   (function init(s) {
     if (s === null || s === void 0 ? void 0 : s.model) {
-      var _s$model, _s$model2;
-
-      models[UTILS.isArr(s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
+      models[modelName(s.model)] = {
         value: '',
         error: ''
       };
-      Object.defineProperty(models[UTILS.isArr(s.model) && ((_s$model2 = s.model) === null || _s$model2 === void 0 ? void 0 : _s$model2[0]) || s.model], 'options', {
+      Object.defineProperty(models[modelName(s.model)], 'options', {
         value: (s === null || s === void 0 ? void 0 : s.options) || {},
         enumerable: false
       });
@@ -345,10 +398,10 @@ var script = {
     }
   },
   render: function render(createElement) {
-    var _this$schema4 = this.schema,
-        rootTag = _this$schema4.tag,
-        rootData = _this$schema4.data,
-        rootChildren = _this$schema4.children;
+    var _this2 = this,
+        _this$schema4,
+        _this$schema5,
+        _this$schema6;
 
     var nestDom = function nestDom(arr) {
       if (arr && UTILS.isArr(arr)) {
@@ -363,7 +416,18 @@ var script = {
       return [];
     };
 
-    return createElement(rootTag, rootData, nestDom(rootChildren));
+    var data = function data(d, s) {
+      var _this2$models, _this2$models$modelNa;
+
+      var dat = d;
+      var prps = {
+        value: (_this2$models = _this2.models) === null || _this2$models === void 0 ? void 0 : (_this2$models$modelNa = _this2$models[modelName(s === null || s === void 0 ? void 0 : s.model)]) === null || _this2$models$modelNa === void 0 ? void 0 : _this2$models$modelNa.value
+      };
+      dat.domProps = _objectSpread2(_objectSpread2({}, prps), d.domProps);
+      dat.props = _objectSpread2(_objectSpread2({}, prps), d.props);
+    };
+
+    return createElement((_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : _this$schema4.tag, data((_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : _this$schema5.data, this.schema), nestDom((_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : _this$schema6.children));
   }
 };function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
     if (typeof shadowMode !== 'boolean') {
@@ -450,7 +514,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-64b8c70a";
+var __vue_module_identifier__ = "data-v-91e94bc4";
 /* functional template */
 
 var __vue_is_functional_template__ = undefined;

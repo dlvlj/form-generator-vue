@@ -106,18 +106,22 @@ const UTILS = {
 
 };
 
+const modelName = s => {
+  var _s$model;
+
+  return UTILS.isArr(s === null || s === void 0 ? void 0 : s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || (s === null || s === void 0 ? void 0 : s.model);
+};
+
 const createModel = schema => {
   const models = {};
 
   (function init(s) {
     if (s === null || s === void 0 ? void 0 : s.model) {
-      var _s$model, _s$model2;
-
-      models[UTILS.isArr(s.model) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
+      models[modelName(s.model)] = {
         value: '',
         error: ''
       };
-      Object.defineProperty(models[UTILS.isArr(s.model) && ((_s$model2 = s.model) === null || _s$model2 === void 0 ? void 0 : _s$model2[0]) || s.model], 'options', {
+      Object.defineProperty(models[modelName(s.model)], 'options', {
         value: (s === null || s === void 0 ? void 0 : s.options) || {},
         enumerable: false
       });
@@ -244,11 +248,7 @@ var script = {
   },
 
   render(createElement) {
-    const {
-      tag: rootTag,
-      data: rootData,
-      children: rootChildren
-    } = this.schema;
+    var _this$schema4, _this$schema5, _this$schema6;
 
     const nestDom = arr => {
       if (arr && UTILS.isArr(arr)) {
@@ -262,7 +262,22 @@ var script = {
       return [];
     };
 
-    return createElement(rootTag, rootData, nestDom(rootChildren));
+    const data = (d, s) => {
+      var _this$models, _this$models$modelNam;
+
+      const dat = d;
+      const prps = {
+        value: (_this$models = this.models) === null || _this$models === void 0 ? void 0 : (_this$models$modelNam = _this$models[modelName(s === null || s === void 0 ? void 0 : s.model)]) === null || _this$models$modelNam === void 0 ? void 0 : _this$models$modelNam.value
+      };
+      dat.domProps = { ...prps,
+        ...d.domProps
+      };
+      dat.props = { ...prps,
+        ...d.props
+      };
+    };
+
+    return createElement((_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : _this$schema4.tag, data((_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : _this$schema5.data, this.schema), nestDom((_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : _this$schema6.children));
   }
 
 };

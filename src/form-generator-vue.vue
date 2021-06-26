@@ -2,12 +2,13 @@
 import props from './main/mixins/props';
 import UTILS from './main/utils';
 
+const modelName = (s) => (UTILS.isArr(s?.model) && s.model?.[0]) || s?.model;
 const createModel = (schema) => {
   const models = {};
   (function init(s) {
     if (s?.model) {
-      models[(UTILS.isArr(s.model) && s.model?.[0]) || s.model] = { value: '', error: '' };
-      Object.defineProperty(models[(UTILS.isArr(s.model) && s.model?.[0]) || s.model], 'options', { value: s?.options || {}, enumerable: false });
+      models[modelName(s.model)] = { value: '', error: '' };
+      Object.defineProperty(models[modelName(s.model)], 'options', { value: s?.options || {}, enumerable: false });
     }
     if (s?.children) {
       s?.children.forEach((i) => init(i));
@@ -106,7 +107,6 @@ export default {
     },
   },
   render(createElement) {
-    const { tag: rootTag, data: rootData, children: rootChildren } = this.schema;
     const nestDom = (arr) => {
       if (arr && UTILS.isArr(arr)) {
         return arr.map(
@@ -115,7 +115,25 @@ export default {
       }
       return [];
     };
-    return createElement(rootTag, rootData, nestDom(rootChildren));
+    const data = (d, s) => {
+      const dat = d;
+      const prps = {
+        value: this.models?.[modelName(s?.model)]?.value,
+      };
+      dat.domProps = {
+        ...prps,
+        ...d.domProps
+      };
+      dat.props = {
+        ...prps,
+        ...d.props
+      };
+    };
+    return createElement(
+      this.schema?.tag,
+      data(this.schema?.data, this.schema),
+      nestDom(this.schema?.children)
+    );
   },
 };
 </script>
