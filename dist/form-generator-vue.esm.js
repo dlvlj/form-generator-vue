@@ -17,7 +17,7 @@ const UTILS = {
     return typeof val === 'undefined';
   },
 
-  isObjNotArr(val) {
+  isObjOnly(val) {
     if (!UTILS.isArr(val)) {
       return UTILS.isObj(val);
     }
@@ -155,38 +155,36 @@ const FIELD = {
   rules: 'rules'
 };
 
+const createModel = schema => {
+  const model = {};
+
+  (function init(s) {
+    if (s === null || s === void 0 ? void 0 : s.model) {
+      var _s$model;
+
+      model[UTILS.isArr(s) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
+        value: '',
+        error: ''
+      };
+    }
+
+    if (s === null || s === void 0 ? void 0 : s.children) {
+      s === null || s === void 0 ? void 0 : s.children.forEach(i => init(i));
+    }
+  })(schema);
+
+  return model;
+};
+
 var script = {
   mixins: [props],
   emits: ['input'],
 
   data() {
-    var _this$value;
-
-    const form = (_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value.form;
-    const fields = {};
-    const errors = {};
-
-    const addFieldsAndErrors = model => {
-      var _this$value2, _this$value2$VMODEL$f, _this$value3, _this$value3$VMODEL$e;
-
-      fields[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$f = _this$value2[VMODEL.fields]) === null || _this$value2$VMODEL$f === void 0 ? void 0 : _this$value2$VMODEL$f[model]) || '';
-      errors[model] = ((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$VMODEL$e = _this$value3[VMODEL.errors]) === null || _this$value3$VMODEL$e === void 0 ? void 0 : _this$value3$VMODEL$e[model]) || '';
-    };
-
-    for (const fieldConf of this.schema[SCHEMA.fields]) {
-      if (UTILS.isArr(fieldConf)) {
-        for (const subFieldConf of fieldConf) {
-          addFieldsAndErrors(subFieldConf.model);
-        }
-      } else {
-        addFieldsAndErrors(fieldConf.model);
-      }
-    }
-
+    const model = createModel(this.schema);
+    console.log('model is', model);
     return {
-      form,
-      fields,
-      errors
+      model
     };
   },
 
@@ -215,21 +213,21 @@ var script = {
   watch: {
     value: {
       handler() {
-        for (const model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
-          var _this$value4, _this$value5, _this$value5$VMODEL$f, _this$value6, _this$value6$VMODEL$e;
+        for (const model in (_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields]) {
+          var _this$value, _this$value2, _this$value2$VMODEL$f, _this$value3, _this$value3$VMODEL$e;
 
-          this.fields[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$f = _this$value5[VMODEL.fields]) === null || _this$value5$VMODEL$f === void 0 ? void 0 : _this$value5$VMODEL$f[model];
-          this.errors[model] = (_this$value6 = this.value) === null || _this$value6 === void 0 ? void 0 : (_this$value6$VMODEL$e = _this$value6[VMODEL.errors]) === null || _this$value6$VMODEL$e === void 0 ? void 0 : _this$value6$VMODEL$e[model];
+          this.fields[model] = (_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$f = _this$value2[VMODEL.fields]) === null || _this$value2$VMODEL$f === void 0 ? void 0 : _this$value2$VMODEL$f[model];
+          this.errors[model] = (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$VMODEL$e = _this$value3[VMODEL.errors]) === null || _this$value3$VMODEL$e === void 0 ? void 0 : _this$value3$VMODEL$e[model];
         }
       },
 
       deep: true
     },
-    form: {
-      handler: 'emitData',
-      deep: true,
-      immediate: true
-    },
+    // form: {
+    //   handler: 'emitData',
+    //   deep: true,
+    //   immediate: true,
+    // },
     fields: {
       handler: 'emitData',
       deep: true,
@@ -291,53 +289,41 @@ var script = {
     },
 
     emitData() {
-      var _this$schema4, _this$schema4$form, _this$schema5, _this$schema5$form;
-
-      const formModel = UTILS.isStr(this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$form = _this$schema4.form) === null || _this$schema4$form === void 0 ? void 0 : _this$schema4$form.model) ? this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$form = _this$schema5.form) === null || _this$schema5$form === void 0 ? void 0 : _this$schema5$form.model : undefined;
+      // const formModel = UTILS.isStr(this?.schema?.form?.model)
+      // ? this?.schema?.form?.model : undefined;
       const valid = !Object.keys(this.errors).find(e => this.errors[e] && !this.fieldHidden(this.fieldsFlat[e]));
-      this.$emit('input', { ...(formModel ? {
-          [formModel]: this.form
-        } : {}),
+      this.$emit('input', {
+        // ...(formModel ? { [formModel]: this.form } : {}),
         valid,
         [VMODEL.fields]: this.fields,
         [VMODEL.errors]: this.errors
       });
     },
 
-    showRow(conf) {
-      return UTILS.isArr(conf) ? conf.length && conf.some(c => this.showCol(c)) : this.showCol(conf);
-    },
-
-    showCol(conf) {
-      return this.componentName(conf) && !this.fieldHidden(conf);
-    },
-
-    slotProps(conf) {
-      if (UTILS.isArr(conf)) {
-        return conf.map(({
-          model
-        }) => model);
-      }
-
-      return [conf.model];
-    },
-
-    componentProps(conf, options = {}) {
-      const {
-        form
-      } = options;
-      const p = { ...(conf === null || conf === void 0 ? void 0 : conf.props)
-      };
-
-      if (form) {
-        var _conf$props;
-
-        p.is = (conf === null || conf === void 0 ? void 0 : (_conf$props = conf.props) === null || _conf$props === void 0 ? void 0 : _conf$props.is) || 'form';
-      }
-
-      return p;
-    },
-
+    // showRow(conf) {
+    //   return UTILS.isArr(conf)
+    //     ? conf.length && conf.some((c) => this.showCol(c))
+    //     : this.showCol(conf);
+    // },
+    // showCol(conf) {
+    //   return this.componentName(conf) && !this.fieldHidden(conf);
+    // },
+    // slotProps(conf) {
+    //   if (UTILS.isArr(conf)) {
+    //     return conf.map(({ model }) => model);
+    //   }
+    //   return [conf.model];
+    // },
+    // componentProps(conf, options = {}) {
+    //   const { form } = options;
+    //   const p = {
+    //     ...conf?.props,
+    //   };
+    //   if (form) {
+    //     p.is = conf?.props?.is || 'form';
+    //   }
+    //   return p;
+    // },
     resetValidation() {
       for (const model in this.errors) {
         this.errors[model] = '';
@@ -358,9 +344,9 @@ var script = {
     },
 
     typeCoercion(conf) {
-      var _conf$props2;
+      var _conf$props;
 
-      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.type) === FIELD.type.number) {
+      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$props = conf.props) === null || _conf$props === void 0 ? void 0 : _conf$props.type) === FIELD.type.number) {
         if (!Number.isNaN(this.fields[conf.model])) {
           return;
         }
@@ -369,44 +355,27 @@ var script = {
       }
     },
 
-    componentEvents(conf, options = {}) {
-      const {
-        form
-      } = options;
-      const e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.on]) || {};
-
-      if (form) {
-        var _conf$on;
-
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit) || (ev => {
-          var _this$schema6, _this$schema6$options;
-
-          ev === null || ev === void 0 ? void 0 : ev.preventDefault();
-          UTILS.logger(['submit handler not present.\n'], {
-            warn: true,
-            show: this === null || this === void 0 ? void 0 : (_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : (_this$schema6$options = _this$schema6.options) === null || _this$schema6$options === void 0 ? void 0 : _this$schema6$options.logs
-          });
-        });
-      }
-
-      return e;
-    },
-
-    componentName(conf) {
-      var _conf$props3;
-
-      return (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag);
-    },
-
+    // componentEvents(conf, options = {}) {
+    //   const { form } = options;
+    //   const e = conf?.[FIELD.on] || {};
+    //   if (form) {
+    //     e.submit = conf?.on?.submit
+    //     || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.schema?.options?.logs }); });
+    //   }
+    //   return e;
+    // },
+    // componentName(conf) {
+    //   return conf?.props?.is || conf?.tag;
+    // },
     getFieldConf(model) {
       return this.fieldsFlat[model];
     },
 
     fieldHidden(conf) {
-      var _conf$props4;
+      var _conf$props2;
 
       const HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4[FIELD.props.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2[FIELD.props.hidden]) : !HIDDEN;
     },
 
     runFieldRules(val, rules) {
@@ -434,10 +403,10 @@ var script = {
     },
 
     validateField(conf, formValidating) {
-      var _this$schema7, _this$schema7$options, _this$schema8, _this$schema8$rules;
+      var _this$schema4, _this$schema4$options, _this$schema5, _this$schema5$rules;
 
-      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema7 = this.schema) === null || _this$schema7 === void 0 ? void 0 : (_this$schema7$options = _this$schema7.options) === null || _this$schema7$options === void 0 ? void 0 : _this$schema7$options.activeValidation;
-      const err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema8 = this.schema) === null || _this$schema8 === void 0 ? void 0 : (_this$schema8$rules = _this$schema8.rules) === null || _this$schema8$rules === void 0 ? void 0 : _this$schema8$rules[conf.model]);
+      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$options = _this$schema4.options) === null || _this$schema4$options === void 0 ? void 0 : _this$schema4$options.activeValidation;
+      const err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$rules = _this$schema5.rules) === null || _this$schema5$rules === void 0 ? void 0 : _this$schema5$rules[conf.model]);
       this.setError(conf.model, err);
     },
 
@@ -452,7 +421,7 @@ var script = {
   },
 
   render(createElement) {
-    var _this$schema9;
+    var _this$schema6;
 
     function createFields(arr) {
       if (arr && UTILS.isArr(arr)) {
@@ -466,7 +435,7 @@ var script = {
       return [];
     }
 
-    const fields = createFields(this === null || this === void 0 ? void 0 : (_this$schema9 = this.schema) === null || _this$schema9 === void 0 ? void 0 : _this$schema9.fields);
+    const fields = createFields(this === null || this === void 0 ? void 0 : (_this$schema6 = this.schema) === null || _this$schema6 === void 0 ? void 0 : _this$schema6.fields);
     return createElement('form', {}, fields);
   }
 

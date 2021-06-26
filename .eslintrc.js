@@ -26,7 +26,8 @@ module.exports = {
     eqeqeq: 'off',
     'consistent-return': 'off',
     'no-restricted-syntax': 'off',
-    'import/named': 'off'
+    'import/named': 'off',
+    'func-names': 'off'
     // 'no-console': 'off'
   },
 };

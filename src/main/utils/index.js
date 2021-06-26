@@ -2,7 +2,7 @@ const UTILS = {
   isUndef(val) {
     return typeof val === 'undefined';
   },
-  isObjNotArr(val) {
+  isObjOnly(val) {
     if (!UTILS.isArr(val)) {
       return UTILS.isObj(val);
     }
