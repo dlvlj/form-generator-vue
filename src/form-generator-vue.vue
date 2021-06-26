@@ -29,26 +29,21 @@ export default {
   },
   watch: {
     value: {
-      handler() {
-        for (const m in this.value) {
-          this.models[m] = this.value?.[m];
-          this.models[m] = this.value?.[m];
-        }
-      },
+      handler: 'watchValue',
       deep: true,
     },
     models: {
-      handler: 'emitData',
+      handler: 'watchModels',
       deep: true,
       immediate: true,
     },
   },
   created() {
-    for (const m in this.models) {
+    Object.keys(this.models).forEach((m) => {
       this.$watch(`models.${m}`, () => {
         this.validateModel(m);
       }, { deep: true });
-    }
+    });
   },
   mounted() {
     if (this?.schema?.options?.onLoadValidation) {
@@ -56,7 +51,13 @@ export default {
     }
   },
   methods: {
-    emitData() {
+    watchValue(v) {
+      for (const m in v) {
+        this.models[m].value = v?.[m];
+        this.models[m].error = v?.[m];
+      }
+    },
+    watchModels() {
       this.$emit('input', this.models);
     },
     resetValidation() {

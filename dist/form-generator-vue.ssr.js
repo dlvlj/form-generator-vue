@@ -14,21 +14,6 @@
   return _typeof(obj);
 }
 
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -221,41 +206,11 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       (_console2 = console).log.apply(_console2, _toConsumableArray(items));
     }
   }
-};var CLASS = {
-  form: 'fgv-form',
-  // header: 'fgv-header',
-  body: 'fgv-body',
-  // footer: 'fgv-footer',
-  row: 'fgv-row',
-  rowContainer: 'fgv-row-container',
-  colContainer: 'fgv-col-container',
-  col: 'fgv-col'
-};
-var SLOT = {
-  header: 'header',
-  footer: 'footer',
-  beforeComponent: function beforeComponent(v) {
-    return "before-".concat(v);
-  },
-  afterComponent: function afterComponent(v) {
-    return "after-".concat(v);
-  },
-  beforeRow: 'before-row',
-  rowStart: 'row-start',
-  rowEnd: 'row-end',
-  afterRow: 'after-row',
-  beforeCol: 'before-col',
-  afterCol: 'after-col'
-};
-var SCHEMA = {
+};var SCHEMA = {
   fields: 'fields',
   av: 'activeValidation',
   avDelay: 'activeValidationDelay',
   logs: 'logs'
-};
-var VMODEL = {
-  fields: 'fields',
-  errors: 'errors'
 };
 var FIELD = {
   av: SCHEMA.av,
@@ -273,13 +228,13 @@ var FIELD = {
   },
   rules: 'rules'
 };var createModel = function createModel(schema) {
-  var model = {};
+  var models = {};
 
   (function init(s) {
     if (s === null || s === void 0 ? void 0 : s.model) {
       var _s$model;
 
-      model[UTILS.isArr(s) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
+      models[UTILS.isArr(s) && ((_s$model = s.model) === null || _s$model === void 0 ? void 0 : _s$model[0]) || s.model] = {
         value: '',
         error: ''
       };
@@ -292,90 +247,25 @@ var FIELD = {
     }
   })(schema);
 
-  return model;
+  return models;
 };
 
 var script = {
   mixins: [props],
   emits: ['input'],
   data: function data() {
-    var model = createModel(this.schema);
-    console.log('model is', model);
+    var models = createModel(this.schema);
     return {
-      model: model
+      models: models
     };
-  },
-  computed: {
-    SLOT: function SLOT$1() {
-      return SLOT;
-    },
-    CLASS: function CLASS$1() {
-      return CLASS;
-    },
-    UTILS: function UTILS$1() {
-      return UTILS;
-    },
-    fieldsFlat: function fieldsFlat() {
-      var flat = {};
-
-      var _iterator = _createForOfIteratorHelper(this.schema[SCHEMA.fields]),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var conf = _step.value;
-
-          if (UTILS.isArr(conf)) {
-            var _iterator2 = _createForOfIteratorHelper(conf),
-                _step2;
-
-            try {
-              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                var subConf = _step2.value;
-                flat[subConf.model] = subConf;
-              }
-            } catch (err) {
-              _iterator2.e(err);
-            } finally {
-              _iterator2.f();
-            }
-          } else {
-            flat[conf.model] = conf;
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-
-      return flat;
-    }
   },
   watch: {
     value: {
-      handler: function handler() {
-        for (var model in (_this$value = this.value) === null || _this$value === void 0 ? void 0 : _this$value[VMODEL.fields]) {
-          var _this$value, _this$value2, _this$value2$VMODEL$f, _this$value3, _this$value3$VMODEL$e;
-
-          this.fields[model] = (_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$f = _this$value2[VMODEL.fields]) === null || _this$value2$VMODEL$f === void 0 ? void 0 : _this$value2$VMODEL$f[model];
-          this.errors[model] = (_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$VMODEL$e = _this$value3[VMODEL.errors]) === null || _this$value3$VMODEL$e === void 0 ? void 0 : _this$value3$VMODEL$e[model];
-        }
-      },
+      handler: 'watchValue',
       deep: true
     },
-    // form: {
-    //   handler: 'emitData',
-    //   deep: true,
-    //   immediate: true,
-    // },
-    fields: {
-      handler: 'emitData',
-      deep: true,
-      immediate: true
-    },
-    errors: {
-      handler: 'emitData',
+    models: {
+      handler: 'watchModels',
       deep: true,
       immediate: true
     }
@@ -383,27 +273,13 @@ var script = {
   created: function created() {
     var _this = this;
 
-    var _loop = function _loop(model) {
-      var conf = _this.getFieldConf(model);
-
-      _this.$watch("fields.".concat(model), function (newVal, oldVal) {
-        _this.typeCoercion(conf); // when only data type is changed.
-
-
-        if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
-          return;
-        }
-
-        _this.validateField(conf);
+    Object.keys(this.models).forEach(function (m) {
+      _this.$watch("models.".concat(m), function () {
+        _this.validateModel(m);
       }, {
         deep: true
       });
-    };
-
-    // fields watcher
-    for (var model in this.fields) {
-      _loop(model);
-    }
+    });
   },
   mounted: function mounted() {
     var _this$schema, _this$schema$options;
@@ -413,127 +289,42 @@ var script = {
     }
   },
   methods: {
-    classes: function classes(classArr) {
-      var _this2 = this;
-
-      var subArr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      return classArr.reduce(function (acc, c) {
-        var _this2$schema, _this2$schema$class;
-
-        if (_this2 === null || _this2 === void 0 ? void 0 : (_this2$schema = _this2.schema) === null || _this2$schema === void 0 ? void 0 : (_this2$schema$class = _this2$schema.class) === null || _this2$schema$class === void 0 ? void 0 : _this2$schema$class[c]) {
-          acc.push.apply(acc, _toConsumableArray(_this2.schema.class[c]));
-
-          var ar = _this2.schema.class[c].filter(function (cl) {
-            var _this2$schema2;
-
-            return Object.keys(_this2 === null || _this2 === void 0 ? void 0 : (_this2$schema2 = _this2.schema) === null || _this2$schema2 === void 0 ? void 0 : _this2$schema2.class).includes(cl);
-          });
-
-          if (ar.length) {
-            acc.push.apply(acc, _toConsumableArray(_this2.classes(ar, true)));
-          }
-        }
-
-        return acc;
-      }, !subArr ? _toConsumableArray(classArr) : []);
+    watchValue: function watchValue(v) {
+      for (var m in v) {
+        this.models[m].value = v === null || v === void 0 ? void 0 : v[m];
+        this.models[m].error = v === null || v === void 0 ? void 0 : v[m];
+      }
     },
-    emitData: function emitData() {
-      var _this3 = this,
-          _this$$emit;
-
-      // const formModel = UTILS.isStr(this?.schema?.form?.model)
-      // ? this?.schema?.form?.model : undefined;
-      var valid = !Object.keys(this.errors).find(function (e) {
-        return _this3.errors[e] && !_this3.fieldHidden(_this3.fieldsFlat[e]);
-      });
-      this.$emit('input', (_this$$emit = {
-        // ...(formModel ? { [formModel]: this.form } : {}),
-        valid: valid
-      }, _defineProperty(_this$$emit, VMODEL.fields, this.fields), _defineProperty(_this$$emit, VMODEL.errors, this.errors), _this$$emit));
+    watchModels: function watchModels() {
+      this.$emit('input', this.models);
     },
-    // showRow(conf) {
-    //   return UTILS.isArr(conf)
-    //     ? conf.length && conf.some((c) => this.showCol(c))
-    //     : this.showCol(conf);
-    // },
-    // showCol(conf) {
-    //   return this.componentName(conf) && !this.fieldHidden(conf);
-    // },
-    // slotProps(conf) {
-    //   if (UTILS.isArr(conf)) {
-    //     return conf.map(({ model }) => model);
-    //   }
-    //   return [conf.model];
-    // },
-    // componentProps(conf, options = {}) {
-    //   const { form } = options;
-    //   const p = {
-    //     ...conf?.props,
-    //   };
-    //   if (form) {
-    //     p.is = conf?.props?.is || 'form';
-    //   }
-    //   return p;
-    // },
     resetValidation: function resetValidation() {
-      for (var model in this.errors) {
-        this.errors[model] = '';
+      for (var m in this.models) {
+        this.models[m].error = '';
       }
     },
     reset: function reset() {
-      for (var model in this.fields) {
-        this.fields[model] = '';
-        this.errors[model] = '';
+      for (var m in this.models) {
+        this.models[m].value = '';
+        this.models[m].value = '';
       }
     },
     canSetErr: function canSetErr(v) {
       return v && !['boolean'].includes(_typeof(v)) || !v && ['string', 'boolean'].includes(_typeof(v));
     },
-    setError: function setError(model, err) {
-      this.errors[model] = this.canSetErr(err) ? err : '';
+    setError: function setError(m, e) {
+      this.models[m].error = this.canSetErr(e) ? e : '';
     },
-    typeCoercion: function typeCoercion(conf) {
-      var _conf$props;
-
-      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$props = conf.props) === null || _conf$props === void 0 ? void 0 : _conf$props.type) === FIELD.type.number) {
-        if (!Number.isNaN(this.fields[conf.model])) {
-          return;
-        }
-
-        this.fields[conf.model] = Number(this.fields[conf.model]);
-      }
-    },
-    // componentEvents(conf, options = {}) {
-    //   const { form } = options;
-    //   const e = conf?.[FIELD.on] || {};
-    //   if (form) {
-    //     e.submit = conf?.on?.submit
-    //     || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.schema?.options?.logs }); });
-    //   }
-    //   return e;
-    // },
-    // componentName(conf) {
-    //   return conf?.props?.is || conf?.tag;
-    // },
-    getFieldConf: function getFieldConf(model) {
-      return this.fieldsFlat[model];
-    },
-    fieldHidden: function fieldHidden(conf) {
-      var _conf$props2;
-
-      var HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2[FIELD.props.hidden]) : !HIDDEN;
-    },
-    runFieldRules: function runFieldRules(val, rules) {
+    runModelRules: function runModelRules(val, rules) {
       var err;
 
       if (UTILS.isArr(rules)) {
-        var _iterator3 = _createForOfIteratorHelper(rules),
-            _step3;
+        var _iterator = _createForOfIteratorHelper(rules),
+            _step;
 
         try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var rule = _step3.value;
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var rule = _step.value;
             err = rule;
 
             if (UTILS.isFunc(rule)) {
@@ -545,9 +336,9 @@ var script = {
             }
           }
         } catch (err) {
-          _iterator3.e(err);
+          _iterator.e(err);
         } finally {
-          _iterator3.f();
+          _iterator.f();
         }
       }
 
@@ -557,18 +348,16 @@ var script = {
 
       return err;
     },
-    validateField: function validateField(conf, formValidating) {
-      var _this$schema2, _this$schema2$options, _this$schema3, _this$schema3$rules;
+    validateModel: function validateModel(m, validate) {
+      var _conf, _this$schema2, _this$schema2$options, _this$schema3, _this$schema3$rules;
 
-      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$options = _this$schema2.options) === null || _this$schema2$options === void 0 ? void 0 : _this$schema2$options.activeValidation;
-      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$rules = _this$schema3.rules) === null || _this$schema3$rules === void 0 ? void 0 : _this$schema3$rules[conf.model]);
-      this.setError(conf.model, err);
+      var av = FIELD.av in conf ? (_conf = conf) === null || _conf === void 0 ? void 0 : _conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$options = _this$schema2.options) === null || _this$schema2$options === void 0 ? void 0 : _this$schema2$options.activeValidation;
+      var err = (validate || av) && this.runModelRules(this.models[m].value, this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$rules = _this$schema3.rules) === null || _this$schema3$rules === void 0 ? void 0 : _this$schema3$rules[m]);
+      this.setError(m, err);
     },
     validate: function validate() {
-      for (var model in this.fields) {
-        var _this$fieldsFlat;
-
-        this.validateField((_this$fieldsFlat = this.fieldsFlat) === null || _this$fieldsFlat === void 0 ? void 0 : _this$fieldsFlat[model], true);
+      for (var m in this.models) {
+        this.validateModel(m, true);
       }
     }
   },
@@ -676,7 +465,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-6c27c00c";
+var __vue_module_identifier__ = "data-v-5ca3d5b9";
 /* functional template */
 
 var __vue_is_functional_template__ = undefined;
