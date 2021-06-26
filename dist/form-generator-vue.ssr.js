@@ -313,8 +313,6 @@ var script = {
 
     Object.keys(this.models).forEach(function (m) {
       _this.$watch("models.".concat(m, ".value"), function () {
-        console.log('watcher');
-
         _this.validateModel(m);
       }, {
         deep: true
@@ -527,7 +525,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-46788aff";
+var __vue_module_identifier__ = "data-v-5abb4280";
 /* functional template */
 
 var __vue_is_functional_template__ = undefined;

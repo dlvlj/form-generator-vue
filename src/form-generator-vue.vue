@@ -43,7 +43,6 @@ export default {
   created() {
     Object.keys(this.models).forEach((m) => {
       this.$watch(`models.${m}.value`, () => {
-        console.log('watcher');
         this.validateModel(m);
       }, { deep: true });
     });
