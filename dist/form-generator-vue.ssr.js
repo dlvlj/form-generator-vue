@@ -623,14 +623,12 @@ var FIELD = {
       var conf = _this2.getFieldConf(model);
 
       _this2.$watch("fields.".concat(model), function (newVal, oldVal) {
-        _this2.typeCoercion(conf); // when only data type is changed.
-
-
-        if (newVal == oldVal && _typeof(newVal) !== _typeof(oldVal)) {
-          return;
-        } // this.validate(fieldConf, true);
-
-
+        // this.typeCoercion(conf);
+        // when only data type is changed.
+        // if (newVal == oldVal && typeof newVal !== typeof oldVal) {
+        //   return;
+        // }
+        // this.validate(fieldConf, true);
         _this2.validateField(conf);
       }, {
         deep: true
@@ -772,23 +770,20 @@ var FIELD = {
     //     (c) => c?.name === name,
     //   );
     // },
-    typeCoercion: function typeCoercion(conf) {
-      var _conf$props2;
-
-      if (this.fields[conf.model] && (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.type) === FIELD.type.number) {
-        if (!Number.isNaN(this.fields[conf.model])) {
-          return;
-        }
-
-        this.fields[conf.model] = Number(this.fields[conf.model]);
-      } // if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
-      //   return;
-      // }
-      // if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
-      //   this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
-      // }
-
-    },
+    // typeCoercion(conf) {
+    //   if (this.fields[conf.model] && conf?.props?.type === FIELD.type.number) {
+    //     if (!Number.isNaN(this.fields[conf.model])) {
+    //       return;
+    //     }
+    //     this.fields[conf.model] = Number(this.fields[conf.model]);
+    //   }
+    //   // if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
+    //   //   return;
+    //   // }
+    //   // if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
+    //   //   this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
+    //   // }
+    // },
     componentEvents: function componentEvents(conf) {
       var _this6 = this;
 
@@ -815,10 +810,10 @@ var FIELD = {
       return e;
     },
     componentName: function componentName(conf) {
-      var _conf$props3;
+      var _conf$props2;
 
       // if (conf?.props?.is || conf?.tag) {
-      return (conf === null || conf === void 0 ? void 0 : (_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.is) || (conf === null || conf === void 0 ? void 0 : conf.tag); // }
+      return (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.is) || (conf === null || conf === void 0 ? void 0 : conf.tag); // }
       // const cData = this.components
       //   .find(({ types }) => types.includes(conf?.props?.type));
       // return cData?.name;
@@ -840,10 +835,10 @@ var FIELD = {
     //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
     // },
     fieldHidden: function fieldHidden(conf) {
-      var _conf$props4;
+      var _conf$props3;
 
       var HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props4 = conf.props) === null || _conf$props4 === void 0 ? void 0 : _conf$props4[FIELD.props.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3[FIELD.props.hidden]) : !HIDDEN;
     },
     runFieldRules: function runFieldRules(val, rules) {
       var err;
@@ -1042,7 +1037,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-b2989c96";
+var __vue_module_identifier__$1 = "data-v-14a13616";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

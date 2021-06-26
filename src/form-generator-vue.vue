@@ -237,11 +237,11 @@ export default {
     for (const model in this.fields) {
       const conf = this.getFieldConf(model);
       this.$watch(`fields.${model}`, (newVal, oldVal) => {
-        this.typeCoercion(conf);
+        // this.typeCoercion(conf);
         // when only data type is changed.
-        if (newVal == oldVal && typeof newVal !== typeof oldVal) {
-          return;
-        }
+        // if (newVal == oldVal && typeof newVal !== typeof oldVal) {
+        //   return;
+        // }
         // this.validate(fieldConf, true);
         this.validateField(conf);
       }, { deep: true });
@@ -354,20 +354,20 @@ export default {
     //     (c) => c?.name === name,
     //   );
     // },
-    typeCoercion(conf) {
-      if (this.fields[conf.model] && conf?.props?.type === FIELD.type.number) {
-        if (!Number.isNaN(this.fields[conf.model])) {
-          return;
-        }
-        this.fields[conf.model] = Number(this.fields[conf.model]);
-      }
-      // if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
-      //   return;
-      // }
-      // if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
-      //   this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
-      // }
-    },
+    // typeCoercion(conf) {
+    //   if (this.fields[conf.model] && conf?.props?.type === FIELD.type.number) {
+    //     if (!Number.isNaN(this.fields[conf.model])) {
+    //       return;
+    //     }
+    //     this.fields[conf.model] = Number(this.fields[conf.model]);
+    //   }
+    //   // if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
+    //   //   return;
+    //   // }
+    //   // if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
+    //   //   this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
+    //   // }
+    // },
     componentEvents(conf, options = {}) {
       const { form } = options;
       const e = conf?.[FIELD.on] || {};
