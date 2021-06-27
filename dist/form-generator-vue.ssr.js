@@ -332,9 +332,9 @@ var script = {
     });
   },
   mounted: function mounted() {
-    var _this$schema, _this$schema$options;
+    var _this$options;
 
-    if (this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$options = _this$schema.options) === null || _this$schema$options === void 0 ? void 0 : _this$schema$options.onLoadValidation) {
+    if (this === null || this === void 0 ? void 0 : (_this$options = this.options) === null || _this$options === void 0 ? void 0 : _this$options.onLoadValidation) {
       this.validate();
     }
   },
@@ -399,10 +399,10 @@ var script = {
       return err;
     },
     validateModel: function validateModel(m, validate) {
-      var _this$models$m$option, _this$models$m$option2, _this$schema2, _this$schema2$options, _this$schema3, _this$schema3$rules;
+      var _this$models$m$option, _this$models$m$option2, _this$options2, _this$schema, _this$schema$rules;
 
-      var validationOption = ((_this$models$m$option = this.models[m].options) === null || _this$models$m$option === void 0 ? void 0 : _this$models$m$option.activeValidation) ? (_this$models$m$option2 = this.models[m].options) === null || _this$models$m$option2 === void 0 ? void 0 : _this$models$m$option2.activeValidation : this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$options = _this$schema2.options) === null || _this$schema2$options === void 0 ? void 0 : _this$schema2$options.activeValidation;
-      var err = (validate || validationOption) && this.runModelRules(this.models[m].value, this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$rules = _this$schema3.rules) === null || _this$schema3$rules === void 0 ? void 0 : _this$schema3$rules[m]);
+      var validationOption = ((_this$models$m$option = this.models[m].options) === null || _this$models$m$option === void 0 ? void 0 : _this$models$m$option.activeValidation) ? (_this$models$m$option2 = this.models[m].options) === null || _this$models$m$option2 === void 0 ? void 0 : _this$models$m$option2.activeValidation : this === null || this === void 0 ? void 0 : (_this$options2 = this.options) === null || _this$options2 === void 0 ? void 0 : _this$options2.activeValidation;
+      var err = (validate || validationOption) && this.runModelRules(this.models[m].value, this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$rules = _this$schema.rules) === null || _this$schema$rules === void 0 ? void 0 : _this$schema$rules[m]);
       this.setError(m, err);
     },
     validate: function validate() {
@@ -537,7 +537,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-5abb4280";
+var __vue_module_identifier__ = "data-v-09413e80";
 /* functional template */
 
 var __vue_is_functional_template__ = undefined;

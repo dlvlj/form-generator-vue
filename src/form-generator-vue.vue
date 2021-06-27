@@ -48,7 +48,7 @@ export default {
     });
   },
   mounted() {
-    if (this?.schema?.options?.onLoadValidation) {
+    if (this?.options?.onLoadValidation) {
       this.validate();
     }
   },
@@ -97,7 +97,7 @@ export default {
     },
     validateModel(m, validate) {
       const validationOption = this.models[m].options?.activeValidation
-        ? this.models[m].options?.activeValidation : this?.schema?.options?.activeValidation;
+        ? this.models[m].options?.activeValidation : this?.options?.activeValidation;
 
       const err = (validate || validationOption)
        && this.runModelRules(this.models[m].value, this?.schema?.rules?.[m]);
