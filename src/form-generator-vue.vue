@@ -182,6 +182,10 @@ export default {
       }
       return flat;
     },
+    valid() {
+      return !Object.keys(this.errors)
+        .find((e) => this.errors[e] && !this.fieldHidden(this.fieldsFlat[e]));
+    }
   },
   watch: {
     value: {
@@ -238,13 +242,9 @@ export default {
       !subArr ? [...classArr] : []);
     },
     emitData() {
-      const formModel = UTILS.isStr(this?.schema?.form?.model)
-        ? this?.schema?.form?.model : undefined;
-      const valid = !Object.keys(this.errors)
-        .find((e) => this.errors[e] && !this.fieldHidden(this.fieldsFlat[e]));
+      const formModel = this?.schema?.form?.model;
       this.$emit('input', {
         ...(formModel ? { [formModel]: this.form } : {}),
-        valid,
         [VMODEL.fields]: this.fields,
         [VMODEL.errors]: this.errors
       });

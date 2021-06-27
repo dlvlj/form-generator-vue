@@ -564,6 +564,13 @@ var FIELD = {
       }
 
       return flat;
+    },
+    valid: function valid() {
+      var _this2 = this;
+
+      return !Object.keys(this.errors).find(function (e) {
+        return _this2.errors[e] && !_this2.fieldHidden(_this2.fieldsFlat[e]);
+      });
     }
   },
   watch: {
@@ -595,13 +602,13 @@ var FIELD = {
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this3 = this;
 
     var _loop = function _loop(model) {
-      var conf = _this2.getFieldConf(model);
+      var conf = _this3.getFieldConf(model);
 
-      _this2.$watch("fields.".concat(model), function () {
-        _this2.validateField(conf);
+      _this3.$watch("fields.".concat(model), function () {
+        _this3.validateField(conf);
       }, {
         deep: true
       });
@@ -620,23 +627,23 @@ var FIELD = {
   },
   methods: {
     classes: function classes(classArr) {
-      var _this3 = this;
+      var _this4 = this;
 
       var subArr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       return classArr.reduce(function (acc, c) {
-        var _this3$schema, _this3$schema$class;
+        var _this4$schema, _this4$schema$class;
 
-        if (_this3 === null || _this3 === void 0 ? void 0 : (_this3$schema = _this3.schema) === null || _this3$schema === void 0 ? void 0 : (_this3$schema$class = _this3$schema.class) === null || _this3$schema$class === void 0 ? void 0 : _this3$schema$class[c]) {
-          acc.push.apply(acc, _toConsumableArray(_this3.schema.class[c]));
+        if (_this4 === null || _this4 === void 0 ? void 0 : (_this4$schema = _this4.schema) === null || _this4$schema === void 0 ? void 0 : (_this4$schema$class = _this4$schema.class) === null || _this4$schema$class === void 0 ? void 0 : _this4$schema$class[c]) {
+          acc.push.apply(acc, _toConsumableArray(_this4.schema.class[c]));
 
-          var ar = _this3.schema.class[c].filter(function (cl) {
-            var _this3$schema2;
+          var ar = _this4.schema.class[c].filter(function (cl) {
+            var _this4$schema2;
 
-            return Object.keys(_this3 === null || _this3 === void 0 ? void 0 : (_this3$schema2 = _this3.schema) === null || _this3$schema2 === void 0 ? void 0 : _this3$schema2.class).includes(cl);
+            return Object.keys(_this4 === null || _this4 === void 0 ? void 0 : (_this4$schema2 = _this4.schema) === null || _this4$schema2 === void 0 ? void 0 : _this4$schema2.class).includes(cl);
           });
 
           if (ar.length) {
-            acc.push.apply(acc, _toConsumableArray(_this3.classes(ar, true)));
+            acc.push.apply(acc, _toConsumableArray(_this4.classes(ar, true)));
           }
         }
 
@@ -644,20 +651,10 @@ var FIELD = {
       }, !subArr ? _toConsumableArray(classArr) : []);
     },
     emitData: function emitData() {
-      var _this$schema2,
-          _this$schema2$form,
-          _this$schema3,
-          _this$schema3$form,
-          _this4 = this,
-          _objectSpread2$1;
+      var _this$schema2, _this$schema2$form, _objectSpread2$1;
 
-      var formModel = UTILS.isStr(this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : _this$schema2$form.model) ? this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$form = _this$schema3.form) === null || _this$schema3$form === void 0 ? void 0 : _this$schema3$form.model : undefined;
-      var valid = !Object.keys(this.errors).find(function (e) {
-        return _this4.errors[e] && !_this4.fieldHidden(_this4.fieldsFlat[e]);
-      });
-      this.$emit('input', _objectSpread2(_objectSpread2({}, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, (_objectSpread2$1 = {
-        valid: valid
-      }, _defineProperty(_objectSpread2$1, VMODEL.fields, this.fields), _defineProperty(_objectSpread2$1, VMODEL.errors, this.errors), _objectSpread2$1)));
+      var formModel = this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : _this$schema2$form.model;
+      this.$emit('input', _objectSpread2(_objectSpread2({}, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, VMODEL.fields, this.fields), _defineProperty(_objectSpread2$1, VMODEL.errors, this.errors), _objectSpread2$1)));
     },
     showRow: function showRow(conf) {
       var _this5 = this;
@@ -779,10 +776,10 @@ var FIELD = {
       return err;
     },
     validateField: function validateField(conf, formValidating) {
-      var _this$schema4, _this$schema4$options, _this$schema5, _this$schema5$rules;
+      var _this$schema3, _this$schema3$options, _this$schema4, _this$schema4$rules;
 
-      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$options = _this$schema4.options) === null || _this$schema4$options === void 0 ? void 0 : _this$schema4$options.activeValidation;
-      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$rules = _this$schema5.rules) === null || _this$schema5$rules === void 0 ? void 0 : _this$schema5$rules[conf.model]);
+      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$options = _this$schema3.options) === null || _this$schema3$options === void 0 ? void 0 : _this$schema3$options.activeValidation;
+      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$rules = _this$schema4.rules) === null || _this$schema4$rules === void 0 ? void 0 : _this$schema4$rules[conf.model]);
       this.setError(conf.model, err);
     },
     validate: function validate() {
@@ -889,7 +886,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-243e70ba";
+var __vue_module_identifier__$1 = "data-v-2b8bd6a0";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
