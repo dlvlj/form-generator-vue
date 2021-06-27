@@ -163,6 +163,18 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
       default: function _default() {
         return {};
       }
+    },
+    options: {
+      type: Object,
+      default: function _default() {
+        return {};
+      }
+    },
+    rules: {
+      type: Object,
+      default: function _default() {
+        return {};
+      }
     }
   }
 };var UTILS = {

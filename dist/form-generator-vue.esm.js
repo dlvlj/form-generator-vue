@@ -8,6 +8,14 @@ var props = {
     schema: {
       type: Object,
       default: () => ({})
+    },
+    options: {
+      type: Object,
+      default: () => ({})
+    },
+    rules: {
+      type: Object,
+      default: () => ({})
     }
   }
 };

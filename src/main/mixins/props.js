@@ -9,5 +9,13 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    options: {
+      type: Object,
+      default: () => ({}),
+    },
+    rules: {
+      type: Object,
+      default: () => ({}),
+    }
   }
 };
