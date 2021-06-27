@@ -516,8 +516,7 @@ var FIELD = {
     return {
       form: form,
       fields: fields,
-      errors: errors // submitClick: false,
-
+      errors: errors
     };
   },
   computed: {
@@ -530,17 +529,6 @@ var FIELD = {
     UTILS: function UTILS$1() {
       return UTILS;
     },
-    // globalAv() {
-    //   return this.activeValidation || false;
-    // },
-    // globalAvDelay() {
-    //   return this.activeValidationDelay || 0;
-    // },
-    // allFieldsArray() {
-    //   return UTILS.isArr(this.schema?.[SCHEMA.fields])
-    //     ? this.schema[SCHEMA.fields]
-    //     : [];
-    // },
     fieldsFlat: function fieldsFlat() {
       var flat = {};
 
@@ -576,19 +564,9 @@ var FIELD = {
       }
 
       return flat;
-    } // debounceValidateField() {
-    //   return UTILS.debounce((model) => {
-    //     this.validateField(model);
-    //   });
-    // },
-
+    }
   },
   watch: {
-    // disabled: {
-    //   handler() {
-    //     this.removeAllErrors();
-    //   },
-    // },
     value: {
       handler: function handler() {
         for (var model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
@@ -623,34 +601,15 @@ var FIELD = {
       var conf = _this2.getFieldConf(model);
 
       _this2.$watch("fields.".concat(model), function () {
-        // this.typeCoercion(conf);
-        // when only data type is changed.
-        // if (newVal == oldVal && typeof newVal !== typeof oldVal) {
-        //   return;
-        // }
-        // this.validate(fieldConf, true);
         _this2.validateField(conf);
       }, {
         deep: true
       });
     };
 
-    // fields watcher
     for (var model in this.fields) {
       _loop(model);
-    } // Object.keys(this.fields).forEach((model) => {
-    //   const fieldConf = this.getFieldConf(model);
-    //   this.$watch(`fields.${model}`, (newVal, oldVal) => {
-    //     this.typeCoercion(fieldConf);
-    //     // when only data type is changed.
-    //     if (newVal == oldVal && typeof newVal !== typeof oldVal) {
-    //       return;
-    //     }
-    //     // this.validate(fieldConf, true);
-    //     this.validateField(fieldConf);
-    //   }, { deep: true });
-    // });
-
+    }
   },
   mounted: function mounted() {
     var _this$schema, _this$schema$options;
@@ -695,16 +654,11 @@ var FIELD = {
       var formModel = UTILS.isStr(this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : _this$schema2$form.model) ? this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$form = _this$schema3.form) === null || _this$schema3$form === void 0 ? void 0 : _this$schema3$form.model : undefined;
       var valid = !Object.keys(this.errors).find(function (e) {
         return _this4.errors[e] && !_this4.fieldHidden(_this4.fieldsFlat[e]);
-      }); // console.log(valid, errorField);
-      // && this.fieldHidden(this.fieldsFlat[errorField]);
-
+      });
       this.$emit('input', _objectSpread2(_objectSpread2({}, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, (_objectSpread2$1 = {
         valid: valid
       }, _defineProperty(_objectSpread2$1, VMODEL.fields, this.fields), _defineProperty(_objectSpread2$1, VMODEL.errors, this.errors), _objectSpread2$1)));
     },
-    // resetForm() {
-    //   this.submitClick = false;
-    // },
     showRow: function showRow(conf) {
       var _this5 = this;
 
@@ -727,10 +681,7 @@ var FIELD = {
     },
     componentProps: function componentProps(conf) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var form = options.form; // const cName = this.componentName(conf);
-      // const componentData = this.componentData(this.componentName(conf));
-      // const errorPropName = fieldConf?.errorProp || componentData?.errorProp || 'errorMessages';
-      // const errorPropName = componentData?.errorProp;
+      var form = options.form;
 
       var p = _objectSpread2({}, conf === null || conf === void 0 ? void 0 : conf.props);
 
@@ -738,11 +689,7 @@ var FIELD = {
         var _conf$props;
 
         p.is = (conf === null || conf === void 0 ? void 0 : (_conf$props = conf.props) === null || _conf$props === void 0 ? void 0 : _conf$props.is) || 'form';
-      } // if (field) {
-      //   if (componentData?.errorProp) { p[componentData.errorProp] = this.errors[conf.model]; }
-      //   p.type = conf?.props?.type || FIELD.type.text;
-      // }
-
+      }
 
       return p;
     },
@@ -758,32 +705,8 @@ var FIELD = {
       }
     },
     setError: function setError(model, err) {
-      // if ((UTILS.isBool(err) && err) || (!UTILS.isBool(err) && !err)) {
-      //   this.errors[model] = noErr;
-      //   return;
-      // }
-      // prop is not rmoved from errors if set undefined
       this.errors[model] = canSetErr(err) ? err : '';
     },
-    // componentData(name) {
-    //   return this.components.find(
-    //     (c) => c?.name === name,
-    //   );
-    // },
-    // typeCoercion(conf) {
-    //   if (this.fields[conf.model] && conf?.props?.type === FIELD.type.number) {
-    //     if (!Number.isNaN(this.fields[conf.model])) {
-    //       return;
-    //     }
-    //     this.fields[conf.model] = Number(this.fields[conf.model]);
-    //   }
-    //   // if (!Number.isNaN(Number(this.fields[fieldConf.model]))) {
-    //   //   return;
-    //   // }
-    //   // if (fieldConf?.vBind?.type === FIELD.type.number && this.fields[fieldConf.model]) {
-    //   //   this.fields[fieldConf.model] = Number(this.fields[fieldConf.model]);
-    //   // }
-    // },
     componentEvents: function componentEvents(conf) {
       var _this6 = this;
 
@@ -794,8 +717,7 @@ var FIELD = {
       if (form) {
         var _conf$on;
 
-        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit // || (this.submit && this.handleSubmit)
-        ) || function (ev) {
+        e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit) || function (ev) {
           var _this6$schema, _this6$schema$options;
 
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
@@ -812,28 +734,11 @@ var FIELD = {
     componentName: function componentName(conf) {
       var _conf$props2;
 
-      // if (conf?.props?.is || conf?.tag) {
-      return (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.is) || (conf === null || conf === void 0 ? void 0 : conf.tag); // }
-      // const cData = this.components
-      //   .find(({ types }) => types.includes(conf?.props?.type));
-      // return cData?.name;
+      return (conf === null || conf === void 0 ? void 0 : (_conf$props2 = conf.props) === null || _conf$props2 === void 0 ? void 0 : _conf$props2.is) || (conf === null || conf === void 0 ? void 0 : conf.tag);
     },
     getFieldConf: function getFieldConf(model) {
       return this.fieldsFlat[model];
     },
-    // fieldDisabled(fieldConf) {
-    //   const DISABLED = true;
-    //   const fieldDisabled = fieldConf?.vBind
-    //    && FIELD.vBind.disabled in fieldConf.vBind
-    //     ? fieldConf.vBind?.[FIELD.vBind.disabled]
-    //     : !DISABLED;
-    //   return this.disabled || fieldDisabled;
-    // },
-    // fieldRequired(fieldConf) {
-    //   const REQUIRED = true;
-    //   return fieldConf?.vBind && FIELD.vBind.required in fieldConf.vBind
-    //     ? Boolean(fieldConf?.vBind?.[FIELD.vBind.required]) : !REQUIRED;
-    // },
     fieldHidden: function fieldHidden(conf) {
       var _conf$props3;
 
@@ -850,7 +755,6 @@ var FIELD = {
         try {
           for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
             var rule = _step5.value;
-            // valid return values: string
             err = rule;
 
             if (UTILS.isFunc(rule)) {
@@ -877,69 +781,17 @@ var FIELD = {
     validateField: function validateField(conf, formValidating) {
       var _this$schema4, _this$schema4$options, _this$schema5, _this$schema5$rules;
 
-      // const fieldRequired = this.fieldRequired(fieldConf);
       var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$options = _this$schema4.options) === null || _this$schema4$options === void 0 ? void 0 : _this$schema4$options.activeValidation;
-      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$rules = _this$schema5.rules) === null || _this$schema5$rules === void 0 ? void 0 : _this$schema5$rules[conf.model]); // if (!fieldRequired) {
-      //   if (!this.submit) this.setError(fieldConf.model, err, NO_ERR);
-      // } else this.setError(fieldConf.model, err, NO_ERR);
-
-      this.setError(conf.model, err); // return err;
+      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema5 = this.schema) === null || _this$schema5 === void 0 ? void 0 : (_this$schema5$rules = _this$schema5.rules) === null || _this$schema5$rules === void 0 ? void 0 : _this$schema5$rules[conf.model]);
+      this.setError(conf.model, err);
     },
     validate: function validate() {
-      // watcher handler
-      // if (fieldConf && isWatcher) {
-      // const fieldAv = fieldConf[FIELD.av] || this.globalAv;
-      // const fieldAvDelay = fieldConf[FIELD.avDelay] || this.globalAvDelay;
-      // if (fieldAv && fieldAvDelay) {
-      //   this.debounceValidateField(fieldAvDelay)(fieldConf);
-      // } else this.validateField(fieldConf);
-      // this.validateField(fieldConf);
-      // return;
-      // }
-      // watcher handler end
-      // On form submit
-      // const fieldsStatus = {};
-      // Object.values(this.fieldsFlat).forEach((conf) => {
-      //   const err = this.validateField(conf);
-      //   fieldsStatus[conf.model] = {
-      //     // validationSuccess: !err ? true : !this.fieldRequired(conf),
-      //     validationSuccess: !err,
-      //     schema: conf
-      //   };
-      // });
-      // const fieldsStatus = {};
       for (var model in this.fields) {
         var _this$fieldsFlat;
 
-        // const conf = this.fieldsFlat[model];
-        this.validateField((_this$fieldsFlat = this.fieldsFlat) === null || _this$fieldsFlat === void 0 ? void 0 : _this$fieldsFlat[model], true); // fieldsStatus[conf.model] = {
-        //   valid: !this.errors[model],
-        //   hidden: this.fieldHidden(conf),
-        //   schema: conf
-        // };
-      } // const valid = !Object.keys(fieldsStatus).find(
-      //   (model) => !fieldsStatus[model].valid && !fieldsStatus[model].hidden
-      // );
-      // return { valid, fieldsStatus };
-
-    } // async handleSubmit(e) {
-    //   e?.preventDefault();
-    //   // this.submitClick = true;
-    //   const { fieldsStatus, submitFail } = this.validateForm();
-    //   UTILS.
-    // logger([`[SUBMIT ${submitFail ? 'FAIL' : 'SUCCESS'}]`,
-    //  fieldsStatus], { show: this?.schema?.options?.logs });
-    //   if (submitFail) {
-    //     if (this.submitFail) {
-    //       await this.submitFail();
-    //     }
-    //     // this.resetForm();
-    //     return;
-    //   }
-    //   await this.submit();
-    //   // this.resetForm();
-    // },
-
+        this.validateField((_this$fieldsFlat = this.fieldsFlat) === null || _this$fieldsFlat === void 0 ? void 0 : _this$fieldsFlat[model], true);
+      }
+    }
   }
 };/* script */
 var __vue_script__ = script;
@@ -1037,7 +889,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-1075c6b4";
+var __vue_module_identifier__$1 = "data-v-243e70ba";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
