@@ -222,7 +222,7 @@ export default {
     }
   },
   mounted() {
-    if (this?.schema?.options?.onLoadValidation) {
+    if (this?.options?.onLoadValidation) {
       this.validate();
     }
   },
@@ -232,7 +232,7 @@ export default {
         if (this?.schema?.class?.[c]) {
           acc.push(...this.schema.class[c]);
           const ar = this.schema.class[c]
-            .filter((cl) => Object.keys(this?.schema?.class).includes(cl));
+            .filter((cl) => Object.keys(this?.classes).includes(cl));
           if (ar.length) {
             acc.push(...this.classes(ar, true));
           }
@@ -292,7 +292,7 @@ export default {
       const e = conf?.[FIELD.on] || {};
       if (form) {
         e.submit = conf?.on?.submit
-        || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.schema?.options?.logs }); });
+        || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.options?.logs }); });
       }
       return e;
     },
@@ -329,10 +329,10 @@ export default {
     },
     validateField(conf, formValidating) {
       const av = FIELD.av in conf
-        ? conf?.[FIELD.av] : this?.schema?.options?.activeValidation;
+        ? conf?.[FIELD.av] : this?.options?.activeValidation;
 
       const err = (formValidating || av)
-       && this.runFieldRules(this.fields[conf.model], this?.schema?.rules?.[conf.model]);
+       && this.runFieldRules(this.fields[conf.model], this?.rules?.[conf.model]);
       this.setError(conf.model, err);
     },
     validate() {

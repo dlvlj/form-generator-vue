@@ -266,52 +266,34 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
       default: null,
       required: false
     },
-    // submit: {
-    //   type: Function,
-    //   required: false,
-    //   default: undefined
-    // },
-    // components: {
-    //   type: Array,
-    //   required: false,
-    //   default: () => [],
-    // },
-    // disabled: {
-    //   type: Boolean,
-    //   required: false,
-    //   default: false,
-    // },
     schema: {
       type: Object,
       default: function _default() {
         return {};
-      }
-    } // classes: {
-    //   type: Object,
-    //   required: false,
-    //   default: () => ({}),
-    // },
-    // submitFail: {
-    //   type: Function,
-    //   required: false,
-    //   default: undefined
-    // },
-    // activeValidation: {
-    //   type: Boolean,
-    //   required: false,
-    //   default: true
-    // },
-    // activeValidationDelay: {
-    //   type: Number,
-    //   required: false,
-    //   default: 0
-    // },
-    // logs: {
-    //   type: Boolean,
-    //   required: false,
-    //   default: false
-    // }
-
+      },
+      required: false
+    },
+    options: {
+      type: Object,
+      default: function _default() {
+        return {};
+      },
+      required: false
+    },
+    rules: {
+      type: Object,
+      default: function _default() {
+        return {};
+      },
+      required: false
+    },
+    classes: {
+      type: Object,
+      default: function _default() {
+        return {};
+      },
+      required: false
+    }
   }
 };var UTILS = {
   isUndef: function isUndef(val) {
@@ -619,9 +601,9 @@ var FIELD = {
     }
   },
   mounted: function mounted() {
-    var _this$schema, _this$schema$options;
+    var _this$options;
 
-    if (this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$options = _this$schema.options) === null || _this$schema$options === void 0 ? void 0 : _this$schema$options.onLoadValidation) {
+    if (this === null || this === void 0 ? void 0 : (_this$options = this.options) === null || _this$options === void 0 ? void 0 : _this$options.onLoadValidation) {
       this.validate();
     }
   },
@@ -637,9 +619,7 @@ var FIELD = {
           acc.push.apply(acc, _toConsumableArray(_this4.schema.class[c]));
 
           var ar = _this4.schema.class[c].filter(function (cl) {
-            var _this4$schema2;
-
-            return Object.keys(_this4 === null || _this4 === void 0 ? void 0 : (_this4$schema2 = _this4.schema) === null || _this4$schema2 === void 0 ? void 0 : _this4$schema2.class).includes(cl);
+            return Object.keys(_this4 === null || _this4 === void 0 ? void 0 : _this4.classes).includes(cl);
           });
 
           if (ar.length) {
@@ -651,9 +631,9 @@ var FIELD = {
       }, !subArr ? _toConsumableArray(classArr) : []);
     },
     emitData: function emitData() {
-      var _this$schema2, _this$schema2$form, _objectSpread2$1;
+      var _this$schema, _this$schema$form, _objectSpread2$1;
 
-      var formModel = this === null || this === void 0 ? void 0 : (_this$schema2 = this.schema) === null || _this$schema2 === void 0 ? void 0 : (_this$schema2$form = _this$schema2.form) === null || _this$schema2$form === void 0 ? void 0 : _this$schema2$form.model;
+      var formModel = this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : _this$schema$form.model;
       this.$emit('input', _objectSpread2(_objectSpread2({}, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, VMODEL.fields, this.fields), _defineProperty(_objectSpread2$1, VMODEL.errors, this.errors), _objectSpread2$1)));
     },
     showRow: function showRow(conf) {
@@ -715,13 +695,13 @@ var FIELD = {
         var _conf$on;
 
         e.submit = (conf === null || conf === void 0 ? void 0 : (_conf$on = conf.on) === null || _conf$on === void 0 ? void 0 : _conf$on.submit) || function (ev) {
-          var _this6$schema, _this6$schema$options;
+          var _this6$options;
 
           ev === null || ev === void 0 ? void 0 : ev.preventDefault();
 
           UTILS.logger(['submit handler not present.\n'], {
             warn: true,
-            show: _this6 === null || _this6 === void 0 ? void 0 : (_this6$schema = _this6.schema) === null || _this6$schema === void 0 ? void 0 : (_this6$schema$options = _this6$schema.options) === null || _this6$schema$options === void 0 ? void 0 : _this6$schema$options.logs
+            show: _this6 === null || _this6 === void 0 ? void 0 : (_this6$options = _this6.options) === null || _this6$options === void 0 ? void 0 : _this6$options.logs
           });
         };
       }
@@ -776,10 +756,10 @@ var FIELD = {
       return err;
     },
     validateField: function validateField(conf, formValidating) {
-      var _this$schema3, _this$schema3$options, _this$schema4, _this$schema4$rules;
+      var _this$options2, _this$rules;
 
-      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$schema3 = this.schema) === null || _this$schema3 === void 0 ? void 0 : (_this$schema3$options = _this$schema3.options) === null || _this$schema3$options === void 0 ? void 0 : _this$schema3$options.activeValidation;
-      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$schema4 = this.schema) === null || _this$schema4 === void 0 ? void 0 : (_this$schema4$rules = _this$schema4.rules) === null || _this$schema4$rules === void 0 ? void 0 : _this$schema4$rules[conf.model]);
+      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$options2 = this.options) === null || _this$options2 === void 0 ? void 0 : _this$options2.activeValidation;
+      var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$rules = this.rules) === null || _this$rules === void 0 ? void 0 : _this$rules[conf.model]);
       this.setError(conf.model, err);
     },
     validate: function validate() {
@@ -886,7 +866,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-2b8bd6a0";
+var __vue_module_identifier__$1 = "data-v-d4ff717c";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
