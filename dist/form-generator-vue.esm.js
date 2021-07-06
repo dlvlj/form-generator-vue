@@ -234,12 +234,10 @@ const UTILS = {
 
 };
 
-const canSetErr = v => v && !['boolean'].includes(typeof v) || !v && ['string', 'boolean'].includes(typeof v);
+//
 const CLASS = {
   form: 'fgv-form',
-  // header: 'fgv-header',
   body: 'fgv-body',
-  // footer: 'fgv-footer',
   row: 'fgv-row',
   rowContainer: 'fgv-row-container',
   colContainer: 'fgv-col-container',
@@ -257,34 +255,6 @@ const SLOT = {
   beforeCol: 'before-col',
   afterCol: 'after-col'
 };
-const SCHEMA = {
-  fields: 'fields',
-  av: 'activeValidation',
-  avDelay: 'activeValidationDelay',
-  logs: 'logs'
-};
-const VMODEL = {
-  fields: 'fields',
-  errors: 'errors'
-};
-const FIELD = {
-  av: SCHEMA.av,
-  avDelay: SCHEMA.avDelay,
-  on: 'on',
-  component: 'component',
-  type: {
-    text: 'text',
-    number: 'number'
-  },
-  props: {
-    required: 'required',
-    disabled: 'disabled',
-    hidden: 'hidden'
-  },
-  rules: 'rules'
-};
-
-//
 var script = {
   components: {
     Body: __vue_component__,
@@ -304,13 +274,13 @@ var script = {
     const errors = {};
 
     const addFieldsAndErrors = model => {
-      var _this$value2, _this$value2$VMODEL$f, _this$value3, _this$value3$VMODEL$e;
+      var _this$value2, _this$value2$fields, _this$value3, _this$value3$errors;
 
-      fields[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$f = _this$value2[VMODEL.fields]) === null || _this$value2$VMODEL$f === void 0 ? void 0 : _this$value2$VMODEL$f[model]) || '';
-      errors[model] = ((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$VMODEL$e = _this$value3[VMODEL.errors]) === null || _this$value3$VMODEL$e === void 0 ? void 0 : _this$value3$VMODEL$e[model]) || '';
+      fields[model] = ((_this$value2 = this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$fields = _this$value2.fields) === null || _this$value2$fields === void 0 ? void 0 : _this$value2$fields[model]) || '';
+      errors[model] = ((_this$value3 = this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$errors = _this$value3.errors) === null || _this$value3$errors === void 0 ? void 0 : _this$value3$errors[model]) || '';
     };
 
-    for (const fieldConf of this.schema[SCHEMA.fields]) {
+    for (const fieldConf of this.schema.fields) {
       if (UTILS.isArr(fieldConf)) {
         for (const subFieldConf of fieldConf) {
           addFieldsAndErrors(subFieldConf.model);
@@ -335,7 +305,7 @@ var script = {
     fieldsFlat() {
       const flat = {};
 
-      for (const conf of this.schema[SCHEMA.fields]) {
+      for (const conf of this.schema.fields) {
         if (UTILS.isArr(conf)) {
           for (const subConf of conf) {
             flat[subConf.model] = subConf;
@@ -356,11 +326,11 @@ var script = {
   watch: {
     value: {
       handler() {
-        for (const model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
-          var _this$value4, _this$value5, _this$value5$VMODEL$f, _this$value6, _this$value6$VMODEL$e;
+        for (const model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4.fields) {
+          var _this$value4, _this$value5, _this$value5$fields, _this$value6, _this$value6$errors;
 
-          this.fields[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$f = _this$value5[VMODEL.fields]) === null || _this$value5$VMODEL$f === void 0 ? void 0 : _this$value5$VMODEL$f[model];
-          this.errors[model] = (_this$value6 = this.value) === null || _this$value6 === void 0 ? void 0 : (_this$value6$VMODEL$e = _this$value6[VMODEL.errors]) === null || _this$value6$VMODEL$e === void 0 ? void 0 : _this$value6$VMODEL$e[model];
+          this.fields[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$fields = _this$value5.fields) === null || _this$value5$fields === void 0 ? void 0 : _this$value5$fields[model];
+          this.errors[model] = (_this$value6 = this.value) === null || _this$value6 === void 0 ? void 0 : (_this$value6$errors = _this$value6.errors) === null || _this$value6$errors === void 0 ? void 0 : _this$value6$errors[model];
         }
       },
 
@@ -403,7 +373,11 @@ var script = {
   },
 
   methods: {
-    classes(classArr, subArr = false) {
+    canSetErr(v) {
+      return v && !['boolean'].includes(typeof v) || !v && ['string', 'boolean'].includes(typeof v);
+    },
+
+    applyClass(classArr, subArr = false) {
       return classArr.reduce((acc, c) => {
         var _this$schema, _this$schema$class;
 
@@ -412,7 +386,7 @@ var script = {
           const ar = this.schema.class[c].filter(cl => Object.keys(this === null || this === void 0 ? void 0 : this.classes).includes(cl));
 
           if (ar.length) {
-            acc.push(...this.classes(ar, true));
+            acc.push(...this.applyClass(ar, true));
           }
         }
 
@@ -427,8 +401,8 @@ var script = {
       this.$emit('input', { ...(formModel ? {
           [formModel]: this.form
         } : {}),
-        [VMODEL.fields]: this.fields,
-        [VMODEL.errors]: this.errors
+        fields: this.fields,
+        errors: this.errors
       });
     },
 
@@ -480,14 +454,14 @@ var script = {
     },
 
     setError(model, err) {
-      this.errors[model] = canSetErr(err) ? err : '';
+      this.errors[model] = this.canSetErr(err) ? err : '';
     },
 
     componentEvents(conf, options = {}) {
       const {
         form
       } = options;
-      const e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.on]) || {};
+      const e = (conf === null || conf === void 0 ? void 0 : conf.on) || {};
 
       if (form) {
         var _conf$on;
@@ -520,7 +494,7 @@ var script = {
       var _conf$props3;
 
       const HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3[FIELD.props.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && 'hidden' in conf.props ? Boolean((_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.hidden) : !HIDDEN;
     },
 
     runFieldRules(val, rules) {
@@ -534,7 +508,7 @@ var script = {
             err = rule(val);
           }
 
-          if (canSetErr(err)) {
+          if (this.canSetErr(err)) {
             break;
           }
         }
@@ -550,7 +524,7 @@ var script = {
     validateField(conf, formValidating) {
       var _this$options3, _this$rules;
 
-      const av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$options3 = this.options) === null || _this$options3 === void 0 ? void 0 : _this$options3.activeValidation;
+      const av = 'activeValidation' in conf ? conf === null || conf === void 0 ? void 0 : conf.activeValidation : this === null || this === void 0 ? void 0 : (_this$options3 = this.options) === null || _this$options3 === void 0 ? void 0 : _this$options3.activeValidation;
       const err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$rules = this.rules) === null || _this$rules === void 0 ? void 0 : _this$rules[conf.model]);
       this.setError(conf.model, err);
     },
@@ -579,7 +553,7 @@ var __vue_render__$1 = function () {
 
   return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: _vm.classes([_vm.CLASS.form]),
+    class: _vm.applyClass([_vm.CLASS.form]),
     model: {
       value: _vm.form,
       callback: function ($$v) {
@@ -592,24 +566,24 @@ var __vue_render__$1 = function () {
   }), false), _vm.componentEvents(_vm.schema.form, {
     form: true
   })), [_vm._t(_vm.SLOT.header), _vm._v(" "), _c('Body', {
-    class: _vm.classes([_vm.CLASS.body])
+    class: _vm.applyClass([_vm.CLASS.body])
   }, [_vm._l(_vm.schema.fields, function (conf, i) {
     return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      class: _vm.classes([_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)])
+      class: _vm.applyClass([_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)])
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: _vm.classes([_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)])
+      class: _vm.applyClass([_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)])
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
       key: conf.model,
-      class: _vm.classes([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + conf.model])
+      class: _vm.applyClass([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + conf.model])
     }, [_vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Column', {
-      class: _vm.classes([_vm.CLASS.col, _vm.CLASS.col + "-" + conf.model, conf.model])
+      class: _vm.applyClass([_vm.CLASS.col, _vm.CLASS.col + "-" + conf.model, conf.model])
     }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
@@ -626,11 +600,11 @@ var __vue_render__$1 = function () {
     })], 2) : _vm._e()] : _vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _c('ColumnContainer', {
         key: subConf.model,
-        class: _vm.classes([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + subConf.model])
+        class: _vm.applyClass([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + subConf.model])
       }, [_vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
       }), _vm._v(" "), _c('Column', {
-        class: _vm.classes([_vm.CLASS.col, _vm.CLASS.col + "-" + subConf.model, subConf.model])
+        class: _vm.applyClass([_vm.CLASS.col, _vm.CLASS.col + "-" + subConf.model, subConf.model])
       }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {

@@ -385,20 +385,15 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
       (_console2 = console).log.apply(_console2, _toConsumableArray(items));
     }
   }
-};var canSetErr = function canSetErr(v) {
-  return v && !['boolean'].includes(_typeof(v)) || !v && ['string', 'boolean'].includes(_typeof(v));
-};
-var CLASS = {
+};var _CLASS = {
   form: 'fgv-form',
-  // header: 'fgv-header',
   body: 'fgv-body',
-  // footer: 'fgv-footer',
   row: 'fgv-row',
   rowContainer: 'fgv-row-container',
   colContainer: 'fgv-col-container',
   col: 'fgv-col'
 };
-var SLOT = {
+var _SLOT = {
   header: 'header',
   footer: 'footer',
   beforeComponent: function beforeComponent(v) {
@@ -414,32 +409,7 @@ var SLOT = {
   beforeCol: 'before-col',
   afterCol: 'after-col'
 };
-var SCHEMA = {
-  fields: 'fields',
-  av: 'activeValidation',
-  avDelay: 'activeValidationDelay',
-  logs: 'logs'
-};
-var VMODEL = {
-  fields: 'fields',
-  errors: 'errors'
-};
-var FIELD = {
-  av: SCHEMA.av,
-  avDelay: SCHEMA.avDelay,
-  on: 'on',
-  component: 'component',
-  type: {
-    text: 'text',
-    number: 'number'
-  },
-  props: {
-    required: 'required',
-    disabled: 'disabled',
-    hidden: 'hidden'
-  },
-  rules: 'rules'
-};var script = {
+var script = {
   components: {
     Body: __vue_component__,
     RowContainer: __vue_component__,
@@ -458,13 +428,13 @@ var FIELD = {
     var errors = {};
 
     var addFieldsAndErrors = function addFieldsAndErrors(model) {
-      var _this$value2, _this$value2$VMODEL$f, _this$value3, _this$value3$VMODEL$e;
+      var _this$value2, _this$value2$fields, _this$value3, _this$value3$errors;
 
-      fields[model] = ((_this$value2 = _this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$VMODEL$f = _this$value2[VMODEL.fields]) === null || _this$value2$VMODEL$f === void 0 ? void 0 : _this$value2$VMODEL$f[model]) || '';
-      errors[model] = ((_this$value3 = _this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$VMODEL$e = _this$value3[VMODEL.errors]) === null || _this$value3$VMODEL$e === void 0 ? void 0 : _this$value3$VMODEL$e[model]) || '';
+      fields[model] = ((_this$value2 = _this.value) === null || _this$value2 === void 0 ? void 0 : (_this$value2$fields = _this$value2.fields) === null || _this$value2$fields === void 0 ? void 0 : _this$value2$fields[model]) || '';
+      errors[model] = ((_this$value3 = _this.value) === null || _this$value3 === void 0 ? void 0 : (_this$value3$errors = _this$value3.errors) === null || _this$value3$errors === void 0 ? void 0 : _this$value3$errors[model]) || '';
     };
 
-    var _iterator = _createForOfIteratorHelper(this.schema[SCHEMA.fields]),
+    var _iterator = _createForOfIteratorHelper(this.schema.fields),
         _step;
 
     try {
@@ -502,11 +472,11 @@ var FIELD = {
     };
   },
   computed: {
-    SLOT: function SLOT$1() {
-      return SLOT;
+    SLOT: function SLOT() {
+      return _SLOT;
     },
-    CLASS: function CLASS$1() {
-      return CLASS;
+    CLASS: function CLASS() {
+      return _CLASS;
     },
     UTILS: function UTILS$1() {
       return UTILS;
@@ -514,7 +484,7 @@ var FIELD = {
     fieldsFlat: function fieldsFlat() {
       var flat = {};
 
-      var _iterator3 = _createForOfIteratorHelper(this.schema[SCHEMA.fields]),
+      var _iterator3 = _createForOfIteratorHelper(this.schema.fields),
           _step3;
 
       try {
@@ -558,11 +528,11 @@ var FIELD = {
   watch: {
     value: {
       handler: function handler() {
-        for (var model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4[VMODEL.fields]) {
-          var _this$value4, _this$value5, _this$value5$VMODEL$f, _this$value6, _this$value6$VMODEL$e;
+        for (var model in (_this$value4 = this.value) === null || _this$value4 === void 0 ? void 0 : _this$value4.fields) {
+          var _this$value4, _this$value5, _this$value5$fields, _this$value6, _this$value6$errors;
 
-          this.fields[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$VMODEL$f = _this$value5[VMODEL.fields]) === null || _this$value5$VMODEL$f === void 0 ? void 0 : _this$value5$VMODEL$f[model];
-          this.errors[model] = (_this$value6 = this.value) === null || _this$value6 === void 0 ? void 0 : (_this$value6$VMODEL$e = _this$value6[VMODEL.errors]) === null || _this$value6$VMODEL$e === void 0 ? void 0 : _this$value6$VMODEL$e[model];
+          this.fields[model] = (_this$value5 = this.value) === null || _this$value5 === void 0 ? void 0 : (_this$value5$fields = _this$value5.fields) === null || _this$value5$fields === void 0 ? void 0 : _this$value5$fields[model];
+          this.errors[model] = (_this$value6 = this.value) === null || _this$value6 === void 0 ? void 0 : (_this$value6$errors = _this$value6.errors) === null || _this$value6$errors === void 0 ? void 0 : _this$value6$errors[model];
         }
       },
       deep: true
@@ -608,7 +578,10 @@ var FIELD = {
     }
   },
   methods: {
-    classes: function classes(classArr) {
+    canSetErr: function canSetErr(v) {
+      return v && !['boolean'].includes(_typeof(v)) || !v && ['string', 'boolean'].includes(_typeof(v));
+    },
+    applyClass: function applyClass(classArr) {
       var _this4 = this;
 
       var subArr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -623,7 +596,7 @@ var FIELD = {
           });
 
           if (ar.length) {
-            acc.push.apply(acc, _toConsumableArray(_this4.classes(ar, true)));
+            acc.push.apply(acc, _toConsumableArray(_this4.applyClass(ar, true)));
           }
         }
 
@@ -631,10 +604,13 @@ var FIELD = {
       }, !subArr ? _toConsumableArray(classArr) : []);
     },
     emitData: function emitData() {
-      var _this$schema, _this$schema$form, _objectSpread2$1;
+      var _this$schema, _this$schema$form;
 
       var formModel = this === null || this === void 0 ? void 0 : (_this$schema = this.schema) === null || _this$schema === void 0 ? void 0 : (_this$schema$form = _this$schema.form) === null || _this$schema$form === void 0 ? void 0 : _this$schema$form.model;
-      this.$emit('input', _objectSpread2(_objectSpread2({}, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, (_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, VMODEL.fields, this.fields), _defineProperty(_objectSpread2$1, VMODEL.errors, this.errors), _objectSpread2$1)));
+      this.$emit('input', _objectSpread2(_objectSpread2({}, formModel ? _defineProperty({}, formModel, this.form) : {}), {}, {
+        fields: this.fields,
+        errors: this.errors
+      }));
     },
     showRow: function showRow(conf) {
       var _this5 = this;
@@ -682,14 +658,14 @@ var FIELD = {
       }
     },
     setError: function setError(model, err) {
-      this.errors[model] = canSetErr(err) ? err : '';
+      this.errors[model] = this.canSetErr(err) ? err : '';
     },
     componentEvents: function componentEvents(conf) {
       var _this6 = this;
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var form = options.form;
-      var e = (conf === null || conf === void 0 ? void 0 : conf[FIELD.on]) || {};
+      var e = (conf === null || conf === void 0 ? void 0 : conf.on) || {};
 
       if (form) {
         var _conf$on;
@@ -720,7 +696,7 @@ var FIELD = {
       var _conf$props3;
 
       var HIDDEN = true;
-      return (conf === null || conf === void 0 ? void 0 : conf.props) && FIELD.props.hidden in conf.props ? Boolean((_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3[FIELD.props.hidden]) : !HIDDEN;
+      return (conf === null || conf === void 0 ? void 0 : conf.props) && 'hidden' in conf.props ? Boolean((_conf$props3 = conf.props) === null || _conf$props3 === void 0 ? void 0 : _conf$props3.hidden) : !HIDDEN;
     },
     runFieldRules: function runFieldRules(val, rules) {
       var err;
@@ -738,7 +714,7 @@ var FIELD = {
               err = rule(val);
             }
 
-            if (canSetErr(err)) {
+            if (this.canSetErr(err)) {
               break;
             }
           }
@@ -758,7 +734,7 @@ var FIELD = {
     validateField: function validateField(conf, formValidating) {
       var _this$options2, _this$rules;
 
-      var av = FIELD.av in conf ? conf === null || conf === void 0 ? void 0 : conf[FIELD.av] : this === null || this === void 0 ? void 0 : (_this$options2 = this.options) === null || _this$options2 === void 0 ? void 0 : _this$options2.activeValidation;
+      var av = 'activeValidation' in conf ? conf === null || conf === void 0 ? void 0 : conf.activeValidation : this === null || this === void 0 ? void 0 : (_this$options2 = this.options) === null || _this$options2 === void 0 ? void 0 : _this$options2.activeValidation;
       var err = (formValidating || av) && this.runFieldRules(this.fields[conf.model], this === null || this === void 0 ? void 0 : (_this$rules = this.rules) === null || _this$rules === void 0 ? void 0 : _this$rules[conf.model]);
       this.setError(conf.model, err);
     },
@@ -783,7 +759,7 @@ var __vue_render__$1 = function __vue_render__() {
 
   return _c(_vm.componentName(_vm.schema.form), _vm._g(_vm._b({
     tag: "component",
-    class: _vm.classes([_vm.CLASS.form]),
+    class: _vm.applyClass([_vm.CLASS.form]),
     model: {
       value: _vm.form,
       callback: function callback($$v) {
@@ -796,24 +772,24 @@ var __vue_render__$1 = function __vue_render__() {
   }), false), _vm.componentEvents(_vm.schema.form, {
     form: true
   })), [_vm._t(_vm.SLOT.header), _vm._v(" "), _c('Body', {
-    class: _vm.classes([_vm.CLASS.body])
+    class: _vm.applyClass([_vm.CLASS.body])
   }, [_vm._l(_vm.schema.fields, function (conf, i) {
     return [_vm.showRow(conf) ? _c('RowContainer', {
       key: i,
-      class: _vm.classes([_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)])
+      class: _vm.applyClass([_vm.CLASS.rowContainer, _vm.CLASS.rowContainer + "-" + (i + 1)])
     }, [_vm._t(_vm.SLOT.beforeRow, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Row', {
-      class: _vm.classes([_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)])
+      class: _vm.applyClass([_vm.CLASS.row, _vm.CLASS.row + "-" + (i + 1)])
     }, [_vm._t(_vm.SLOT.rowStart, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), !_vm.UTILS.isArr(conf) ? [_vm.showCol(conf) ? _c('ColumnContainer', {
       key: conf.model,
-      class: _vm.classes([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + conf.model])
+      class: _vm.applyClass([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + conf.model])
     }, [_vm._t(_vm.SLOT.beforeCol, null, {
       "models": _vm.slotProps(conf)
     }), _vm._v(" "), _c('Column', {
-      class: _vm.classes([_vm.CLASS.col, _vm.CLASS.col + "-" + conf.model, conf.model])
+      class: _vm.applyClass([_vm.CLASS.col, _vm.CLASS.col + "-" + conf.model, conf.model])
     }, [_vm._t(_vm.SLOT.beforeComponent(conf.model)), _vm._v(" "), _c(_vm.componentName(conf), _vm._g(_vm._b({
       tag: "component",
       model: {
@@ -830,11 +806,11 @@ var __vue_render__$1 = function __vue_render__() {
     })], 2) : _vm._e()] : _vm._l(conf, function (subConf) {
       return [_vm.showCol(subConf) ? _c('ColumnContainer', {
         key: subConf.model,
-        class: _vm.classes([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + subConf.model])
+        class: _vm.applyClass([_vm.CLASS.colContainer, _vm.CLASS.colContainer + "-" + subConf.model])
       }, [_vm._t(_vm.SLOT.beforeCol, null, {
         "models": _vm.slotProps(subConf)
       }), _vm._v(" "), _c('Column', {
-        class: _vm.classes([_vm.CLASS.col, _vm.CLASS.col + "-" + subConf.model, subConf.model])
+        class: _vm.applyClass([_vm.CLASS.col, _vm.CLASS.col + "-" + subConf.model, subConf.model])
       }, [_vm._t(_vm.SLOT.beforeComponent(subConf.model)), _vm._v(" "), _c(_vm.componentName(subConf), _vm._g(_vm._b({
         tag: "component",
         model: {
@@ -866,7 +842,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-d4ff717c";
+var __vue_module_identifier__$1 = "data-v-1fc5f65e";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

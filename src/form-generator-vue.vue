@@ -3,26 +3,26 @@
     :is="componentName(schema.form)"
     v-model="form"
     v-bind="componentProps(schema.form, {form: true})"
-    :class="classes([CLASS.form])"
+    :class="applyClass([CLASS.form])"
     v-on="componentEvents(schema.form, {form: true})"
   >
     <!-- header -->
     <slot :name="SLOT.header" />
 
     <!-- body -->
-    <Body :class="classes([CLASS.body])">
+    <Body :class="applyClass([CLASS.body])">
       <template v-for="(conf, i) in schema.fields">
         <RowContainer
           v-if="showRow(conf)"
           :key="i"
-          :class="classes([CLASS.rowContainer, `${CLASS.rowContainer}-${i + 1}`])"
+          :class="applyClass([CLASS.rowContainer, `${CLASS.rowContainer}-${i + 1}`])"
         >
           <slot
             :name="SLOT.beforeRow"
             :models="slotProps(conf)"
           />
           <Row
-            :class="classes([CLASS.row, `${CLASS.row}-${i + 1}`])"
+            :class="applyClass([CLASS.row, `${CLASS.row}-${i + 1}`])"
           >
             <slot
               :name="SLOT.rowStart"
@@ -33,7 +33,7 @@
               <ColumnContainer
                 v-if="showCol(conf)"
                 :key="conf.model"
-                :class="classes([
+                :class="applyClass([
                   CLASS.colContainer,
                   `${CLASS.colContainer}-${conf.model}`
                 ])"
@@ -43,7 +43,7 @@
                   :models="slotProps(conf)"
                 />
                 <Column
-                  :class="classes([
+                  :class="applyClass([
                     CLASS.col,
                     `${CLASS.col}-${conf.model}`,
                     conf.model,
@@ -74,7 +74,7 @@
               <ColumnContainer
                 v-if="showCol(subConf)"
                 :key="subConf.model"
-                :class="classes([
+                :class="applyClass([
                   CLASS.colContainer,
                   `${CLASS.colContainer}-${subConf.model}`
                 ])"
@@ -84,7 +84,7 @@
                   :models="slotProps(subConf)"
                 />
                 <Column
-                  :class="classes([
+                  :class="applyClass([
                     CLASS.col,
                     `${CLASS.col}-${subConf.model}`,
                     subConf.model,
@@ -129,9 +129,28 @@
 import Div from './main/components/Div.vue';
 import props from './main/mixins/props';
 import UTILS from './main/utils';
-import {
-  SCHEMA, VMODEL, FIELD, SLOT, CLASS, canSetErr
-} from './main/utils/constants';
+
+export const CLASS = {
+  form: 'fgv-form',
+  body: 'fgv-body',
+  row: 'fgv-row',
+  rowContainer: 'fgv-row-container',
+  colContainer: 'fgv-col-container',
+  col: 'fgv-col',
+};
+
+export const SLOT = {
+  header: 'header',
+  footer: 'footer',
+  beforeComponent: (v) => `before-${v}`,
+  afterComponent: (v) => `after-${v}`,
+  beforeRow: 'before-row',
+  rowStart: 'row-start',
+  rowEnd: 'row-end',
+  afterRow: 'after-row',
+  beforeCol: 'before-col',
+  afterCol: 'after-col',
+};
 
 export default {
   components: {
@@ -149,11 +168,11 @@ export default {
     const errors = {};
 
     const addFieldsAndErrors = (model) => {
-      fields[model] = this.value?.[VMODEL.fields]?.[model] || '';
-      errors[model] = this.value?.[VMODEL.errors]?.[model] || '';
+      fields[model] = this.value?.fields?.[model] || '';
+      errors[model] = this.value?.errors?.[model] || '';
     };
 
-    for (const fieldConf of this.schema[SCHEMA.fields]) {
+    for (const fieldConf of this.schema.fields) {
       if (UTILS.isArr(fieldConf)) {
         for (const subFieldConf of fieldConf) {
           addFieldsAndErrors(subFieldConf.model);
@@ -173,7 +192,7 @@ export default {
     UTILS: () => UTILS,
     fieldsFlat() {
       const flat = {};
-      for (const conf of this.schema[SCHEMA.fields]) {
+      for (const conf of this.schema.fields) {
         if (UTILS.isArr(conf)) {
           for (const subConf of conf) {
             flat[subConf.model] = subConf;
@@ -190,9 +209,9 @@ export default {
   watch: {
     value: {
       handler() {
-        for (const model in this.value?.[VMODEL.fields]) {
-          this.fields[model] = this.value?.[VMODEL.fields]?.[model];
-          this.errors[model] = this.value?.[VMODEL.errors]?.[model];
+        for (const model in this.value?.fields) {
+          this.fields[model] = this.value?.fields?.[model];
+          this.errors[model] = this.value?.errors?.[model];
         }
       },
       deep: true,
@@ -227,14 +246,15 @@ export default {
     }
   },
   methods: {
-    classes(classArr, subArr = false) {
+    canSetErr(v) { return (v && !['boolean'].includes(typeof v)) || (!v && ['string', 'boolean'].includes(typeof v)); },
+    applyClass(classArr, subArr = false) {
       return classArr.reduce((acc, c) => {
         if (this?.schema?.class?.[c]) {
           acc.push(...this.schema.class[c]);
           const ar = this.schema.class[c]
             .filter((cl) => Object.keys(this?.classes).includes(cl));
           if (ar.length) {
-            acc.push(...this.classes(ar, true));
+            acc.push(...this.applyClass(ar, true));
           }
         }
         return acc;
@@ -245,8 +265,8 @@ export default {
       const formModel = this?.schema?.form?.model;
       this.$emit('input', {
         ...(formModel ? { [formModel]: this.form } : {}),
-        [VMODEL.fields]: this.fields,
-        [VMODEL.errors]: this.errors
+        fields: this.fields,
+        errors: this.errors
       });
     },
     showRow(conf) {
@@ -285,11 +305,11 @@ export default {
       }
     },
     setError(model, err) {
-      this.errors[model] = canSetErr(err) ? err : '';
+      this.errors[model] = this.canSetErr(err) ? err : '';
     },
     componentEvents(conf, options = {}) {
       const { form } = options;
-      const e = conf?.[FIELD.on] || {};
+      const e = conf?.on || {};
       if (form) {
         e.submit = conf?.on?.submit
         || ((ev) => { ev?.preventDefault(); UTILS.logger(['submit handler not present.\n'], { warn: true, show: this?.options?.logs }); });
@@ -305,8 +325,8 @@ export default {
     fieldHidden(conf) {
       const HIDDEN = true;
       return conf?.props
-       && FIELD.props.hidden in conf.props
-        ? Boolean(conf.props?.[FIELD.props.hidden])
+       && 'hidden' in conf.props
+        ? Boolean(conf.props?.hidden)
         : !HIDDEN;
     },
     runFieldRules(val, rules) {
@@ -317,7 +337,7 @@ export default {
           if (UTILS.isFunc(rule)) {
             err = rule(val);
           }
-          if (canSetErr(err)) {
+          if (this.canSetErr(err)) {
             break;
           }
         }
@@ -328,8 +348,8 @@ export default {
       return err;
     },
     validateField(conf, formValidating) {
-      const av = FIELD.av in conf
-        ? conf?.[FIELD.av] : this?.options?.activeValidation;
+      const av = 'activeValidation' in conf
+        ? conf?.activeValidation : this?.options?.activeValidation;
 
       const err = (formValidating || av)
        && this.runFieldRules(this.fields[conf.model], this?.rules?.[conf.model]);
