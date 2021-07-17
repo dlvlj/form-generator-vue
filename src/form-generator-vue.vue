@@ -130,7 +130,7 @@ import Div from './main/components/Div.vue';
 import props from './main/mixins/props';
 import UTILS from './main/utils';
 
-export const CLASS = {
+const CLASS = {
   form: 'fgv-form',
   body: 'fgv-body',
   row: 'fgv-row',
@@ -139,7 +139,7 @@ export const CLASS = {
   col: 'fgv-col',
 };
 
-export const SLOT = {
+const SLOT = {
   header: 'header',
   footer: 'footer',
   beforeComponent: (v) => `before-${v}`,
