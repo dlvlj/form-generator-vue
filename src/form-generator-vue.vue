@@ -362,4 +362,23 @@ export default {
     },
   },
 };
+// {
+//   _props:{
+//     class: ''
+//   },
+//   _events: {
+//     click: handle() {}
+//   },
+//   _children: [
+//     {
+//       _props:{
+//         class: ''
+//       },
+//       _events: {
+//         click: handle() {}
+//       },
+//       _children: []
+//     }
+//   ]
+// }
 </script>
